@@ -1,0 +1,136 @@
+body {
+  background: #1e1e1e;
+  color: #fff;
+  font-size: 14px;
+  font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
+}
+button, input[type="submit"] {
+  font-size: 14px;
+  font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
+  background: #f0f0f0;
+  border: 1px solid rgb(140, 149, 159);
+  border-radius: 3px;
+  outline: none;
+  height: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+button:hover, input[type="submit"]:hover {
+  background: #e0e0e0 !important;
+}
+
+#submit-button {
+  height: 28px;
+}
+
+input[type="text"],input[type="password"] {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: transparent;
+  color: #fff;
+  font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
+  outline: none;
+}
+
+input:-webkit-autofill {
+  -webkit-transition: all 86400s;
+  transition: all 86400s;
+}
+
+#submit-button {
+  width: 90px;
+  font-size: 18px;
+}
+
+.mode-button-block {
+  display: inline-block;
+  position: relative;
+  width: 60px;
+  height: 32px;
+  margin-left: 8px;
+  text-align: center;
+  vertical-align: top;
+  top: -10px;
+}
+
+.mode-button {
+  position: relative;
+  min-width: 100%;
+  height: 24px;
+  background: #888 !important;
+  top: -10px;
+}
+.mode-active {
+  background: #f0f0f0 !important;
+}
+
+.mode-ind {
+  display: inline-block;
+  position: relative;
+  width: 95%;
+  height: 3px;
+  border: 1px solid #666;
+  background: #444;
+  top: -8px;
+}
+.mode-ind-active {
+  background: #75bfff !important;
+}
+
+textarea {
+  outline: none;
+  border: 1px solid #888;
+  border-radius: 4px;
+  background: transparent;
+  color: #fff;
+  font-size: 14px;
+  font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
+  white-space: pre-wrap;
+  word-break: break-all;
+  resize: none;
+  transition: border linear 0.1s, box-shadow linear 0.1s;
+}
+textarea:focus {
+  border-color: #51a7e8;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.075),0 0px 5px rgba(81,167,232,0.5);
+}
+
+select {
+  outline: none;
+}
+
+#key {
+  width: 10em;
+}
+.input-disabled {
+  border-bottom: 1px solid #888 !important;
+}
+
+.label-disabled {
+  color: #888;
+}
+
+#src {
+  width: calc(100% - 17px);
+  height: calc(100vh - 80px);
+}
+.pseudo-link {
+  color: #0cf;
+}
+.pseudo-link:hover {
+  text-decoration: none;
+}
+#textareainfo {
+  color: #ccc;
+}
+
+.dialog {
+  border: 1px solid #888;
+  background: #000 !important;
+  color: #fff !important;
+  font-family: Consolas, Monaco, Menlo, monospace, sans-serif !important;
+}
+
+.dialog-button {
+  min-width: 54px;
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Binary Decoder</title>
+<script src="../libs/debug.js"></script>
+<script src="../libs/util.js"></script>
+<script src="bin.js"></script>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div style="position:relative;height:32px;vertical-align:bottom;">
+<button id="submit-button" onclick="bin.submit();">SAVE</button>
+<div style="margin-left:16px;display:inline-block;">
+<div class="mode-button-block"><div id="mode-ind-auto" class="mode-ind" style="opacity:0;"></div><button id="mode-button-auto" class="mode-button" onclick="bin.setMode('auto');">AUTO</button></div>
+<div class="mode-button-block"><div id="mode-ind-b64" class="mode-ind"></div><button id="mode-button-b64" class="mode-button" onclick="bin.setMode('b64');">BASE64</button>
+</div><div class="mode-button-block"><div id="mode-ind-b64s" class="mode-ind"></div><button id="mode-button-b64s" class="mode-button" onclick="bin.setMode('b64s');">B64S</button>
+</div><span id="key-label" style="margin-left:4px;">KEY:</span><input type="password" id="key" name="key">
+<div class="mode-button-block"><div id="mode-ind-bsb64" class="mode-ind"></div><button id="mode-button-bsb64" class="mode-button" onclick="bin.setMode('bsb64');">BSB64</button>
+</div><span id="n-label" style="margin-left:4px;">N:</span>
+<select id="n">
+<option value="0">0</option>
+<option value="1" selected>1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+</select>
+<div class="mode-button-block"><div id="mode-ind-hex" class="mode-ind"></div><button id="mode-button-hex" class="mode-button" onclick="bin.setMode('hex');">HEX</button>
+</div><div class="mode-button-block"><div id="mode-ind-bin" class="mode-ind"></div><button id="mode-button-bin" class="mode-button" onclick="bin.setMode('bin');">BIN</button>
+</div>
+<div style="position:absolute;right:8px;display:inline-block;height:100%;">
+<button style="position:relative;" onclick="bin.confirmClear();">CLEAR</button>
+</div>
+</div>
+<form name="f1" action="bin.cgi" method="post">
+<input type="hidden" id="mode" name="mode">
+<input type="hidden" id="key-h" name="key">
+<input type="hidden" id="n-h" name="n">
+<textarea id="src" name="src"></textarea><br>
+<div id="textareainfo"></div>
+</form>
+</body>
+</html>
