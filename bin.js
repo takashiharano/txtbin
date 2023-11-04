@@ -42,6 +42,13 @@ bin.setMode = function(mode, onlyMode) {
   $el('.mode-button').removeClass('mode-active');
   $el('#mode-button-' + mode).addClass('mode-active');
   bin.auto = (mode == 'auto');
+  if (mode == 'auto') {
+    bin.onAutoMode();
+  }
+};
+
+bin.onAutoMode = function() {
+  bin.detectCurrentMode();
 };
 
 bin.activeMode = function(mode) {
@@ -54,6 +61,10 @@ bin.onDnd = function(s) {
 
 bin.onInput = function() {
   if (!bin.auto) return;
+  bin.detectCurrentMode();
+};
+
+bin.detectCurrentMode = function() {
   var m = 'b64';
   var v = $el('#src').value;
   if (v.match(/^[01\s\n]+$/)) {
