@@ -17,7 +17,7 @@
 <div class="mode-button-block"><div id="mode-ind-auto" class="mode-ind" style="opacity:0;"></div><button id="mode-button-auto" class="mode-button" onclick="bin.setMode('auto');">AUTO</button></div>
 <div class="mode-button-block"><div id="mode-ind-b64" class="mode-ind"></div><button id="mode-button-b64" class="mode-button" onclick="bin.setMode('b64');">BASE64</button>
 </div><div class="mode-button-block"><div id="mode-ind-b64s" class="mode-ind"></div><button id="mode-button-b64s" class="mode-button" onclick="bin.setMode('b64s');">B64S</button>
-</div><span id="key-label" style="margin-left:4px;">KEY:</span><input type="password" id="key" name="key">
+</div><span id="key-label" style="margin-left:4px;">KEY:</span><input type="password" id="key" name="key" spellcheck="false">
 <div class="mode-button-block"><div id="mode-ind-bsb64" class="mode-ind"></div><button id="mode-button-bsb64" class="mode-button" onclick="bin.setMode('bsb64');">BSB64</button>
 </div><span id="n-label" style="margin-left:4px;">N:</span>
 <select id="n">
@@ -50,7 +50,7 @@
 <input type="hidden" id="mode" name="mode">
 <input type="hidden" id="key-h" name="key">
 <input type="hidden" id="n-h" name="n">
-<textarea id="src" name="src"></textarea><br>
+<textarea id="src" name="src" spellcheck="false"></textarea><br>
 <div id="textareainfo"></div>
 </form>
 </div>
