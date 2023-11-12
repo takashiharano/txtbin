@@ -48,7 +48,24 @@ def deccode_and_send_file(mode, s):
 
     util.send_binary(b, filename=filename, etag=etag)
 
+
+def extract_bintext_part(mode, s):
+  unit = 8 if mode == 'bin' else 2
+  v_start = 11
+  v_end = v_start + (unit * 16) + 16
+  s = s.strip();
+  if not s.startswith('ADDRESS'):
+      return s
+  a = util.text2list(s)
+  b = ''
+  for i in range(2, len(a)):
+      l = a[i]
+      w = l[v_start:v_end]
+      b += w + '\n'
+  return b
+
 def dec_hex(s):
+    s = extract_bintext_part('hex', s)
     s = util.remove_space_newline(s)
     s = util.replace(s, '\\+', '')
     s = util.replace(s, '%', '')
@@ -56,6 +73,7 @@ def dec_hex(s):
     return b
 
 def dec_bin(s):
+    s = extract_bintext_part('bin', s)
     s = util.remove_space_newline(s)
     s = util.replace(s, '\\+', '')
     s = util.replace(s, '%', '')

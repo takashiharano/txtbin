@@ -148,7 +148,11 @@ bin.showBinInfo = function() {
 };
 bin._showBinInfo = function() {
   var mode = bin.getMode();
-  var s = $el('#src').value.replace(/\s/g, '');
+  var s = $el('#src').value;
+  if ((mode == 'bin') || (mode == 'hex')) {
+    s = bin.extractBinTextPart(mode, s);
+  }
+  s = s.replace(/\s/g, '');
   var a;
   switch (mode) {
     case 'hex':
@@ -480,7 +484,24 @@ bin.formatHex = function(hex, uc, pFix, d) {
   return hex;
 };
 
+bin.extractBinTextPart = function(mode, s) {
+  var unit = (mode == 'bin' ? 8 : 2);
+  var vStart = 11;
+  var eEnd = unit * 16 + 16;
+  s = s.trim();
+  if (!s.startsWith('ADDRESS')) return s;
+  var a = util.text2list(s);
+  var b = '';
+  for (var i = 2; i < a.length; i++) {
+    var l = a[i];
+    var w = l.substr(vStart, eEnd);
+    b += w + '\n';
+  }
+  return b;
+};
+
 bin.onInput = function() {
+  bin.showBinInfo();
   if (!bin.auto) return;
   bin.detectCurrentMode();
 };
