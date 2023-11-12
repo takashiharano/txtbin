@@ -5,6 +5,7 @@
 <title>Binary Decoder</title>
 <script src="../libs/debug.js"></script>
 <script src="../libs/util.js"></script>
+<script src="../libs/sha.js"></script>
 <script src="bin.js"></script>
 <link rel="stylesheet" href="style.css" />
 </head>
@@ -29,18 +30,28 @@
 <option value="7">7</option>
 </select>
 <div class="mode-button-block"><div id="mode-ind-hex" class="mode-ind"></div><button id="mode-button-hex" class="mode-button" onclick="bin.setMode('hex');">HEX</button>
-</div><div class="mode-button-block"><div id="mode-ind-bin" class="mode-ind"></div><button id="mode-button-bin" class="mode-button" onclick="bin.setMode('bin');">BIN</button>
+</div><div class="mode-button-block"><div id="mode-ind-bin" class="mode-ind"></div><button id="mode-button-bin" class="mode-button" onclick="bin.setMode('bin');">BIN</button></div>
 </div>
+
 <div style="position:absolute;right:8px;display:inline-block;height:100%;">
+<button style="position:relative;" onclick="bin.showBinInfo();">INFO</button>
 <button style="position:relative;" onclick="bin.confirmClear();">CLEAR</button>
 </div>
+
 </div>
-<form name="f1" action="bin.cgi" method="post">
+<div id="info-area">
+<pre id="info"></pre>
+</div>
+
+<div id="input-area">
+<form name="f1" id="f1" action="bin.cgi" method="post">
 <input type="hidden" id="mode" name="mode">
 <input type="hidden" id="key-h" name="key">
 <input type="hidden" id="n-h" name="n">
 <textarea id="src" name="src"></textarea><br>
 <div id="textareainfo"></div>
 </form>
+</div>
+
 </body>
 </html>

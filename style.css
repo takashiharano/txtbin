@@ -1,9 +1,12 @@
 body {
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
   background: #1e1e1e;
   color: #fff;
   font-size: 14px;
   font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
 }
+
 button, input[type="submit"] {
   font-size: 14px;
   font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
@@ -95,6 +98,12 @@ textarea:focus {
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.075),0 0px 5px rgba(81,167,232,0.5);
 }
 
+pre {
+  margin: 0;
+  font-size: 14px;
+  font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
+}
+
 select {
   outline: none;
 }
@@ -110,9 +119,26 @@ select {
   color: #888;
 }
 
+#info-area {
+  height: 70px;
+  margin-bottom: 4px;
+}
+
+#info {
+  color: #ddd;
+}
+
+#input-area {
+  height: calc(100vh - 140px);
+}
+
+#f1 {
+  height: 100%;
+}
+
 #src {
   width: calc(100% - 17px);
-  height: calc(100vh - 80px);
+  height: calc(100% - 15px);
 }
 .pseudo-link {
   color: #0cf;
