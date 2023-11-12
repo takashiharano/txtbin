@@ -521,7 +521,7 @@ bin.onInput = function() {
 };
 
 bin.forceNewline = function(s) {
-  var TH = 4096;
+  var TH = 10240;
   var s = bin.getSrcValue();
   if (s.length <= TH) return;
   var a = util.text2list(s);
