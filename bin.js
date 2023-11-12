@@ -1,6 +1,14 @@
 var bin = {};
-bin.CHR_LF = '.';
-bin.CHR_CR = '_';
+bin.TXT_CHR_LF = '.';
+bin.TXT_CHR_CR = '_';
+
+bin.CHR_CRLF = '&#x21b5;';
+bin.CHR_LF = '&#x2193;';
+bin.CHR_CR = '&#x2190;';
+bin.CHR_CRLF_S = '<span style="color:#0cf" class="cc">' + bin.CHR_CRLF + '</span>';
+bin.CHR_LF_S = '<span style="color:#0f0" class="cc">' + bin.CHR_LF + '</span>';
+bin.CHR_CR_S = '<span style="color:#f00" class="cc">' + bin.CHR_CR + '</span>';
+bin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
 
 bin.auto = true;
 $onReady = function() {
@@ -79,14 +87,6 @@ bin.setDndHandlerMode = function(mode) {
   }
 };
 
-bin.onDnd = function(s, f) {
-  if ((s instanceof ArrayBuffer) || (f && bin.isB64Mode())) {
-    bin.dump(s);
-  } else {
-    $el('#src').value = s;
-  }
-};
-
 bin.dump = function(s) {
   var mode = bin.getMode();
   var r;
@@ -97,19 +97,40 @@ bin.dump = function(s) {
       r = bin.getHexDump(mode, buf);
       break;
     default:
-      r = bin.formatB64(s);
       buf = bin.decodeBase64(s);
+      r = bin.formatB64(s);
   }
   bin.drawBinInfo(buf);
-  $el('#src').value = r;
+  bin.setSrcValue(r);
+  bin.showPreview();
 };
 
 bin.decodeBase64 = function(s) {
+  s = s.trim().replace(/\n/g, '');
   if (s.startsWith('data:')) {
     var a = s.split(',');
     s = a[1];
   }
   return util.decodeBase64(s, true);
+};
+
+bin.getLargeDataClass = function(buf) {
+  var mode = bin.getMode();
+  var tp = bin.getFileType(buf);
+  var ext = tp['ext'];
+  var texts = ['txt'];
+  var images = ['bmp', 'gif', 'jpg', 'png', 'webp'];
+  for (var i = 0; i < texts.length; i++) {
+    if (texts[i] == ext) {
+      return 'text';
+    }
+  }
+  for (i = 0; i < images.length; i++) {
+    if (images[i] == ext) {
+      return 'image';
+    }
+  }
+  return false;
 };
 
 bin.drawBinInfo = function(buf) {
@@ -145,25 +166,12 @@ bin.showBinInfo = function() {
   } catch(e) {
     bin.drawInfo('ERROR: ' + e);
   }
+  bin.showPreview();
 };
 bin._showBinInfo = function() {
   var mode = bin.getMode();
-  var s = $el('#src').value;
-  if ((mode == 'bin') || (mode == 'hex')) {
-    s = bin.extractBinTextPart(mode, s);
-  }
-  s = s.replace(/\s/g, '');
-  var a;
-  switch (mode) {
-    case 'hex':
-      a = bin.hex2uint8Array(s);
-      break;
-    case 'bin':
-      a = bin.bin2uint8Array(s);
-      break;
-    default:
-      a = bin.b642uint8Array(s);
-  }
+  var s = bin.getSrcValue();
+  var a = bin.str2buf(mode, s);
   bin.drawBinInfo(a);
 };
 
@@ -176,7 +184,12 @@ bin.bin2uint8Array = function(s) {
 };
 
 bin.b642uint8Array = function(s) {
-  return bin.decodeBase64(s);
+  try {
+    var a = bin.decodeBase64(s);
+  } catch(e) {
+    a = [];
+  }
+  return a;
 };
 
 bin.str2binArr = function(str, blkSize, pFix) {
@@ -328,10 +341,10 @@ bin.dumpAscii = function(pos, buf) {
     if (code == undefined) break;
     switch (code) {
       case 0x0A:
-        b += bin.CHR_LF;
+        b += bin.TXT_CHR_LF;
         break;
       case 0x0D:
-        b += bin.CHR_CR;
+        b += bin.TXT_CHR_CR;
         break;
       default:
         if ((code >= 0x20) && (code <= 0x7E)) {
@@ -351,7 +364,7 @@ bin.toBin = function(v) {
 bin.formatB64 = function(d) {
   var a = d.split(',');
   var b64 = bin.inertNewline(a[1]);
-  var r = a[0] + '\n' + b64;
+  var r = a[0] + ',\n' + b64;
   return r;
 };
 
@@ -489,7 +502,7 @@ bin.extractBinTextPart = function(mode, s) {
   var vStart = 11;
   var eEnd = unit * 16 + 16;
   s = s.trim();
-  if (!s.startsWith('ADDRESS')) return s;
+  if (!s.toUpperCase().startsWith('ADDRESS')) return s;
   var a = util.text2list(s);
   var b = '';
   for (var i = 2; i < a.length; i++) {
@@ -501,14 +514,52 @@ bin.extractBinTextPart = function(mode, s) {
 };
 
 bin.onInput = function() {
-  bin.showBinInfo();
+  bin.forceNewline();
   if (!bin.auto) return;
+  bin.showBinInfo();
   bin.detectCurrentMode();
+};
+
+bin.forceNewline = function(s) {
+  var TH = 4096;
+  var s = bin.getSrcValue();
+  if (s.length <= TH) return;
+  var a = util.text2list(s);
+  var r = '';
+  for (var i = 0; i < a.length; i++) {
+    var v = a[i];
+    if (i > 0) r += '\n';
+    if (v.length > TH) {
+      var w = util.insertCh(v, '\n', TH);
+      r += w;
+    } else {
+      r += v;
+    }
+  }
+  bin.setSrcValue(r);
+};
+
+bin.onDnd = function(s, f) {
+  if ((s instanceof ArrayBuffer) || (f && bin.isB64Mode())) {
+    bin.dump(s);
+  } else {
+    bin.setSrcValue(s);
+  }
+  bin.forceNewline();
+};
+
+bin.getSrcValue = function() {
+  return $el('#src').value;
+};
+
+bin.setSrcValue = function(s) {
+  $el('#src').value = s;
+  $el('#src').scrollToTop();
 };
 
 bin.detectCurrentMode = function() {
   var m = 'b64';
-  var v = $el('#src').value;
+  var v = bin.getSrcValue();
   if (v.match(/^[01\s\n]+$/)) {
     m = 'bin';
   } else if (v.match(/^[0-9A-Fa-f\s\n]+$/)) {
@@ -521,13 +572,77 @@ bin.drawInfo = function(s) {
   $el('#info').innerHTML = s;
 };
 
+bin.str2buf = function(mode, s) {
+  if ((mode == 'bin') || (mode == 'hex')) {
+    s = bin.extractBinTextPart(mode, s);
+  }
+  s = s.replace(/\s/g, '');
+  var a;
+  switch (mode) {
+    case 'hex':
+      a = bin.hex2uint8Array(s);
+      break;
+    case 'bin':
+      a = bin.bin2uint8Array(s);
+      break;
+    default:
+      a = bin.b642uint8Array(s);
+  }
+  return a;
+};
+
+bin.showPreview = function() {
+  var mode = bin.getMode();
+  var s = bin.getSrcValue();
+  var b = bin.str2buf(mode, s);
+  try {
+    bin._showPreview(s, b);
+  } catch (e) {
+    var m = 'ERROR: ' + e;
+    bin.drawPreview(m);
+  }
+}
+
+bin._showPreview = function(s, b) {
+  var dc = bin.getLargeDataClass(b);
+  if (dc == 'image') {
+    bin.showImagePreview(b);
+  } else if (dc == 'text') {
+    bin.showTextPreview(b);
+  } else {
+    bin.drawPreview('');
+  }
+};
+
+bin.showTextPreview = function(b) {
+  var s = bin.UTF8.fromByteArray(b);
+  var s = util.escHtml(s);
+  s = s.replace(/\r\n/g, bin.CHR_CRLF_S + '\n');
+  s = s.replace(/([^>])\n/g, '$1' + bin.CHR_LF_S + '\n');
+  s = s.replace(/\r/g, bin.CHR_CR_S + '\n');
+  s = s + bin.EOF + '\n';
+  bin.drawPreview(s);
+};
+
+bin.showImagePreview = function(b) {
+  var b64 = util.encodeBase64(b, true);
+  var d = 'data:image/png;base64,' + b64;
+  var v = '<img src="' + d + '" style="max-width:100%;max-height:100%;">';
+  bin.drawPreview(v);
+};
+
+bin.drawPreview = function(s) {
+  $el('#preview').innerHTML = s;
+};
+
 bin.confirmClear = function() {
   util.confirm('Clear?', bin.clear);
 };
 
 bin.clear = function() {
   bin.drawInfo('');
-  $el('#src').value = '';
+  bin.setSrcValue('');
+  bin.drawPreview('');
   $el('#src').focus();
 };
 
@@ -535,4 +650,37 @@ bin.submit = function() {
   $el('#key-h').value = $el('#key').value;
   $el('#n-h').value = $el('#n').value;
   document.f1.submit();
+};
+
+bin.str2arr = function(s) {
+  return s.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]|[\s\S]/g) || [];
+};
+
+bin.UTF8 = {};
+bin.UTF8.toByteArray = function(s) {
+  var a = [];
+  if (!s) return a;
+  var chs = bin.str2arr(s);
+  for (var i = 0; i < chs.length; i++) {
+    var ch = chs[i];
+    var c = ch.charCodeAt(0);
+    if (c <= 0x7F) {
+      a.push(c);
+    } else {
+      var e = encodeURIComponent(ch);
+      var w = e.split('%');
+      for (var j = 1; j < w.length; j++) {
+        a.push(('0x' + w[j]) | 0);
+      }
+    }
+  }
+  return a;
+};
+bin.UTF8.fromByteArray = function(b) {
+  if (!b) return null;
+  var e = '';
+  for (var i = 0; i < b.length; i++) {
+    e += '%' + bin.toHex(b[i], true, '', 2);
+  }
+  return decodeURIComponent(e);
 };

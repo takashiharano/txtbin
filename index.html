@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<div id="main">
 <div style="position:relative;height:32px;vertical-align:bottom;">
 <button id="submit-button" onclick="bin.submit();">SAVE</button>
 <div style="margin-left:16px;display:inline-block;">
@@ -43,6 +44,7 @@
 <pre id="info"></pre>
 </div>
 
+<div id="area3">
 <div id="input-area">
 <form name="f1" id="f1" action="bin.cgi" method="post">
 <input type="hidden" id="mode" name="mode">
@@ -53,5 +55,11 @@
 </form>
 </div>
 
+<div id="preview-area">
+<pre id="preview"></pre>
+</div>
+</div>
+
+</div>
 </body>
 </html>

@@ -54,7 +54,7 @@ def extract_bintext_part(mode, s):
   v_start = 11
   v_end = v_start + (unit * 16) + 16
   s = s.strip();
-  if not s.startswith('ADDRESS'):
+  if not s.upper().startswith('ADDRESS'):
       return s
   a = util.text2list(s)
   b = ''
