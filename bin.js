@@ -391,7 +391,7 @@ bin.getFileType = function(b) {
     txt_utf8_bom: {pattern: 'EF BB BF', ext: 'txt', info: 'UTF-8 BOM'},
     txt_utf16be_bom: {pattern: 'FE FF', ext: 'txt', info: 'UTF-16BE BOM'},
     txt_utf16le_bom: {pattern: 'FF FE', ext: 'txt', info: 'UTF-16LE BOM'},
-    wav: {pattern: '52 49 46 46 B6 72 06 00 57 41 56 45 66 6D 74', ext: 'wav'},
+    wav: {pattern: '52 49 46 46 xx xx xx xx 57 41 56 45 66 6D 74', ext: 'wav'},
     webp: {pattern: '52 49 46 46 xx xx xx xx 57 45 42 50', ext: 'webp'},
     xml: {pattern: '3C 3F 78 6D 6C 20', ext: 'xml'},
     zip: {pattern: '50 4B', ext: 'zip'}

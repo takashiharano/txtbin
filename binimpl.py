@@ -134,7 +134,7 @@ def get_file_type(b):
         'txt-utf8-bom': 'EF BB BF',
         'txt-utf16be-bom': 'FE FF',
         'txt-utf16le-bom': 'FF FE',
-        'wav': '52 49 46 46 B6 72 06 00 57 41 56 45 66 6D 74',
+        'wav': '52 49 46 46 xx xx xx xx 57 41 56 45 66 6D 74',
         'webp': '52 49 46 46 xx xx xx xx 57 45 42 50',
         'xml': '3C 3F 78 6D 6C 20',
         'zip': '50 4B'
