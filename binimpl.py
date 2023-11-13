@@ -120,6 +120,7 @@ def get_ext(b):
 def get_file_type(b):
     filetypes = {
         'bmp': '42 4D',
+        'cab': '4D 53 43 46 00 00 00 00',
         'class': 'CA FE BA BE',
         'exe': '4D 5A',
         'gif': '47 49 46 38',

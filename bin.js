@@ -143,8 +143,8 @@ bin.drawBinInfo = function(buf) {
 bin.getBinTypeInfo = function(b) {
   var tp = bin.getFileType(b);
   var s = 'Type    : .' + tp.ext;
-  if (tp['subinfo']) s += ' / ' + tp['subinfo'];
-  if (tp['info']) s += ' / ' + tp['info'];
+  if (tp['subinfo']) s += '  ' + tp['subinfo'];
+  if (tp['info']) s += '  ' + tp['info'];
   return s;
 }
 
@@ -544,6 +544,7 @@ bin.inertNewline = function(s, n) {
 bin.getFileType = function(b) {
   var filetypes = {
     bmp: {pattern: '42 4D', ext: 'bmp'},
+    cab: {pattern: '4D 53 43 46 00 00 00 00', ext: 'cab'},
     class: {pattern: 'CA FE BA BE', ext: 'class'},
     exe: {pattern: '4D 5A', ext: 'exe'},
     gif: {pattern: '47 49 46 38', ext: 'gif'},
