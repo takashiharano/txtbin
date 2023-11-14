@@ -114,23 +114,10 @@ bin.decodeBase64 = function(s) {
   return util.decodeBase64(s, true);
 };
 
-bin.getLargeDataClass = function(buf) {
+bin.getMimeType = function(buf) {
   var mode = bin.getMode();
   var tp = bin.getFileType(buf);
-  var ext = tp['ext'];
-  var texts = ['txt', 'html', 'xml'];
-  var images = ['bmp', 'gif', 'jpg', 'png', 'webp'];
-  for (var i = 0; i < texts.length; i++) {
-    if (texts[i] == ext) {
-      return 'text';
-    }
-  }
-  for (i = 0; i < images.length; i++) {
-    if (images[i] == ext) {
-      return 'image';
-    }
-  }
-  return false;
+  return tp['mime'];
 };
 
 bin.drawBinInfo = function(buf) {
@@ -543,36 +530,39 @@ bin.inertNewline = function(s, n) {
 
 bin.getFileType = function(b) {
   var filetypes = {
-    bmp: {pattern: '42 4D', ext: 'bmp'},
-    cab: {pattern: '4D 53 43 46 00 00 00 00', ext: 'cab'},
-    class: {pattern: 'CA FE BA BE', ext: 'class'},
-    exe: {pattern: '4D 5A', ext: 'exe'},
-    gif: {pattern: '47 49 46 38', ext: 'gif'},
-    gz: {pattern: '1F 8B', ext: 'gz'},
-    html: {pattern: '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C', ext: 'html'},
-    jpg: {pattern: 'FF D8', ext: 'jpg'},
-    mp3: {pattern: '49 44 33', ext: 'mp3'},
-    mp4: {pattern: 'xx xx xx xx 66 74 79 70', ext: 'mp4'},
-    msg: {pattern: 'D0 CF 11 E0 A1 B1 1A E1', ext: 'msg'},
-    pdf: {pattern: '25 50 44 46 2D', ext: 'pdf'},
-    png: {pattern: '89 50 4E 47 0D 0A 1A 0A 00', ext: 'png'},
-    txt_utf8_bom: {pattern: 'EF BB BF', ext: 'txt', subinfo: 'UTF-8 BOM'},
-    txt_utf16be_bom: {pattern: 'FE FF', ext: 'txt', subinfo: 'UTF-16BE BOM'},
-    txt_utf16le_bom: {pattern: 'FF FE', ext: 'txt', subinfo: 'UTF-16LE BOM'},
-    wav: {pattern: '52 49 46 46 xx xx xx xx 57 41 56 45 66 6D 74', ext: 'wav'},
-    webp: {pattern: '52 49 46 46 xx xx xx xx 57 45 42 50', ext: 'webp'},
-    xml: {pattern: '3C 3F 78 6D 6C 20', ext: 'xml'},
-    zip: {pattern: '50 4B', ext: 'zip'}
+    bmp: {pattern: '42 4D', mime: 'image/bmp', ext: 'bmp'},
+    cab: {pattern: '4D 53 43 46 00 00 00 00', mime: 'application/vnd.ms-cab-compressed', ext: 'cab'},
+    class: {pattern: 'CA FE BA BE', mime: 'application/octet-stream', ext: 'class'},
+    exe: {pattern: '4D 5A', mime: 'application/x-msdownload', ext: 'exe'},
+    gif: {pattern: '47 49 46 38', mime: 'image/gif', ext: 'gif'},
+    gz: {pattern: '1F 8B', mime: 'application/gzip', ext: 'gz'},
+    html: {pattern: '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C', mime: 'text/html', ext: 'html'},
+    jpg: {pattern: 'FF D8', mime: 'image/jpeg', ext: 'jpg'},
+    mp3: {pattern: '49 44 33', mime: 'audio/mpeg', ext: 'mp3'},
+    mp4: {pattern: 'xx xx xx xx 66 74 79 70', mime: 'video/mp4', ext: 'mp4'},
+    msg: {pattern: 'D0 CF 11 E0 A1 B1 1A E1', mime: 'application/octet-stream', ext: 'msg'},
+    pdf: {pattern: '25 50 44 46 2D', mime: 'application/pdf', ext: 'pdf'},
+    png: {pattern: '89 50 4E 47 0D 0A 1A 0A 00', mime: 'image/png', ext: 'png'},
+    txt_utf8_bom: {pattern: 'EF BB BF', mime: 'text/plain', ext: 'txt', subinfo: 'UTF-8 BOM'},
+    txt_utf16be_bom: {pattern: 'FE FF', mime: 'text/plain', ext: 'txt', subinfo: 'UTF-16BE BOM'},
+    txt_utf16le_bom: {pattern: 'FF FE', mime: 'text/plain', ext: 'txt', subinfo: 'UTF-16LE BOM'},
+    wav: {pattern: '52 49 46 46 xx xx xx xx 57 41 56 45 66 6D 74', mime: 'audio/wav', ext: 'wav'},
+    webp: {pattern: '52 49 46 46 xx xx xx xx 57 45 42 50', mime: 'image/webp', ext: 'webp'},
+    xml: {pattern: '3C 3F 78 6D 6C 20', mime: 'text/xml', ext: 'xml'},
+    zip: {pattern: '50 4B', mime: 'application/x-zip-compressed', ext: 'zip'}
   }
   var tp = {
+    mime: '',
     ext: '',
     subinfo: null,
     info: null
   };
-  var ext = 'txt';;
+  var mime = 'text/plain';
+  var ext = 'txt';
   for (var k in filetypes) {
     ptn = filetypes[k]
     if (bin.hasBinaryPattern(b, 0, ptn['pattern'])) {
+      mime = ptn['mime'];
       ext = ptn['ext'];
       if ('subinfo' in ptn) {
         tp = bin.copyObjField(ptn, tp, 'subinfo');
@@ -580,6 +570,7 @@ bin.getFileType = function(b) {
       break;
     }
   }
+  tp['mime'] = mime;
   tp['ext'] = ext;
   if (!tp['subinfo']) {
     var binInfo = bin.getBinInfo(ext, b);
@@ -763,7 +754,8 @@ bin.showPreview = function() {
 }
 
 bin._showPreview = function(s, b) {
-  var dc = bin.getLargeDataClass(b);
+  var mime = bin.getMimeType(b);
+  var dc = mime.split('/')[0];
   if (dc == 'image') {
     bin.showImagePreview(b);
   } else if (dc == 'text') {
