@@ -1,5 +1,5 @@
 var bin = {};
-bin.TXT_CHR_LF = '.';
+bin.TXT_CHR_LF = '|';
 bin.TXT_CHR_CR = '_';
 
 bin.CHR_CRLF = '&#x21b5;';
