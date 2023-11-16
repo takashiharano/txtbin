@@ -13,6 +13,10 @@ body {
   height: 100%;
 }
 
+#clock {
+  color: #ddd;
+}
+
 button, input[type="submit"] {
   font-size: 14px;
   font-family: Consolas, Monaco, Menlo, monospace, sans-serif;

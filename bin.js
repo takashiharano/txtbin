@@ -14,6 +14,7 @@ bin.auto = true;
 bin.buf = null;
 
 $onReady = function() {
+  util.clock('#clock');
   util.textarea.addStatusInfo('#src', '#textareainfo');
 
   var opt = {
