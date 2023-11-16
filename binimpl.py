@@ -127,6 +127,7 @@ def get_file_type(b):
         'gz': '1F 8B',
         'html': '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C',
         'jpg': 'FF D8',
+        'mov': 'xx xx xx xx 6D 6F 6F 76',
         'mp3': '49 44 33',
         'mp4': 'xx xx xx xx 66 74 79 70',
         'msg': 'D0 CF 11 E0 A1 B1 1A E1',

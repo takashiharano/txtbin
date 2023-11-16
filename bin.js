@@ -158,7 +158,7 @@ bin.buildSizeInfoString = function(buf) {
 
 bin.getBinTypeInfo = function(b) {
   var tp = bin.getFileType(b);
-  var s = '.' + tp.ext;
+  var s = '.' + tp['ext'] + '  ' + tp['mime'];
   if (tp['subinfo']) s += '  ' + tp['subinfo'];
   if (tp['info']) s += '  ' + tp['info'];
   return s;
@@ -573,6 +573,7 @@ bin.getFileType = function(b) {
     gz: {pattern: '1F 8B', mime: 'application/gzip', ext: 'gz'},
     html: {pattern: '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C', mime: 'text/html', ext: 'html'},
     jpg: {pattern: 'FF D8', mime: 'image/jpeg', ext: 'jpg'},
+    mov: {pattern: 'xx xx xx xx 6D 6F 6F 76', mime: 'video/quicktime', ext: 'mov'},
     mp3: {pattern: '49 44 33', mime: 'audio/mpeg', ext: 'mp3'},
     mp4: {pattern: 'xx xx xx xx 66 74 79 70', mime: 'video/mp4', ext: 'mp4'},
     msg: {pattern: 'D0 CF 11 E0 A1 B1 1A E1', mime: 'application/octet-stream', ext: 'msg'},
@@ -796,6 +797,10 @@ bin._showPreview = function(s, b) {
     bin.showImagePreview(b);
   } else if (dc == 'text') {
     bin.showTextPreview(b);
+  } else if (dc == 'video') {
+    bin.showVideoPreview(b);
+  } else if (dc == 'audio') {
+    bin.showAudioPreview(b);
   } else {
     bin.drawPreview('');
   }
@@ -815,6 +820,20 @@ bin.showImagePreview = function(b) {
   var b64 = util.encodeBase64(b, true);
   var d = 'data:image/png;base64,' + b64;
   var v = '<img src="' + d + '" style="max-width:100%;max-height:100%;">';
+  bin.drawPreview(v);
+};
+
+bin.showVideoPreview = function(b) {
+  var b64 = util.encodeBase64(b, true);
+  var d = 'data:video/mp4;base64,' + b64;
+  var v = '<video src="' + d + '" style="max-width:100%;max-height:100%;" controls>';
+  bin.drawPreview(v);
+};
+
+bin.showAudioPreview = function(b) {
+  var b64 = util.encodeBase64(b, true);
+  var d = 'data:audio/wav;base64,' + b64;
+  var v = '<audio src="' + d + '" style="max-width:100%;max-height:100%;" controls>';
   bin.drawPreview(v);
 };
 
