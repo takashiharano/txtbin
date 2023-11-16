@@ -169,16 +169,13 @@ select {
 
 #src {
   width: calc(100% - 17px);
-  height: calc(100% - 28px);
+  height: calc(100% - 10px);
 }
 .pseudo-link {
   color: #0cf;
 }
 .pseudo-link:hover {
   text-decoration: none;
-}
-#textareainfo {
-  color: #ccc;
 }
 
 .dialog {
