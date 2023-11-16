@@ -11,6 +11,8 @@ bin.CHR_CR_S = '<span style="color:#f00" class="cc">' + bin.CHR_CR + '</span>';
 bin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
 
 bin.auto = true;
+bin.buf = null;
+
 $onReady = function() {
   util.textarea.addStatusInfo('#src', '#textareainfo');
 
@@ -20,7 +22,7 @@ $onReady = function() {
   bin.dndHandler = util.addDndHandler('#src', bin.onDnd, opt);
 
   bin.setMode('auto');
-  bin.activeMode('b64');
+  bin.activeMode('hex');
 
   $el('#src').addEventListener('input', bin.onInput);
   $el('#src').addEventListener('change', bin.onInput);
@@ -39,12 +41,31 @@ bin.isB64Mode = function() {
   return false;
 };
 
+bin.switchRadix = function(mode, buf) {
+  var r;
+  switch (mode) {
+    case 'hex':
+    case 'bin':
+      r = bin.getHexDump(mode, buf);
+      break;
+    default:
+      var b64 = util.encodeBase64(buf, true);
+      r = bin.formatB64(b64);
+  }
+  bin.drawBinInfo(buf);
+  bin.setSrcValue(r);
+  bin.showPreview();
+};
+
 bin.setMode = function(mode, onlyMode) {
   if (mode != 'auto') {
     bin.setDndHandlerMode(mode);
     $el('#mode').value = mode;
     $el('.mode-ind').removeClass('mode-ind-active');
     $el('#mode-ind-' + mode).addClass('mode-ind-active');
+    if (bin.buf) {
+      bin.switchRadix(mode, bin.buf);
+    }
   }
 
   $el('#key-label').addClass('label-disabled');
@@ -103,6 +124,7 @@ bin.dump = function(s) {
   bin.drawBinInfo(buf);
   bin.setSrcValue(r);
   bin.showPreview();
+  bin.buf = buf;
 };
 
 bin.decodeBase64 = function(s) {
@@ -121,15 +143,22 @@ bin.getMimeType = function(buf) {
 };
 
 bin.drawBinInfo = function(buf) {
-  var s =  bin.getBinTypeInfo(buf);
-  s += '\n';
+  var s = '';
+  s += 'Type    : ' + bin.getBinTypeInfo(buf) + '\n';
+  s += 'Size    : ' + bin.buildSizeInfoString(buf) + ' bytes\n';
   s += bin.getHashInfo(buf);
   bin.drawInfo(s);
 };
 
+bin.buildSizeInfoString = function(buf) {
+  var n = buf.length;
+  var s = util.formatNumber(n);
+  return s;
+};
+
 bin.getBinTypeInfo = function(b) {
   var tp = bin.getFileType(b);
-  var s = 'Type    : .' + tp.ext;
+  var s = '.' + tp.ext;
   if (tp['subinfo']) s += '  ' + tp['subinfo'];
   if (tp['info']) s += '  ' + tp['info'];
   return s;
@@ -137,8 +166,7 @@ bin.getBinTypeInfo = function(b) {
 
 bin.getHashInfo = function(b) {
   var s = 'SHA-1   : ' + bin.getSHA('SHA-1', b, 1) + '\n';
-  s += 'SHA-256 : ' + bin.getSHA('SHA-256', b, 1) + '\n';
-  s += 'SHA-512 : ' + bin.getSHA('SHA-512', b, 1);
+  s += 'SHA-256 : ' + bin.getSHA('SHA-256', b, 1);
   return s;
 };
 
@@ -327,51 +355,54 @@ bin.i2hex = function(i) {
 };
 
 bin.dumpAscii = function(pos, buf) {
+  var dumpMB = $el('#dump-multibyte').checked;
   var b = '';
   var end = pos + 0x10;
   for (var i = pos; i < end; i++) {
     var code = buf[i];
     if (code == undefined) break;
 
-    var uri = null;
-    var pd = '';
-    var skip = 0;
-    if ((code & 0xF0) == 0xF0) {
-      var c0 = bin.i2hex(buf[i]);
-      var c1 = bin.i2hex(buf[i + 1]);
-      var c2 = bin.i2hex(buf[i + 2]);
-      var c3 = bin.i2hex(buf[i + 3]);
-      if ((c1 != '') && (c2 != '') && (c3 != '')) {
-        uri = '%' + c0 + '%' + c1 + '%' + c2 + '%' + c3;
+    if (dumpMB) {
+      var uri = null;
+      var pd = '';
+      var skip = 0;
+      if ((code & 0xF0) == 0xF0) {
+        var c0 = bin.i2hex(buf[i]);
+        var c1 = bin.i2hex(buf[i + 1]);
+        var c2 = bin.i2hex(buf[i + 2]);
+        var c3 = bin.i2hex(buf[i + 3]);
+        if ((c1 != '') && (c2 != '') && (c3 != '')) {
+          uri = '%' + c0 + '%' + c1 + '%' + c2 + '%' + c3;
+        }
+        skip = 3;
+        pd = '  ';
+      } else if ((code & 0xE0) == 0xE0) {
+        var c0 = bin.i2hex(buf[i]);
+        var c1 = bin.i2hex(buf[i + 1]);
+        var c2 = bin.i2hex(buf[i + 2]);
+        if ((c1 != '') && (c2 != '')) {
+          uri = '%' + c0 + '%' + c1 + '%' + c2;
+        }
+        skip = 2;
+        pd = ' ';
+      } else if ((code & 0xC0) == 0xC0) {
+        var c0 = bin.i2hex(buf[i]);
+        var c1 = bin.i2hex(buf[i + 1]);
+        if ((c1 != '') && (c2 != '')) {
+          uri = '%' + c0 + '%' + c1;
+        }
+        skip = 1;
       }
-      skip = 3;
-      pd = '  ';
-    } else if ((code & 0xE0) == 0xE0) {
-      var c0 = bin.i2hex(buf[i]);
-      var c1 = bin.i2hex(buf[i + 1]);
-      var c2 = bin.i2hex(buf[i + 2]);
-      if ((c1 != '') && (c2 != '')) {
-        uri = '%' + c0 + '%' + c1 + '%' + c2;
-      }
-      skip = 2;
-      pd = ' ';
-    } else if ((code & 0xC0) == 0xC0) {
-      var c0 = bin.i2hex(buf[i]);
-      var c1 = bin.i2hex(buf[i + 1]);
-      if ((c1 != '') && (c2 != '')) {
-        uri = '%' + c0 + '%' + c1;
-      }
-      skip = 1;
-    }
 
-    try {
-      if (uri) {
-        var c = decodeURI(uri);
-        b += c + pd;
-        i += skip;
-        continue;
-      }
-    } catch(e) {}
+      try {
+        if (uri) {
+          var c = decodeURI(uri);
+          b += c + pd;
+          i += skip;
+          continue;
+        }
+      } catch(e) {}
+    }
 
     switch (code) {
       case 0x0A:
@@ -515,10 +546,14 @@ bin.toBin = function(v) {
   return ('0000000' + v.toString(2)).slice(-8);
 };
 
-bin.formatB64 = function(d) {
-  var a = d.split(',');
-  var b64 = bin.inertNewline(a[1]);
-  var r = a[0] + ',\n' + b64;
+bin.formatB64 = function(s) {
+  var isDataUrl = (s.match(/,/) ? true : false);
+  if (isDataUrl) {
+    var a = s.split(',');
+    s = a[1];
+  }
+  var b64 = bin.inertNewline(s);
+  var r = (isDataUrl ? (a[0] + ',\n') : '') + b64;
   return r;
 };
 
@@ -664,6 +699,7 @@ bin.extractBinTextPart = function(mode, s) {
 };
 
 bin.onInput = function() {
+  bin.buf = null;
   bin.forceNewline();
   if (!bin.auto) return;
   bin.showBinInfo();
