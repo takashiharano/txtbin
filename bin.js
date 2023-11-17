@@ -48,8 +48,18 @@ bin.switchRadix = function(mode, buf) {
     case 'bin':
       r = bin.getHexDump(mode, buf);
       break;
+    case 'bsb64':
+      var n = $el('#n').value | 0;
+      var b64 = util.BSB64.encode(buf, n);
+      r = bin.formatB64(b64);
+      break;
+    case 'b64s':
+      var key = $el('#key').value;
+      b64 = util.encodeBase64s(buf, key);
+      r = bin.formatB64(b64);
+      break;
     default:
-      var b64 = util.encodeBase64(buf, true);
+      b64 = util.encodeBase64(buf, true);
       r = bin.formatB64(b64);
   }
   bin.drawBinInfo(buf);
@@ -66,21 +76,6 @@ bin.setMode = function(mode, onlyMode) {
     if (bin.buf) {
       bin.switchRadix(mode, bin.buf);
     }
-  }
-
-  $el('#key-label').addClass('label-disabled');
-  $el('#key').disabled = true;
-  $el('#key').addClass('input-disabled');
-  $el('#n-label').addClass('label-disabled');
-  $el('#n').disabled = true;
-
-  if (mode == 'b64s') {
-    $el('#key-label').removeClass('label-disabled');
-    $el('#key').disabled = false;
-    $el('#key').removeClass('input-disabled');
-  } else if (mode == 'bsb64') {
-    $el('#n-label').removeClass('label-disabled');
-    $el('#n').disabled = false;
   }
 
   if (onlyMode) return;
@@ -101,7 +96,7 @@ bin.activeMode = function(mode) {
 };
 
 bin.setDndHandlerMode = function(mode) {
-  if ((mode == 'b64') || (mode == 'b64s') || (mode == 'bsb64')) {
+  if (mode == 'b64') {
     bin.dndHandler.setMode('data');
   } else {
     bin.dndHandler.setMode('blob');
@@ -116,6 +111,18 @@ bin.dump = function(s) {
     case 'bin':
       var buf = new Uint8Array(s);
       r = bin.getHexDump(mode, buf);
+      break;
+    case 'bsb64':
+      var n = $el('#n').value | 0;
+      var buf = new Uint8Array(s);
+      var b64 = util.BSB64.encode(buf, n);
+      r = bin.formatB64(b64);
+      break;
+    case 'b64s':
+      var key = $el('#key').value;
+      buf = new Uint8Array(s);
+      b64 = util.encodeBase64s(buf, key);
+      r = bin.formatB64(b64);
       break;
     default:
       buf = bin.decodeBase64(s);
