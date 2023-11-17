@@ -10,6 +10,34 @@ bin.CHR_LF_S = '<span style="color:#0f0" class="cc">' + bin.CHR_LF + '</span>';
 bin.CHR_CR_S = '<span style="color:#f00" class="cc">' + bin.CHR_CR + '</span>';
 bin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
 
+bin.FILETYPES = {
+  bmp: {head: '42 4D', mime: 'image/bmp', ext: 'bmp'},
+  cab: {head: '4D 53 43 46 00 00 00 00', mime: 'application/vnd.ms-cab-compressed', ext: 'cab'},
+  class: {head: 'CA FE BA BE', mime: 'application/octet-stream', ext: 'class'},
+  exe: {head: '4D 5A', mime: 'application/x-msdownload', ext: 'exe'},
+  gif: {head: '47 49 46 38', mime: 'image/gif', ext: 'gif'},
+  gz: {head: '1F 8B', mime: 'application/gzip', ext: 'gz'},
+  html: {head: '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C', mime: 'text/html', ext: 'html'},
+  jpg: {head: 'FF D8', mime: 'image/jpeg', ext: 'jpg'},
+  mov: {head: 'xx xx xx xx 6D 6F 6F 76', mime: 'video/quicktime', ext: 'mov'},
+  mp3: {head: '49 44 33', mime: 'audio/mpeg', ext: 'mp3'},
+  mp4: {head: 'xx xx xx xx 66 74 79 70', mime: 'video/mp4', ext: 'mp4'},
+  msg: {head: 'D0 CF 11 E0 A1 B1 1A E1', mime: 'application/octet-stream', ext: 'msg'},
+  pdf: {head: '25 50 44 46 2D', mime: 'application/pdf', ext: 'pdf'},
+  png: {head: '89 50 4E 47 0D 0A 1A 0A 00', mime: 'image/png', ext: 'png'},
+  txt_utf8_bom: {head: 'EF BB BF', mime: 'text/plain', ext: 'txt', subinfo: 'UTF-8 BOM'},
+  txt_utf16be_bom: {head: 'FE FF', mime: 'text/plain', ext: 'txt', subinfo: 'UTF-16BE BOM'},
+  txt_utf16le_bom: {head: 'FF FE', mime: 'text/plain', ext: 'txt', subinfo: 'UTF-16LE BOM'},
+  wav: {head: '52 49 46 46 xx xx xx xx 57 41 56 45 66 6D 74', mime: 'audio/wav', ext: 'wav'},
+  webp: {head: '52 49 46 46 xx xx xx xx 57 45 42 50', mime: 'image/webp', ext: 'webp'},
+  xml: {head: '3C 3F 78 6D 6C 20', mime: 'text/xml', ext: 'xml'},
+  zip: {head: '50 4B', mime: 'application/x-zip-compressed', ext: 'zip'},
+
+  xlsx: {hexptn: '77 6F 72 6B 62 6F 6F 6B 2E 78 6D 6C', mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', ext: 'xlsx', supertype: 'zip'},
+  docx: {hexptn: '77 6F 72 64 2F 64 6F 63 75 6D 65 6E 74 2E 78 6D 6C', mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', ext: 'docx', supertype: 'zip'},
+  pptx: {hexptn: '70 70 74 2F 70 72 65 73 65 6E 74 61 74 69 6F 6E 2E 78 6D 6C', mime: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', ext: 'pptx', supertype: 'zip'}
+};
+
 bin.auto = true;
 bin.buf = null;
 
@@ -165,6 +193,10 @@ bin.buildSizeInfoString = function(buf) {
 
 bin.getBinTypeInfo = function(b) {
   var tp = bin.getFileType(b);
+  if (tp['mime'] == 'application/x-zip-compressed') {
+    var w = bin.getZipContentType(b);
+    if (w) tp = w;
+  }
   var s = '.' + tp['ext'] + '  ' + tp['mime'];
   if (tp['subinfo']) s += '  ' + tp['subinfo'];
   if (tp['info']) s += '  ' + tp['info'];
@@ -513,13 +545,24 @@ bin.isSjis2 = function(b) {
   return (((b >= 0x40) && (b <= 0xFC)) && (b != 0x7F));
 };
 
+bin.getZipContentType = function(buf) {
+  for (var k in bin.FILETYPES) {
+    var ftype = bin.FILETYPES[k];
+    var hexptn = ftype['hexptn'];
+    if (ftype['supertype'] == 'zip') {
+      if (bin.hasBinaryPattern(buf, hexptn)) return ftype;
+    }
+  }
+  return null;
+};
+
 bin.isIso2022jp = function(buf, pos) {
   var ESCSEQ_ASCII = '1B 28 42';
   var ESCSEQ_LATIN = '1B 28 4A';
   var ESCSEQ_JA = '1B 24 42';
-  if (bin.hasBinaryPattern(buf, pos, ESCSEQ_ASCII)) return true;
-  if (bin.hasBinaryPattern(buf, pos, ESCSEQ_LATIN)) return true;
-  if (bin.hasBinaryPattern(buf, pos, ESCSEQ_JA)) return true;
+  if (bin._hasBinaryPattern(buf, pos, ESCSEQ_ASCII)) return true;
+  if (bin._hasBinaryPattern(buf, pos, ESCSEQ_LATIN)) return true;
+  if (bin._hasBinaryPattern(buf, pos, ESCSEQ_JA)) return true;
   return false;
 };
 
@@ -537,7 +580,16 @@ bin.isEucByte = function(b) {
   if ((b & 0x80) == 0x80) return true;
 };
 
-bin.hasBinaryPattern = function(buf, pos, binPattern) {
+bin.hasBinaryPattern = function(buf, binPattern) {
+  var ptn = binPattern.split(' ');
+  if (buf.length < ptn.length) return false;
+  for (var i = 0; i < buf.length; i++) {
+    if (bin._hasBinaryPattern(buf, i, binPattern)) return true;
+  }
+  return false;
+};
+
+bin._hasBinaryPattern = function(buf, pos, binPattern) {
   var ptn = binPattern.split(' ');
   if (buf.length < ptn.length) return false;
   for (var i = 0; i < ptn.length; i++) {
@@ -571,29 +623,7 @@ bin.inertNewline = function(s, n) {
 };
 
 bin.getFileType = function(b) {
-  var filetypes = {
-    bmp: {pattern: '42 4D', mime: 'image/bmp', ext: 'bmp'},
-    cab: {pattern: '4D 53 43 46 00 00 00 00', mime: 'application/vnd.ms-cab-compressed', ext: 'cab'},
-    class: {pattern: 'CA FE BA BE', mime: 'application/octet-stream', ext: 'class'},
-    exe: {pattern: '4D 5A', mime: 'application/x-msdownload', ext: 'exe'},
-    gif: {pattern: '47 49 46 38', mime: 'image/gif', ext: 'gif'},
-    gz: {pattern: '1F 8B', mime: 'application/gzip', ext: 'gz'},
-    html: {pattern: '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C', mime: 'text/html', ext: 'html'},
-    jpg: {pattern: 'FF D8', mime: 'image/jpeg', ext: 'jpg'},
-    mov: {pattern: 'xx xx xx xx 6D 6F 6F 76', mime: 'video/quicktime', ext: 'mov'},
-    mp3: {pattern: '49 44 33', mime: 'audio/mpeg', ext: 'mp3'},
-    mp4: {pattern: 'xx xx xx xx 66 74 79 70', mime: 'video/mp4', ext: 'mp4'},
-    msg: {pattern: 'D0 CF 11 E0 A1 B1 1A E1', mime: 'application/octet-stream', ext: 'msg'},
-    pdf: {pattern: '25 50 44 46 2D', mime: 'application/pdf', ext: 'pdf'},
-    png: {pattern: '89 50 4E 47 0D 0A 1A 0A 00', mime: 'image/png', ext: 'png'},
-    txt_utf8_bom: {pattern: 'EF BB BF', mime: 'text/plain', ext: 'txt', subinfo: 'UTF-8 BOM'},
-    txt_utf16be_bom: {pattern: 'FE FF', mime: 'text/plain', ext: 'txt', subinfo: 'UTF-16BE BOM'},
-    txt_utf16le_bom: {pattern: 'FF FE', mime: 'text/plain', ext: 'txt', subinfo: 'UTF-16LE BOM'},
-    wav: {pattern: '52 49 46 46 xx xx xx xx 57 41 56 45 66 6D 74', mime: 'audio/wav', ext: 'wav'},
-    webp: {pattern: '52 49 46 46 xx xx xx xx 57 45 42 50', mime: 'image/webp', ext: 'webp'},
-    xml: {pattern: '3C 3F 78 6D 6C 20', mime: 'text/xml', ext: 'xml'},
-    zip: {pattern: '50 4B', mime: 'application/x-zip-compressed', ext: 'zip'}
-  }
+  var filetypes = bin.FILETYPES;
   var tp = {
     mime: '',
     ext: '',
@@ -604,7 +634,9 @@ bin.getFileType = function(b) {
   var ext = 'txt';
   for (var k in filetypes) {
     ptn = filetypes[k]
-    if (bin.hasBinaryPattern(b, 0, ptn['pattern'])) {
+    headhex = ptn['head'];
+    if (!headhex) continue;
+    if (bin._hasBinaryPattern(b, 0, headhex)) {
       mime = ptn['mime'];
       ext = ptn['ext'];
       if ('subinfo' in ptn) {
