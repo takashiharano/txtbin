@@ -10,12 +10,16 @@ bin.CHR_LF_S = '<span style="color:#0f0" class="cc">' + bin.CHR_LF + '</span>';
 bin.CHR_CR_S = '<span style="color:#f00" class="cc">' + bin.CHR_CR + '</span>';
 bin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
 bin.DEFAULT_FONT_SIZE = 14;
+bin.DEFAULT_MODE = 'auto';
+bin.DEFAULT_MODE_ACTIVE = 'hex';
 
 bin.ENCODING_NAME = {
   'ascii': 'ASCII',
   'utf8': 'UTF-8',
   'utf8_bom': 'UTF-8 BOM',
   'utf16': 'UTF-16 (?)',
+  'utf16le': 'UTF-16LE',
+  'utf16be': 'UTF-16BE',
   'utf16be_bom': 'UTF-16BE BOM',
   'utf16le_bom': 'UTF-16LE BOM',
   'iso2022jp': 'ISO-2022-JP',
@@ -63,8 +67,12 @@ $onReady = function() {
   };
   bin.dndHandler = util.addDndHandler('#src', bin.onDnd, opt);
 
-  bin.setMode('auto');
-  bin.activeMode('hex');
+  var mode = util.getQuery('mode');
+  if (!mode) mode = bin.DEFAULT_MODE;
+  bin.setMode(mode);
+  if (mode == 'auto') {
+    bin.activeMode(bin.DEFAULT_MODE_ACTIVE);
+  }
 
   var fontSize = util.getQuery('fontsize') | 0;
   if (!fontSize) fontSize = bin.DEFAULT_FONT_SIZE;
@@ -489,6 +497,13 @@ bin.dumpAscii = function(pos, buf) {
 
 bin.getEncoding = function(buf) {
   var type = 'ascii';
+
+  if (bin.isUtf16Le(buf)) {
+    return 'utf16le';
+  } else if (bin.isUtf16Be(buf)) {
+    return 'utf16be';
+  }
+
   var b = '';
   for (var i = 0; i < buf.length; i++) {
     var code = buf[i];
@@ -613,6 +628,18 @@ bin.__hasBinaryPattern = function(buf, pos, binPattern) {
 
 bin.isAscii = function(b) {
   return ((b >= 0) && (b <= 0x7F));
+};
+
+bin.isUtf16Le = function(buf) {
+  if (buf.length < 2) return false;
+  if ((buf[0] != 0x00) && (buf[1] == 0x00)) return true;
+  return false;
+};
+
+bin.isUtf16Be = function(buf) {
+  if (buf.length < 2) return false;
+  if ((buf[0] == 0x00) && (buf[1] != 0x00)) return true;
+  return false;
 };
 
 bin.isSjis = function(buf, pos, exclAscii) {
