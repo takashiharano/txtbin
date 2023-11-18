@@ -10,6 +10,18 @@ bin.CHR_LF_S = '<span style="color:#0f0" class="cc">' + bin.CHR_LF + '</span>';
 bin.CHR_CR_S = '<span style="color:#f00" class="cc">' + bin.CHR_CR + '</span>';
 bin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
 
+bin.ENCODING_NAME = {
+  'ascii': 'ASCII',
+  'utf8': 'UTF-8',
+  'utf8_bom': 'UTF-8 BOM',
+  'utf16': 'UTF-16 (?)',
+  'utf16be_bom': 'UTF-16BE BOM',
+  'utf16le_bom': 'UTF-16LE BOM',
+  'iso2022jp': 'ISO-2022-JP',
+  'sjis': 'Shift_JIS',
+  'euc_jp': 'EUC-JP'
+};
+
 bin.FILETYPES = {
   bmp: {head: '42 4D', mime: 'image/bmp', ext: 'bmp'},
   cab: {head: '4D 53 43 46 00 00 00 00', mime: 'application/vnd.ms-cab-compressed', ext: 'cab'},
@@ -20,22 +32,23 @@ bin.FILETYPES = {
   html: {head: '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C', mime: 'text/html', ext: 'html'},
   jpg: {head: 'FF D8', mime: 'image/jpeg', ext: 'jpg'},
   mov: {head: 'xx xx xx xx 6D 6F 6F 76', mime: 'video/quicktime', ext: 'mov'},
-  mp3: {head: '49 44 33', mime: 'audio/mpeg', ext: 'mp3'},
+  mp3: {head: ['FF FA', 'FF FB', '49 44 33'], mime: 'audio/mpeg', ext: 'mp3'},
   mp4: {head: 'xx xx xx xx 66 74 79 70', mime: 'video/mp4', ext: 'mp4'},
   msg: {head: 'D0 CF 11 E0 A1 B1 1A E1', mime: 'application/octet-stream', ext: 'msg'},
   pdf: {head: '25 50 44 46 2D', mime: 'application/pdf', ext: 'pdf'},
   png: {head: '89 50 4E 47 0D 0A 1A 0A 00', mime: 'image/png', ext: 'png'},
-  txt_utf8_bom: {head: 'EF BB BF', mime: 'text/plain', ext: 'txt', subinfo: 'UTF-8 BOM'},
-  txt_utf16be_bom: {head: 'FE FF', mime: 'text/plain', ext: 'txt', subinfo: 'UTF-16BE BOM'},
-  txt_utf16le_bom: {head: 'FF FE', mime: 'text/plain', ext: 'txt', subinfo: 'UTF-16LE BOM'},
+  txt_utf8_bom: {head: 'EF BB BF', mime: 'text/plain', ext: 'txt', encoding: 'utf8_bom'},
+  txt_utf16be_bom: {head: 'FE FF', mime: 'text/plain', ext: 'txt', encoding: 'utf16be_bom'},
+  txt_utf16le_bom: {head: 'FF FE', mime: 'text/plain', ext: 'txt', encoding: 'utf16le_bom'},
   wav: {head: '52 49 46 46 xx xx xx xx 57 41 56 45 66 6D 74', mime: 'audio/wav', ext: 'wav'},
   webp: {head: '52 49 46 46 xx xx xx xx 57 45 42 50', mime: 'image/webp', ext: 'webp'},
   xml: {head: '3C 3F 78 6D 6C 20', mime: 'text/xml', ext: 'xml'},
   zip: {head: '50 4B', mime: 'application/x-zip-compressed', ext: 'zip'},
-
   xlsx: {hexptn: '77 6F 72 6B 62 6F 6F 6B 2E 78 6D 6C', mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', ext: 'xlsx', supertype: 'zip'},
   docx: {hexptn: '77 6F 72 64 2F 64 6F 63 75 6D 65 6E 74 2E 78 6D 6C', mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', ext: 'docx', supertype: 'zip'},
-  pptx: {hexptn: '70 70 74 2F 70 72 65 73 65 6E 74 61 74 69 6F 6E 2E 78 6D 6C', mime: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', ext: 'pptx', supertype: 'zip'}
+  pptx: {hexptn: '70 70 74 2F 70 72 65 73 65 6E 74 61 74 69 6F 6E 2E 78 6D 6C', mime: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', ext: 'pptx', supertype: 'zip'},
+  war: {hexptn: '57 45 42 2D 49 4E 46 2F', mime: 'application/x-zip', ext: 'war', supertype: 'zip'},
+  jar: {hexptn: '4D 45 54 41 2D 49 4E 46 2F', mime: 'application/java-archive', ext: 'jar', supertype: 'zip'}
 };
 
 bin.auto = true;
@@ -198,10 +211,18 @@ bin.getBinTypeInfo = function(b) {
     if (w) tp = w;
   }
   var s = '.' + tp['ext'] + '  ' + tp['mime'];
-  if (tp['subinfo']) s += '  ' + tp['subinfo'];
-  if (tp['info']) s += '  ' + tp['info'];
+  if (tp['encoding']) s += '  ' + bin.getEncodingName(tp['encoding']);
+  if (tp['bin_detail']) s += '  ' + tp['bin_detail'];
   return s;
 }
+
+bin.getEncodingName = function(id) {
+  var name = '';
+  if (id in bin.ENCODING_NAME) {
+    name = bin.ENCODING_NAME[id];
+  };
+  return name;
+};
 
 bin.getHashInfo = function(b) {
   var s = 'SHA-1   : ' + bin.getSHA('SHA-1', b, 1) + '\n';
@@ -462,7 +483,7 @@ bin.dumpAscii = function(pos, buf) {
 };
 
 bin.getEncoding = function(buf) {
-  var type = 'ASCII';
+  var type = 'ascii';
   var b = '';
   for (var i = 0; i < buf.length; i++) {
     var code = buf[i];
@@ -493,36 +514,96 @@ bin.getEncoding = function(buf) {
       }
       skip = 1;
     } else if (code > 0x7F) {
-      type = 'UTF-16?';
+      type = 'utf16';
     } else if (code == 0x00) {
-      type = 'UTF-16?';
+      type = 'utf16';
     }
 
     try {
       if (uri) {
         var c = decodeURI(uri);
         i += skip;
-        type = 'UTF-8';
+        type = 'utf8';
         break;
       }
     } catch(e) {}
 
     if (bin.isSjis(buf, i, true)) {
-      type = 'Shift_JIS';
+      type = 'sjis';
       break;
     }
 
     if (bin.isIso2022jp(buf, i)) {
-      type = 'ISO-2022-JP';
+      type = 'iso2022jp';
       break;
     }
 
     if (bin.isEuc(buf, i, true)) {
-      type = 'EUC-JP';
+      type = 'euc_jp';
       break;
     }
   }
   return type;
+};
+
+bin.getFileType = function(b) {
+  var filetypes = bin.FILETYPES;
+  var ftype = {
+    mime: 'text/plain',
+    ext: 'txt',
+    encoding: null,
+    info: null
+  };
+
+  for (var k in filetypes) {
+    var tp = filetypes[k]
+    if (!tp['head']) continue;
+    if (bin._hasBinaryPattern(b, 0, tp['head'])) {
+      ftype = tp;
+      break;
+    }
+  }
+
+  if ((ftype['ext'] == 'txt') && (!ftype['encoding'])) {
+    ftype['encoding'] = bin.getEncoding(b);
+  } else {
+    var binDetail = bin.getBinDetail(ftype['ext'], b);
+    if (binDetail) ftype['bin_detail'] = binDetail;
+  }
+
+  return ftype;
+};
+
+bin.hasBinaryPattern = function(buf, binPattern) {
+  var ptn = binPattern.split(' ');
+  if (buf.length < ptn.length) return false;
+  for (var i = 0; i < buf.length; i++) {
+    if (bin._hasBinaryPattern(buf, i, binPattern)) return true;
+  }
+  return false;
+};
+
+bin._hasBinaryPattern = function(buf, pos, binPattern) {
+  if (binPattern instanceof Array) {
+    for (var i = 0; i < binPattern.length; i++) {
+      if (bin.__hasBinaryPattern(buf, pos, binPattern[i])) return true;
+    }
+  } else {
+    return bin.__hasBinaryPattern(buf, pos, binPattern);
+  }
+  return false;
+};
+
+bin.__hasBinaryPattern = function(buf, pos, binPattern) {
+  var ptn = binPattern.split(' ');
+  if (buf.length < ptn.length) return false;
+  for (var i = 0; i < ptn.length; i++) {
+    var hex = ptn[i];
+    if (hex == 'xx') continue;
+    var v = +('0x' + hex);
+    if (v != buf[i + pos]) return false;
+  }
+  return true;
 };
 
 bin.isAscii = function(b) {
@@ -543,17 +624,6 @@ bin.isSjis1x = function(b) {
 };
 bin.isSjis2 = function(b) {
   return (((b >= 0x40) && (b <= 0xFC)) && (b != 0x7F));
-};
-
-bin.getZipContentType = function(buf) {
-  for (var k in bin.FILETYPES) {
-    var ftype = bin.FILETYPES[k];
-    var hexptn = ftype['hexptn'];
-    if (ftype['supertype'] == 'zip') {
-      if (bin.hasBinaryPattern(buf, hexptn)) return ftype;
-    }
-  }
-  return null;
 };
 
 bin.isIso2022jp = function(buf, pos) {
@@ -580,25 +650,15 @@ bin.isEucByte = function(b) {
   if ((b & 0x80) == 0x80) return true;
 };
 
-bin.hasBinaryPattern = function(buf, binPattern) {
-  var ptn = binPattern.split(' ');
-  if (buf.length < ptn.length) return false;
-  for (var i = 0; i < buf.length; i++) {
-    if (bin._hasBinaryPattern(buf, i, binPattern)) return true;
+bin.getZipContentType = function(buf) {
+  for (var k in bin.FILETYPES) {
+    var ftype = bin.FILETYPES[k];
+    var hexptn = ftype['hexptn'];
+    if (ftype['supertype'] == 'zip') {
+      if (bin.hasBinaryPattern(buf, hexptn)) return ftype;
+    }
   }
-  return false;
-};
-
-bin._hasBinaryPattern = function(buf, pos, binPattern) {
-  var ptn = binPattern.split(' ');
-  if (buf.length < ptn.length) return false;
-  for (var i = 0; i < ptn.length; i++) {
-    var hex = ptn[i];
-    if (hex == 'xx') continue;
-    var v = +('0x' + hex);
-    if (v != buf[i + pos]) return false;
-  }
-  return true;
+  return null;
 };
 
 bin.toBin = function(v) {
@@ -622,81 +682,58 @@ bin.inertNewline = function(s, n) {
   return r;
 };
 
-bin.getFileType = function(b) {
-  var filetypes = bin.FILETYPES;
-  var tp = {
-    mime: '',
-    ext: '',
-    subinfo: null,
-    info: null
-  };
-  var mime = 'text/plain';
-  var ext = 'txt';
-  for (var k in filetypes) {
-    ptn = filetypes[k]
-    headhex = ptn['head'];
-    if (!headhex) continue;
-    if (bin._hasBinaryPattern(b, 0, headhex)) {
-      mime = ptn['mime'];
-      ext = ptn['ext'];
-      if ('subinfo' in ptn) {
-        tp = bin.copyObjField(ptn, tp, 'subinfo');
-      }
-      break;
-    }
-  }
-  tp['mime'] = mime;
-  tp['ext'] = ext;
-  if (!tp['subinfo']) {
-    var binInfo = bin.getBinInfo(ext, b);
-    if (binInfo) tp['info'] = binInfo;
-  }
-  return tp;
-};
-
 bin.copyObjField = function(src, dest, key) {
   if (key in src) dest[key] = src[key];
   return dest;
 };
 
-bin.getBinInfo = function(type, b) {
+bin.getBinDetail = function(type, b) {
   var r = '';
-  if (type == 'txt') {
-    var encoding = bin.getEncoding(b);
-    r = encoding;
-  } else if (type == 'exe') {
-    var pe = -1;
-    var len = 512;
-    for (var i = 0; i < len; i++) {
-      if (i + 3 >= len) break;
-      var ptn = bin.scanBin(b, i, 4);
-      if (ptn == 0x50450000) {
-        pe = i;break;
-      }
-    }
-    var v = 0;
-    if ((pe >= 0) && (pe + 5 < len)) {
-      v = bin.scanBin(b, pe + 4, 2);
-    }
-    var arch = '';
-    if (v == 0x6486) {
-      arch = 'x86-64 (64bit)';
-    } else if (v == 0x4C01) {
-      arch = 'x86 (32bit)';
-    }
-    if (arch) r = 'Arch: ' + arch;
+  if (type == 'exe') {
+    var a = bin.getExeArch(b);
+    if (a) r = 'Arch: ' + a;
   } else if (type == 'class') {
-    var v = b[7];
-    var j;
-    if (v <= 48) {
-      j = '1.' + v - 44;
-    } else {
-      j = v - 44;
-    }
-    if (j) r = 'Java version: Java SE ' + j + ' = ' + v + ' (' + bin.toHex(v, true, '0x', 2) + ')';
+    var j = bin.getJavaClassVersion(b);
+    if (j) r = j;
   }
   return r;
 };
+
+bin.getExeArch = function(b) {
+  var pe = -1;
+  var len = 512;
+  for (var i = 0; i < len; i++) {
+    if (i + 3 >= len) break;
+    var ptn = bin.scanBin(b, i, 4);
+    if (ptn == 0x50450000) {
+      pe = i;break;
+    }
+  }
+  var v = 0;
+  if ((pe >= 0) && (pe + 5 < len)) {
+    v = bin.scanBin(b, pe + 4, 2);
+  }
+  var arch = '';
+  if (v == 0x6486) {
+    arch = 'x86-64 (64bit)';
+  } else if (v == 0x4C01) {
+    arch = 'x86 (32bit)';
+  }
+  return arch;
+};
+
+bin.getJavaClassVersion = function(b) {
+  var v = b[7];
+  var j;
+  if (v <= 48) {
+    j = '1.' + v - 44;
+  } else {
+    j = v - 44;
+  }
+  var s = 'Java version: Java SE ' + j + ' = ' + v + ' (' + bin.toHex(v, true, '0x', 2) + ')';
+  return s;
+};
+
 bin.scanBin = function(b, p, ln) {
   var upto = 6;
   if ((p + (ln - 1) >= b.length) || (ln > upto)) return -1;

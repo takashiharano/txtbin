@@ -15,6 +15,35 @@ import bsb64
 BASE_FILE_NAME = 'a'
 MAX_SIZE = 20 * 1024 * 1024
 
+FILETYPES = {
+    'bmp': {'head': '42 4D', 'mime': 'image/bmp', 'ext': 'bmp'},
+    'cab': {'head': '4D 53 43 46 00 00 00 00', 'mime': 'application/vnd.ms-cab-compressed', 'ext': 'cab'},
+    'class': {'head': 'CA FE BA BE', 'mime': 'application/octet-stream', 'ext': 'class'},
+    'exe': {'head': '4D 5A', 'mime': 'application/x-msdownload', 'ext': 'exe'},
+    'gif': {'head': '47 49 46 38', 'mime': 'image/gif', 'ext': 'gif'},
+    'gz': {'head': '1F 8B', 'mime': 'application/gzip', 'ext': 'gz'},
+    'html': {'head': '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C', 'mime': 'text/html', 'ext': 'html'},
+    'jpg': {'head': 'FF D8', 'mime': 'image/jpeg', 'ext': 'jpg'},
+    'mov': {'head': 'xx xx xx xx 6D 6F 6F 76', 'mime': 'video/quicktime', 'ext': 'mov'},
+    'mp3': {'head': ['FF FA', 'FF FB', '49 44 33'], 'mime': 'audio/mpeg', 'ext': 'mp3'},
+    'mp4': {'head': 'xx xx xx xx 66 74 79 70', 'mime': 'video/mp4', 'ext': 'mp4'},
+    'msg': {'head': 'D0 CF 11 E0 A1 B1 1A E1', 'mime': 'application/octet-stream', 'ext': 'msg'},
+    'pdf': {'head': '25 50 44 46 2D', 'mime': 'application/pdf', 'ext': 'pdf'},
+    'png': {'head': '89 50 4E 47 0D 0A 1A 0A 00', 'mime': 'image/png', 'ext': 'png'},
+    'txt_utf8_bom': {'head': 'EF BB BF', 'mime': 'text/plain', 'ext': 'txt', 'encoding': 'utf8_bom'},
+    'txt_utf16be_bom': {'head': 'FE FF', 'mime': 'text/plain', 'ext': 'txt', 'encoding': 'utf16be_bom'},
+    'txt_utf16le_bom': {'head': 'FF FE', 'mime': 'text/plain', 'ext': 'txt', 'encoding': 'utf16le_bom'},
+    'wav': {'head': '52 49 46 46 xx xx xx xx 57 41 56 45 66 6D 74', 'mime': 'audio/wav', 'ext': 'wav'},
+    'webp': {'head': '52 49 46 46 xx xx xx xx 57 45 42 50', 'mime': 'image/webp', 'ext': 'webp'},
+    'xml': {'head': '3C 3F 78 6D 6C 20', 'mime': 'text/xml', 'ext': 'xml'},
+    'zip': {'head': '50 4B', 'mime': 'application/x-zip-compressed', 'ext': 'zip'},
+    'xlsx': {'hexptn': '77 6F 72 6B 62 6F 6F 6B 2E 78 6D 6C', 'mime': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'ext': 'xlsx', 'supertype': 'zip'},
+    'docx': {'hexptn': '77 6F 72 64 2F 64 6F 63 75 6D 65 6E 74 2E 78 6D 6C', 'mime': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'ext': 'docx', 'supertype': 'zip'},
+    'pptx': {'hexptn': '70 70 74 2F 70 72 65 73 65 6E 74 61 74 69 6F 6E 2E 78 6D 6C', 'mime': 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'ext': 'pptx', 'supertype': 'zip'},
+    'war': {'hexptn': '57 45 42 2D 49 4E 46 2F', 'mime': 'application/x-zip', 'ext': 'war', 'supertype': 'zip'},
+    'jar': {'hexptn': '4D 45 54 41 2D 49 4E 46 2F', 'mime': 'application/java-archive', 'ext': 'jar', 'supertype': 'zip'}
+}
+
 def deccode_and_send_file(mode, s):
     func_name = 'dec_' + mode
     fn = None
@@ -24,15 +53,15 @@ def deccode_and_send_file(mode, s):
 
     try:
         b = fn(s)
-        ft = get_file_type(b)
-        ext = ft['ext']
-        info = ''
-        if ft['info'] is not None:
-            info = '-' + ft['info']
-        filename = BASE_FILE_NAME + info + '.' + ext
+        ftype = get_file_type(b)
+        ext = ftype['ext']
+        encoding = ''
+        if 'encoding' in ftype and ftype['encoding'] is not None:
+            encoding = '-' + ftype['encoding']
+        filename = BASE_FILE_NAME + encoding + '.' + ext
 
     except Exception as e:
-        txt = 'ERROR: ' + str(e)
+        txt = 'ERROR: mode=' + mode + '\n' + str(e)
         b = txt.encode()
         filename='error.txt'
 
@@ -47,7 +76,6 @@ def deccode_and_send_file(mode, s):
     etag = timestamp[0] + '.' + (timestamp[1] + '00000')[:6]
 
     util.send_binary(b, filename=filename, etag=etag)
-
 
 def extract_bintext_part(mode, s):
   unit = 8 if mode == 'bin' else 2
@@ -109,68 +137,71 @@ def dec_bsb64(s):
     b = bsb64.decode(s, n)
     return b
 
-def get_ext(b):
-    ft = get_file_type(b)
-    if ft == '':
-        ext = 'txt'
-    else:
-        ext = ft
-    return ext
-
 def get_file_type(b):
-    filetypes = {
-        'bmp': '42 4D',
-        'cab': '4D 53 43 46 00 00 00 00',
-        'class': 'CA FE BA BE',
-        'exe': '4D 5A',
-        'gif': '47 49 46 38',
-        'gz': '1F 8B',
-        'html': '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C',
-        'jpg': 'FF D8',
-        'mov': 'xx xx xx xx 6D 6F 6F 76',
-        'mp3': '49 44 33',
-        'mp4': 'xx xx xx xx 66 74 79 70',
-        'msg': 'D0 CF 11 E0 A1 B1 1A E1',
-        'pdf': '25 50 44 46 2D',
-        'png': '89 50 4E 47 0D 0A 1A 0A 00',
-        'txt-utf8-bom': 'EF BB BF',
-        'txt-utf16be-bom': 'FE FF',
-        'txt-utf16le-bom': 'FF FE',
-        'wav': '52 49 46 46 xx xx xx xx 57 41 56 45 66 6D 74',
-        'webp': '52 49 46 46 xx xx xx xx 57 45 42 50',
-        'xml': '3C 3F 78 6D 6C 20',
-        'zip': '50 4B'
-    }
-
-    a = bytearray(b)
-
     tp = {
-        'ext': 'txt',
-        'info': None
-    }
-    for k in filetypes:
-        ptn = filetypes[k]
-        if match_header(ptn, a):
-            if k.startswith('txt'):
-                tp['ext'] = 'txt'
-                tp['info'] = k[4:]
-            else:
-                tp['ext'] = k
+        'mime': 'text/plain',
+        'ext': 'txt'
+    };
+    mime = 'text/plain'
+    ext = 'txt'
+    for k in FILETYPES:
+        ftype = FILETYPES[k]
+        if 'head' not in ftype:
+            continue
+
+        if _has_binary_pattern(b, 0, ftype['head']):
+            tp = ftype
             break
+
+    if tp['mime'] == 'application/x-zip-compressed':
+        w = get_zip_content_type(b)
+        if w is not None:
+            tp = w
+
     return tp
 
-def match_header(ptn, a):
-    head = ptn.split(' ')
-    if len(a) < len(head):
-        return False
-    for i in range(len(head)):
-        hex = head[i]
+def has_binary_pattern(buf, binptn):
+    ptn = binptn.split(' ')
+    if len(buf) < len(ptn):
+        return False;
+
+    for i in range(len(buf)):
+        if _has_binary_pattern(buf, i, binptn):
+            return True
+
+    return False
+
+def _has_binary_pattern(buf, pos, binptn):
+    if util.typename(binptn) == 'list':
+        for i in range(len(binptn)):
+            if __has_binary_pattern(buf, pos, binptn[i]):
+                return True
+    else:
+        return __has_binary_pattern(buf, pos, binptn)
+    return False;
+
+def __has_binary_pattern(buf, pos, binptn):
+    ptn = binptn.split(' ')
+    if len(buf) < len(ptn):
+        return False;
+    for i in range(len(ptn)):
+        hex = ptn[i]
         if hex == 'xx':
             continue
-        v = int('0x' + hex, 0)
-        if v != a[i]:
+        v = int('0x' + hex, 16)
+        if v != buf[i + pos]:
             return False
     return True
+
+def get_zip_content_type(buf):
+    for k in FILETYPES:
+        ftype = FILETYPES[k]
+        if not 'hexptn' in ftype:
+            continue
+        if ftype['supertype'] == 'zip':
+            if has_binary_pattern(buf, ftype['hexptn']):
+                return ftype
+    return None
 
 def main():
     m = util.get_request_param('mode', '')
