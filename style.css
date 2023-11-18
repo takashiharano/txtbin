@@ -32,6 +32,11 @@ button:hover, input[type="submit"]:hover {
   background: #e0e0e0 !important;
 }
 
+.small-button {
+  height: 18px;
+  font-size: 12px;
+}
+
 #submit-button {
   height: 28px;
 }
@@ -164,12 +169,12 @@ select {
 }
 
 #f1 {
-  height: 100%;
+  height: calc(100% - 40px);
 }
 
 #src {
   width: calc(100% - 17px);
-  height: calc(100% - 10px);
+  height: 100%;
 }
 .pseudo-link {
   color: #0cf;

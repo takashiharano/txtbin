@@ -9,6 +9,7 @@ bin.CHR_CRLF_S = '<span style="color:#0cf" class="cc">' + bin.CHR_CRLF + '</span
 bin.CHR_LF_S = '<span style="color:#0f0" class="cc">' + bin.CHR_LF + '</span>';
 bin.CHR_CR_S = '<span style="color:#f00" class="cc">' + bin.CHR_CR + '</span>';
 bin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
+bin.DEFAULT_FONT_SIZE = 14;
 
 bin.ENCODING_NAME = {
   'ascii': 'ASCII',
@@ -64,6 +65,10 @@ $onReady = function() {
 
   bin.setMode('auto');
   bin.activeMode('hex');
+
+  var fontSize = util.getQuery('fontsize') | 0;
+  if (!fontSize) fontSize = bin.DEFAULT_FONT_SIZE;
+  bin.setFontSize(fontSize);
 
   $el('#src').addEventListener('input', bin.onInput);
   $el('#src').addEventListener('change', bin.onInput);
@@ -935,6 +940,38 @@ bin.submit = function() {
 
 bin.str2arr = function(s) {
   return s.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]|[\s\S]/g) || [];
+};
+
+bin.onFontRangeChanged = function(el) {
+  var v = el.value;
+  bin.setFontSize(v);
+};
+bin.setFontSize = function(v) {
+  var fontSize = v + 'px';
+  $el('#font-range').value = v;
+  $el('#src').style.fontSize = fontSize;
+  $el('#fontsize').innerHTML = fontSize;
+};
+bin.resetFontSize = function() {
+  bin.setFontSize(bin.DEFAULT_FONT_SIZE);
+};
+
+bin.fontFamily = '';
+bin.onFontChanged = function(el) {
+  var v = el.value;
+  bin.fontFamily = v;
+  bin._setFont(v);
+};
+bin._setFont = function(v) {
+  $el('#src').style.fontFamily = v;
+};
+bin.setFont = function(n) {
+  $el('#font').value = n;
+  bin._setFont(n);
+};
+bin.changeFont = function(n) {
+  bin.setFont(n);
+  bin.fontFamily = n;
 };
 
 bin.UTF8 = {};
