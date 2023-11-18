@@ -193,3 +193,7 @@ select {
 .dialog-button {
   min-width: 54px;
 }
+
+.pseudo-link {
+  color: #ade;
+}
