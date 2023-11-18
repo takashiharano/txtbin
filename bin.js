@@ -505,6 +505,7 @@ bin.getEncoding = function(buf) {
   }
 
   var b = '';
+  var notUtf8 = false;
   for (var i = 0; i < buf.length; i++) {
     var code = buf[i];
     var uri = null;
@@ -534,8 +535,10 @@ bin.getEncoding = function(buf) {
       }
       skip = 1;
     } else if (code > 0x7F) {
+      notUtf8 = true;
       type = 'utf16';
     } else if (code == 0x00) {
+      notUtf8 = true;
       type = 'utf16';
     }
 
@@ -563,6 +566,10 @@ bin.getEncoding = function(buf) {
       break;
     }
   }
+
+  if (notUtf8 && (type == 'utf8')) {
+    type = 'bin';
+  }
   return type;
 };
 
@@ -585,7 +592,13 @@ bin.getFileType = function(b) {
   }
 
   if ((ftype['ext'] == 'txt') && (!ftype['encoding'])) {
-    ftype['encoding'] = bin.getEncoding(b);
+    var enc = bin.getEncoding(b);
+    if (enc == 'bin') {
+      ftype['mime'] = 'application/octet-stream';
+      ftype['ext'] = '???';
+    } else {
+      ftype['encoding'] = enc;
+    }
   } else {
     var binDetail = bin.getBinDetail(ftype['ext'], b);
     if (binDetail) ftype['bin_detail'] = binDetail;
@@ -632,13 +645,22 @@ bin.isAscii = function(b) {
 
 bin.isUtf16Le = function(buf) {
   if (buf.length < 2) return false;
-  if ((buf[0] != 0x00) && (buf[1] == 0x00)) return true;
+  if ((buf[0] != 0x00) && (buf[1] == 0x00)) {
+    if (buf.length > 2) {
+      if (buf[2] == 0x00) {
+        return false;
+      }
+    }
+    return true;
+  }
   return false;
 };
 
 bin.isUtf16Be = function(buf) {
   if (buf.length < 2) return false;
-  if ((buf[0] == 0x00) && (buf[1] != 0x00)) return true;
+  if ((buf[0] == 0x00) && (buf[1] != 0x00)) {
+    return true;
+  }
   return false;
 };
 
