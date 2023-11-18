@@ -871,20 +871,19 @@ bin._showPreview = function(s, b) {
   var dc = mime.split('/')[0];
   if (dc == 'image') {
     bin.showImagePreview(b);
-  } else if (dc == 'text') {
-    bin.showTextPreview(b);
   } else if (dc == 'video') {
     bin.showVideoPreview(b);
   } else if (dc == 'audio') {
     bin.showAudioPreview(b);
   } else {
-    bin.drawPreview('');
+    bin.showTextPreview(b);
   }
 };
 
 bin.showTextPreview = function(b) {
-  var s = bin.UTF8.fromByteArray(b);
-  var s = util.escHtml(s);
+  b64 = util.encodeBase64(b, true);
+  var s = util.decodeBase64(b64);
+  s = util.escHtml(s);
   s = s.replace(/\r\n/g, bin.CHR_CRLF_S + '\n');
   s = s.replace(/([^>])\n/g, '$1' + bin.CHR_LF_S + '\n');
   s = s.replace(/\r/g, bin.CHR_CR_S + '\n');
