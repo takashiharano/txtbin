@@ -242,6 +242,9 @@ bin.getSHA = function(a, b, f) {
 
 bin.updateInfoAndPreview = function() {
   var mode = bin.getMode();
+  if (bin.buf) {
+    bin.switchRadix(mode, bin.buf);
+  }
   var s = bin.getSrcValue();
   var b = bin.str2buf(mode, s);
   var ftype = bin.analyzeBinary(b);
