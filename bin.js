@@ -915,6 +915,10 @@ bin.str2buf = function(mode, s) {
 };
 
 bin.showPreview = function(ftype, b64) {
+  if (!$el('#show-preview').checked) {
+    bin.drawPreview('');
+    return;
+  }
   try {
     bin._showPreview(ftype, b64);
   } catch (e) {
