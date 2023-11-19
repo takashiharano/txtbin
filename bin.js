@@ -116,9 +116,10 @@ bin.switchRadix = function(mode, buf) {
       b64 = util.encodeBase64(buf, true);
       r = bin.formatB64(b64);
   }
-  bin.drawBinInfo(buf);
+  var ftype = bin.analyzeBinary(buf);
+  bin.drawBinInfo(buf, ftype);
   bin.setSrcValue(r);
-  bin.showPreview();
+  bin.showPreview(ftype, buf);
 };
 
 bin.setMode = function(mode, onlyMode) {
@@ -182,9 +183,10 @@ bin.dump = function(s) {
       buf = bin.decodeBase64(s);
       r = bin.formatB64(s);
   }
-  bin.drawBinInfo(buf);
+  var ftype = bin.analyzeBinary(buf);
+  bin.drawBinInfo(buf, ftype);
   bin.setSrcValue(r);
-  bin.showPreview();
+  bin.showPreview(ftype, buf);
   bin.buf = buf;
 };
 
@@ -197,15 +199,9 @@ bin.decodeBase64 = function(s) {
   return util.decodeBase64(s, true);
 };
 
-bin.getMimeType = function(buf) {
-  var mode = bin.getMode();
-  var tp = bin.getFileType(buf);
-  return tp['mime'];
-};
-
-bin.drawBinInfo = function(buf) {
+bin.drawBinInfo = function(buf, ftype) {
   var s = '';
-  s += 'Type    : ' + bin.getBinTypeInfo(buf) + '\n';
+  s += 'Type    : ' + bin.buildFileTypeInfoString(ftype) + '\n';
   s += 'Size    : ' + bin.buildSizeInfoString(buf) + ' bytes\n';
   s += bin.getHashInfo(buf);
   bin.drawInfo(s);
@@ -217,15 +213,10 @@ bin.buildSizeInfoString = function(buf) {
   return s;
 };
 
-bin.getBinTypeInfo = function(b) {
-  var tp = bin.getFileType(b);
-  if (tp['mime'] == 'application/x-zip-compressed') {
-    var w = bin.getZipContentType(b);
-    if (w) tp = w;
-  }
-  var s = '.' + tp['ext'] + '  ' + tp['mime'];
-  if (tp['encoding']) s += '  ' + bin.getEncodingName(tp['encoding']);
-  if (tp['bin_detail']) s += '  ' + tp['bin_detail'];
+bin.buildFileTypeInfoString = function(ftype) {
+  var s = '.' + ftype['ext'] + '  ' + ftype['mime'];
+  if (ftype['encoding']) s += '  ' + bin.getEncodingName(ftype['encoding']);
+  if (ftype['bin_detail']) s += '  ' + ftype['bin_detail'];
   return s;
 }
 
@@ -249,19 +240,13 @@ bin.getSHA = function(a, b, f) {
   return s.getHash('HEX');
 };
 
-bin.showBinInfo = function() {
-  try {
-    bin._showBinInfo();
-  } catch(e) {
-    bin.drawInfo('ERROR: ' + e);
-  }
-  bin.showPreview();
-};
-bin._showBinInfo = function() {
+bin.updateInfoAndPreview = function() {
   var mode = bin.getMode();
   var s = bin.getSrcValue();
-  var a = bin.str2buf(mode, s);
-  bin.drawBinInfo(a);
+  var b = bin.str2buf(mode, s);
+  var ftype = bin.analyzeBinary(b);
+  bin.drawBinInfo(b, ftype);
+  bin.showPreview(ftype, b);
 };
 
 bin.hex2uint8Array = function(s) {
@@ -573,6 +558,11 @@ bin.getEncoding = function(buf) {
   return type;
 };
 
+bin.analyzeBinary = function(b){
+  var tp = bin.getFileType(b);
+  return tp;
+};
+
 bin.getFileType = function(b) {
   var filetypes = bin.FILETYPES;
   var ftype = {
@@ -602,6 +592,11 @@ bin.getFileType = function(b) {
   } else {
     var binDetail = bin.getBinDetail(ftype['ext'], b);
     if (binDetail) ftype['bin_detail'] = binDetail;
+  }
+
+  if (ftype['mime'] == 'application/x-zip-compressed') {
+    var w = bin.getZipContentType(b);
+    if (w) ftype = w;
   }
 
   return ftype;
@@ -833,7 +828,7 @@ bin.onInput = function() {
   bin.buf = null;
   bin.forceNewline();
   if (!bin.auto) return;
-  bin.showBinInfo();
+  bin.updateInfoAndPreview();
   bin.detectCurrentMode();
 };
 
@@ -908,21 +903,17 @@ bin.str2buf = function(mode, s) {
   return a;
 };
 
-bin.showPreview = function() {
-  var mode = bin.getMode();
-  var s = bin.getSrcValue();
-  var b = bin.str2buf(mode, s);
+bin.showPreview = function(ftype, b) {
   try {
-    bin._showPreview(s, b);
+    bin._showPreview(ftype, b);
   } catch (e) {
     var m = 'ERROR: ' + e;
     bin.drawPreview(m);
   }
 }
 
-bin._showPreview = function(s, b) {
-  var mime = bin.getMimeType(b);
-  var dc = mime.split('/')[0];
+bin._showPreview = function(ftype, b) {
+  var dc = ftype['mime'].split('/')[0];
   if (dc == 'image') {
     bin.showImagePreview(b);
   } else if (dc == 'video') {
