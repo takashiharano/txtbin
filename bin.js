@@ -519,6 +519,7 @@ bin.getEncoding = function(buf) {
 
   var b = '';
   var notUtf8 = false;
+  var nullbyte = false;
   for (var i = 0; i < buf.length; i++) {
     var code = buf[i];
     var uri = null;
@@ -549,10 +550,18 @@ bin.getEncoding = function(buf) {
       skip = 1;
     } else if (code > 0x7F) {
       notUtf8 = true;
-      type = 'utf16';
+      if ((buf.length % 2) == 0) {
+        type = 'utf16';
+      } else {
+        type = 'bin';
+      }
     } else if (code == 0x00) {
-      notUtf8 = true;
-      type = 'utf16';
+      nullbyte = true;
+      if ((buf.length % 2) == 0) {
+        type = 'utf16';
+      } else {
+        type = 'bin';
+      }
     }
 
     try {
@@ -580,9 +589,21 @@ bin.getEncoding = function(buf) {
     }
   }
 
-  if (notUtf8 && (type == 'utf8')) {
-    type = 'bin';
+  switch (type) {
+    case 'sjis':
+    case 'iso2022jp':
+    case 'euc_jp':
+      if (nullbyte) {
+        type = 'bin';
+      }
+      break;
+    case 'utf8':
+      if (nullbyte || notUtf8) {
+        type = 'bin';
+      }
+      break;
   }
+
   return type;
 };
 
@@ -667,6 +688,7 @@ bin.isAscii = function(b) {
 };
 
 bin.isUtf16Le = function(buf) {
+  if (buf.length % 2 != 0) return false;
   if (buf.length < 2) return false;
   if ((buf[0] != 0x00) && (buf[1] == 0x00)) {
     if (buf.length > 2) {
@@ -680,6 +702,7 @@ bin.isUtf16Le = function(buf) {
 };
 
 bin.isUtf16Be = function(buf) {
+  if (buf.length % 2 != 0) return false;
   if (buf.length < 2) return false;
   if ((buf[0] == 0x00) && (buf[1] != 0x00)) {
     return true;
