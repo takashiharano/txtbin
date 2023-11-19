@@ -197,3 +197,11 @@ select {
 .pseudo-link {
   color: #ade;
 }
+
+#font-range{
+  width: 100px;
+}
+
+#font {
+  width: 100px;
+}
