@@ -1,6 +1,7 @@
 body {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
+  min-width: 1500px;
   background: #1e1e1e;
   color: #fff;
   font-size: 14px;
@@ -9,7 +10,7 @@ body {
 
 #main {
   width: 100%;
-  min-width: 1500px;
+  min-width: 100%;
   height: 100%;
 }
 
@@ -153,6 +154,7 @@ select {
 
 #input-area {
   display: inline-block;
+  position: relative;
   width: 1380px;
   height: 100%;
   float: left;
@@ -161,7 +163,8 @@ select {
 
 #preview-area {
   display: inline-block;
-  width: calc(100% - 1384px);
+  position: relative;
+  width: calc(100% - 1400px);
   height: 100%;
   float: left;
   overflow: auto;
@@ -177,7 +180,7 @@ select {
 }
 
 #src {
-  width: calc(100% - 17px);
+  width: calc(100% - 6px);
   height: 100%;
 }
 .pseudo-link {
@@ -208,4 +211,15 @@ select {
 
 #font {
   width: 100px;
+}
+
+#adjuster {
+  display: inline-block;
+  position: relative;
+  width: 4px;
+  height: 100%;
+  top: -8px;
+  cursor: ew-resize;
+  float: left;
+  margin-right: 10px;
 }

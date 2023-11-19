@@ -13,6 +13,9 @@ bin.DEFAULT_FONT_SIZE = 14;
 bin.DEFAULT_MODE = 'auto';
 bin.DEFAULT_MODE_ACTIVE = 'hex';
 
+bin.UI_ST_NONE = 0;
+bin.UI_ST_AREA_RESIZING = 1;
+
 bin.ENCODING_NAME = {
   'ascii': 'ASCII',
   'utf8': 'UTF-8',
@@ -58,6 +61,16 @@ bin.FILETYPES = {
 
 bin.auto = true;
 bin.buf = null;
+bin.uiStatus = bin.UI_ST_NONE;
+bin.areaSize = {
+  orgX: 0,
+  orgSP1: 0,
+  orgSP2: 0,
+  orgDW: 0,
+  dW: 0
+};
+
+bin.onselectstart = document.onselectstart;
 
 $onReady = function() {
   util.clock('#clock');
@@ -77,6 +90,12 @@ $onReady = function() {
   var fontSize = util.getQuery('fontsize') | 0;
   if (!fontSize) fontSize = bin.DEFAULT_FONT_SIZE;
   bin.setFontSize(fontSize);
+
+  bin.storeAreaSize();
+  window.addEventListener('mousemove', bin.onMouseMove, true);
+  window.addEventListener('mouseup', bin.onMouseUp, true);
+  $el('#adjuster').addEventListener('mousedown', bin.onAreaResizeStart);
+  $el('#adjuster').addEventListener('dblclick', bin.resetAreaSize);
 
   $el('#src').addEventListener('input', bin.onInput);
   $el('#src').addEventListener('change', bin.onInput);
@@ -1075,6 +1094,91 @@ bin.switchKeyViewHide = function() {
   } else {
     $el('#key-hide-button').addClass('button-inactive');
   }
+};
+
+bin.onMouseMove = function(e) {
+  if (bin.uiStatus == bin.UI_ST_AREA_RESIZING) {
+    bin.onAreaResize(e);
+  }
+};
+bin.onMouseUp = function(e) {
+  if (bin.uiStatus == bin.UI_ST_AREA_RESIZING) {
+    bin.onAreaResizeEnd(e);
+  }
+};
+
+bin.getSelfSizePos = function(el) {
+  var rect = el.getBoundingClientRect();
+  var resizeBoxSize = 6;
+  var sp = {};
+  sp.w = el.clientWidth;
+  sp.h = el.clientHeight;
+  sp.x1 = rect.left - resizeBoxSize / 2;
+  sp.y1 = rect.top - resizeBoxSize / 2;
+  sp.x2 = sp.x1 + el.clientWidth;
+  sp.y2 = sp.y1 + el.clientHeight;
+  return sp;
+};
+
+bin.nop = function() {
+  return false;
+};
+bin.disableTextSelect = function() {
+  document.onselectstart = bin.nop;
+};
+bin.enableTextSelect = function() {
+  document.onselectstart = bin.onselectstart;
+};
+
+bin.onAreaResizeStart = function(e) {
+  bin.uiStatus = bin.UI_ST_AREA_RESIZING;
+  var x = e.clientX;
+  var y = e.clientY;
+  var sp1 = bin.getSelfSizePos($el('#input-area'));
+  var sp2 = bin.getSelfSizePos($el('#preview-area'));
+  bin.areaSize.orgX = x;
+  bin.areaSize.orgSP1 = sp1;
+  bin.areaSize.orgSP2 = sp2;
+  bin.areaSize.orgDW = bin.areaSize.dW;
+  bin.disableTextSelect();
+  document.body.style.cursor = 'ew-resize';
+};
+bin.onAreaResize = function(e) {
+  var x = e.clientX;
+  var y = e.clientY;
+  var adj = 8;
+  var dX = bin.areaSize.orgX - x;
+  var w1 = bin.areaSize.orgSP1.w - dX - adj;
+  var w2 = bin.areaSize.orgSP2.w + dX - adj;
+  var dW = bin.areaSize.orgDW - dX;
+  bin.areaSize.dW = dW;
+  if ((w1 < 640) || (w1 > 1380)) {
+    return;
+  }
+  bin.setAreaSize(w1, dW);
+};
+bin.storeAreaSize = function() {
+  var sp1 = bin.getSelfSizePos($el('#input-area'));
+  var adj = 8;
+  var w1 = sp1.w + adj;
+  bin.orgW = {w1: w1};
+};
+bin.resetAreaSize = function() {
+  bin.setAreaSize(bin.orgW.w1, 0);
+  bin.areaSize.orgDW = 0;
+  bin.areaSize.dW = 0;
+};
+
+bin.setAreaSize = function(w1, dW) {
+  var adj = 8;
+  $el('#input-area').style.width = w1 + adj + 'px';
+  var w2 = w1 + 28;
+  $el('#preview-area').style.width = 'calc(100% - ' + w2 + 'px)';
+};
+bin.onAreaResizeEnd = function(e) {
+  bin.enableTextSelect();
+  document.body.style.cursor = 'auto';
+  bin.uiStatus = bin.UI_ST_NONE;
 };
 
 bin.UTF8 = {};
