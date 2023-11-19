@@ -95,6 +95,10 @@ input:-webkit-autofill {
   background: #75bfff !important;
 }
 
+.button-inactive {
+  background: #888 !important;
+}
+
 textarea {
   outline: none;
   border: 1px solid #888;

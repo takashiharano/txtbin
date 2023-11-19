@@ -1014,6 +1014,16 @@ bin.changeFont = function(n) {
   bin.fontFamily = n;
 };
 
+bin.switchKeyViewHide = function() {
+  var type = (($el('#key').type == 'text') ? 'password' : 'text');
+  $el('#key').type = type;
+  if (type == 'password') {
+    $el('#key-hide-button').removeClass('button-inactive');
+  } else {
+    $el('#key-hide-button').addClass('button-inactive');
+  }
+};
+
 bin.UTF8 = {};
 bin.UTF8.toByteArray = function(s) {
   var a = [];
