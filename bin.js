@@ -100,6 +100,7 @@ bin.switchRadix = function(mode, buf) {
   switch (mode) {
     case 'hex':
     case 'bin':
+      var b64 = util.encodeBase64(buf, true);
       r = bin.getHexDump(mode, buf);
       break;
     case 'bsb64':
@@ -117,9 +118,9 @@ bin.switchRadix = function(mode, buf) {
       r = bin.formatB64(b64);
   }
   var ftype = bin.analyzeBinary(buf);
-  bin.drawBinInfo(buf, ftype);
+  bin.drawBinInfo(ftype, buf, b64);
   bin.setSrcValue(r);
-  bin.showPreview(ftype, buf);
+  bin.showPreview(ftype, b64);
 };
 
 bin.setMode = function(mode, onlyMode) {
@@ -165,6 +166,7 @@ bin.dump = function(s) {
     case 'hex':
     case 'bin':
       var buf = new Uint8Array(s);
+      var b64 = util.encodeBase64(buf, true);
       r = bin.getHexDump(mode, buf);
       break;
     case 'bsb64':
@@ -182,35 +184,40 @@ bin.dump = function(s) {
     default:
       buf = bin.decodeBase64(s);
       r = bin.formatB64(s);
+      b64 = bin.extractB64fromDataUrl(s);
   }
   var ftype = bin.analyzeBinary(buf);
-  bin.drawBinInfo(buf, ftype);
+  bin.drawBinInfo(ftype, buf, b64);
   bin.setSrcValue(r);
-  bin.showPreview(ftype, buf);
+  bin.showPreview(ftype, b64);
   bin.buf = buf;
 };
 
 bin.decodeBase64 = function(s) {
+  s = bin.extractB64fromDataUrl(s);
+  return util.decodeBase64(s, true);
+};
+
+bin.extractB64fromDataUrl = function(s) {
   s = s.trim().replace(/\n/g, '');
   if (s.startsWith('data:')) {
     var a = s.split(',');
     s = a[1];
   }
-  return util.decodeBase64(s, true);
+  return s;
 };
 
-bin.drawBinInfo = function(buf, ftype) {
+bin.drawBinInfo = function(ftype, buf, b64) {
+  var bLen = buf.length;
+  var b64Len = b64.length;
+  var x = util.round(b64Len / bLen, 2);
+  var bSize = util.formatNumber(bLen);
+  var b64Size = util.formatNumber(b64Len);
   var s = '';
   s += 'Type    : ' + bin.buildFileTypeInfoString(ftype) + '\n';
-  s += 'Size    : ' + bin.buildSizeInfoString(buf) + ' bytes\n';
+  s += 'Size    : ' + bSize + ' bytes : ' + b64Size + ' bytes in Base64 (x ' + x + ')\n';
   s += bin.getHashInfo(buf);
   bin.drawInfo(s);
-};
-
-bin.buildSizeInfoString = function(buf) {
-  var n = buf.length;
-  var s = util.formatNumber(n);
-  return s;
 };
 
 bin.buildFileTypeInfoString = function(ftype) {
@@ -247,9 +254,10 @@ bin.updateInfoAndPreview = function() {
   }
   var s = bin.getSrcValue();
   var b = bin.str2buf(mode, s);
+  var b64 = util.encodeBase64(b, true);
   var ftype = bin.analyzeBinary(b);
-  bin.drawBinInfo(b, ftype);
-  bin.showPreview(ftype, b);
+  bin.drawBinInfo(ftype, b, b64);
+  bin.showPreview(ftype, b64);
 };
 
 bin.hex2uint8Array = function(s) {
@@ -906,30 +914,29 @@ bin.str2buf = function(mode, s) {
   return a;
 };
 
-bin.showPreview = function(ftype, b) {
+bin.showPreview = function(ftype, b64) {
   try {
-    bin._showPreview(ftype, b);
+    bin._showPreview(ftype, b64);
   } catch (e) {
     var m = 'ERROR: ' + e;
     bin.drawPreview(m);
   }
 }
 
-bin._showPreview = function(ftype, b) {
+bin._showPreview = function(ftype, b64) {
   var dc = ftype['mime'].split('/')[0];
   if (dc == 'image') {
-    bin.showImagePreview(b);
+    bin.showImagePreview(b64);
   } else if (dc == 'video') {
-    bin.showVideoPreview(b);
+    bin.showVideoPreview(b64);
   } else if (dc == 'audio') {
-    bin.showAudioPreview(b);
+    bin.showAudioPreview(b64);
   } else {
-    bin.showTextPreview(b);
+    bin.showTextPreview(b64);
   }
 };
 
-bin.showTextPreview = function(b) {
-  b64 = util.encodeBase64(b, true);
+bin.showTextPreview = function(b64) {
   var s = util.decodeBase64(b64);
   s = util.escHtml(s);
   s = s.replace(/\r\n/g, bin.CHR_CRLF_S + '\n');
@@ -939,22 +946,19 @@ bin.showTextPreview = function(b) {
   bin.drawPreview(s);
 };
 
-bin.showImagePreview = function(b) {
-  var b64 = util.encodeBase64(b, true);
+bin.showImagePreview = function(b64) {
   var d = 'data:image/png;base64,' + b64;
   var v = '<img src="' + d + '" style="max-width:100%;max-height:100%;">';
   bin.drawPreview(v);
 };
 
-bin.showVideoPreview = function(b) {
-  var b64 = util.encodeBase64(b, true);
+bin.showVideoPreview = function(b64) {
   var d = 'data:video/mp4;base64,' + b64;
   var v = '<video src="' + d + '" style="max-width:100%;max-height:100%;" controls>';
   bin.drawPreview(v);
 };
 
-bin.showAudioPreview = function(b) {
-  var b64 = util.encodeBase64(b, true);
+bin.showAudioPreview = function(b64) {
   var d = 'data:audio/wav;base64,' + b64;
   var v = '<audio src="' + d + '" style="max-width:100%;max-height:100%;" controls>';
   bin.drawPreview(v);
