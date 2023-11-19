@@ -137,6 +137,9 @@ def dec_bsb64(s):
     b = bsb64.decode(s, n)
     return b
 
+def dec_txt(s):
+    return s.encode()
+
 def get_file_type(b):
     tp = {
         'mime': 'text/plain',

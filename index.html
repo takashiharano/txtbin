@@ -32,6 +32,8 @@
 <option value="6">6</option>
 <option value="7">7</option>
 </select>
+<div class="mode-button-block"><div id="mode-ind-txt" class="mode-ind"></div><button id="mode-button-txt" class="mode-button" onclick="bin.setMode('txt');">TEXT</button>
+</div>
 </div>
 
 <span style="margin-left:16px;"><input type="checkbox" id="dump-multibyte"><label for="dump-multibyte">Dump Multi Byte Char</label></span>
@@ -39,7 +41,7 @@
 
 <div style="position:absolute;right:8px;display:inline-block;height:100%;">
 <span id="clock" style="margin-right:16px;"></span>
-<button style="position:relative;" onclick="bin.updateInfoAndPreview();">UPDATE</button>
+<button style="position:relative;" onclick="bin.parse();">PARSE</button>
 <button style="position:relative;" onclick="bin.confirmClear();">CLEAR</button>
 </div>
 

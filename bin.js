@@ -103,15 +103,21 @@ bin.switchRadix = function(mode, buf) {
       var b64 = util.encodeBase64(buf, true);
       r = bin.getHexDump(mode, buf);
       break;
-    case 'bsb64':
-      var n = $el('#n').value | 0;
-      var b64 = util.BSB64.encode(buf, n);
-      r = bin.formatB64(b64);
-      break;
     case 'b64s':
       var key = $el('#key').value;
-      b64 = util.encodeBase64s(buf, key);
-      r = bin.formatB64(b64);
+      b64s = util.encodeBase64s(buf, key);
+      r = bin.formatB64(b64s);
+      b64 = util.encodeBase64(buf, true);
+      break;
+    case 'bsb64':
+      var n = $el('#n').value | 0;
+      var b64s = util.BSB64.encode(buf, n);
+      r = bin.formatB64(b64s);
+      b64 = util.encodeBase64(buf, true);
+      break;
+    case 'txt':
+      b64 = util.encodeBase64(buf, true);
+      r = util.decodeBase64(b64);
       break;
     default:
       b64 = util.encodeBase64(buf, true);
@@ -169,17 +175,24 @@ bin.dump = function(s) {
       var b64 = util.encodeBase64(buf, true);
       r = bin.getHexDump(mode, buf);
       break;
-    case 'bsb64':
-      var n = $el('#n').value | 0;
-      var buf = new Uint8Array(s);
-      var b64 = util.BSB64.encode(buf, n);
-      r = bin.formatB64(b64);
-      break;
     case 'b64s':
       var key = $el('#key').value;
       buf = new Uint8Array(s);
-      b64 = util.encodeBase64s(buf, key);
-      r = bin.formatB64(b64);
+      b64s = util.encodeBase64s(buf, key);
+      r = bin.formatB64(b64s);
+      b64 = util.encodeBase64(buf, true);
+      break;
+    case 'bsb64':
+      var n = $el('#n').value | 0;
+      var buf = new Uint8Array(s);
+      var b64s = util.BSB64.encode(buf, n);
+      r = bin.formatB64(b64s);
+      b64 = util.encodeBase64(buf, true);
+      break;
+    case 'txt':
+      var buf = new Uint8Array(s);
+      b64 = util.encodeBase64(buf, true);
+      r = util.decodeBase64(b64);
       break;
     default:
       buf = bin.decodeBase64(s);
@@ -247,24 +260,28 @@ bin.getSHA = function(a, b, f) {
   return s.getHash('HEX');
 };
 
+bin.parse = function() {
+  bin.buf = bin.updateInfoAndPreview();
+};
+
 bin.updateInfoAndPreview = function() {
   var mode = bin.getMode();
-  if (bin.buf) {
-    bin.switchRadix(mode, bin.buf);
-  }
   var s = bin.getSrcValue();
   var b = bin.str2buf(mode, s);
   var b64 = util.encodeBase64(b, true);
   var ftype = bin.analyzeBinary(b);
   bin.drawBinInfo(ftype, b, b64);
   bin.showPreview(ftype, b64);
+  return b;
 };
 
 bin.hex2uint8Array = function(s) {
+  s = s.replace(/\s/g, '');
   return bin.str2binArr(s, 2, '0x');
 };
 
 bin.bin2uint8Array = function(s) {
+  s = s.replace(/\s/g, '');
   return bin.str2binArr(s, 8, '0b');
 };
 
@@ -899,19 +916,30 @@ bin.str2buf = function(mode, s) {
   if ((mode == 'bin') || (mode == 'hex')) {
     s = bin.extractBinTextPart(mode, s);
   }
-  s = s.replace(/\s/g, '');
-  var a;
+  var b;
   switch (mode) {
     case 'hex':
-      a = bin.hex2uint8Array(s);
+      b = bin.hex2uint8Array(s);
       break;
     case 'bin':
-      a = bin.bin2uint8Array(s);
+      b = bin.bin2uint8Array(s);
+      break;
+    case 'b64s':
+      var k = $el('#key').value;
+      b = util.decodeBase64s(s, k, true);
+      break;
+    case 'bsb64':
+      var n = $el('#n').value | 0;
+      b = util.BSB64.decode(s, n);
+      break;
+    case 'txt':
+      var b64 = util.encodeBase64(s);
+      b = bin.b642uint8Array(b64);
       break;
     default:
-      a = bin.b642uint8Array(s);
+      b = bin.b642uint8Array(s);
   }
-  return a;
+  return b;
 };
 
 bin.showPreview = function(ftype, b64) {
@@ -919,15 +947,6 @@ bin.showPreview = function(ftype, b64) {
     bin.drawPreview('');
     return;
   }
-  try {
-    bin._showPreview(ftype, b64);
-  } catch (e) {
-    var m = 'ERROR: ' + e;
-    bin.drawPreview(m);
-  }
-}
-
-bin._showPreview = function(ftype, b64) {
   var dc = ftype['mime'].split('/')[0];
   if (dc == 'image') {
     bin.showImagePreview(b64);
