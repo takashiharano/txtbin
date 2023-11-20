@@ -264,8 +264,14 @@ bin.buildFileTypeInfoString = function(ftype) {
 
     var newline = enc.newline;
     s += '  ' + bin.getEncodingName(type);
-    if (newline) {
-      s += ' [' + newline + ']';
+    if (newline['lf']) {
+      s += ' [LF]';
+    }
+    if (newline['cr']) {
+      s += ' [CR]';
+    }
+    if (newline['crlf']) {
+      s += ' [CRLF]';
     }
   }
 
@@ -556,28 +562,35 @@ bin.getEncoding = function(buf) {
   };
 
   var evn = ((buf.length % 2) == 0);
-  var newline = null;
+  var newline = {
+    lf: false,
+    cr: false,
+    crlf: false
+  };
   var tmpNL = null;
   var cnt = 0;
   for (var i = 0; i < buf.length; i++) {
     var code = buf[i];
-    if (!newline) {
-      if (code == 0x0D) {
-        tmpNL = 'CR';
-      } else if (code == 0x0A) {
-        if (tmpNL == 'CR') {
-          newline = 'CRLF';
-        } else {
-          newline = 'LF';
-        }
-        tmpNL = null;
-      } else {
-        if (tmpNL == 'CR') {
-          newline = 'CR';
-        }
-        tmpNL = null;
+
+    if (code == 0x0D) {
+      tmpNL = 'CR';
+      if (i == buf.length - 1) {
+        newline['cr'] = true;
       }
+    } else if (code == 0x0A) {
+      if (tmpNL == 'CR') {
+        newline['crlf'] = true;
+      } else {
+        newline['lf'] = true;
+      }
+      tmpNL = null;
+    } else {
+      if (tmpNL == 'CR') {
+        newline['cr'] = true;
+      }
+      tmpNL = null;
     }
+
     var uri = null;
     var skip = 0;
     if ((code & 0xF0) == 0xF0) {
@@ -653,7 +666,7 @@ bin.getEncoding = function(buf) {
       cnt++;
     }
 
-    if (cnt >= 16) {
+    if (cnt >= 1024) {
       break;
     }
   }
