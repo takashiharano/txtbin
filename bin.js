@@ -1152,7 +1152,7 @@ bin.onAreaResize = function(e) {
   var w2 = bin.areaSize.orgSP2.w + dX - adj;
   var dW = bin.areaSize.orgDW - dX;
   bin.areaSize.dW = dW;
-  if ((w1 < 640) || (w1 > 1380)) {
+  if ((w1 < 200) || (w1 > 1400)) {
     return;
   }
   bin.setAreaSize(w1, dW);

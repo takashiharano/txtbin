@@ -108,8 +108,7 @@ textarea {
   color: #fff;
   font-size: 14px;
   font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
-  white-space: pre-wrap;
-  word-break: break-all;
+  white-space: pre;
   resize: none;
   transition: border linear 0.1s, box-shadow linear 0.1s;
 }
