@@ -24,6 +24,8 @@ FILETYPES = {
     'gz': {'head': '1F 8B', 'mime': 'application/gzip', 'ext': 'gz'},
     'html': {'head': '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C', 'mime': 'text/html', 'ext': 'html'},
     'jpg': {'head': 'FF D8', 'mime': 'image/jpeg', 'ext': 'jpg'},
+    'lzh': {'head': 'xx xx 2D 6C 68 xx 2D', 'mime': 'application/octet-stream', 'ext': 'lzh'},
+    'mid': {'head': '4D 54 68 64', 'mime': 'audio/midi', 'ext': 'mid'},
     'mov': {'head': 'xx xx xx xx 6D 6F 6F 76', 'mime': 'video/quicktime', 'ext': 'mov'},
     'mp3': {'head': ['FF FA', 'FF FB', '49 44 33'], 'mime': 'audio/mpeg', 'ext': 'mp3'},
     'mp4': {'head': 'xx xx xx xx 66 74 79 70', 'mime': 'video/mp4', 'ext': 'mp4'},
