@@ -261,14 +261,14 @@ bin.buildFileTypeInfoString = function(ftype) {
   if (ftype['encoding']) {
     var enc = ftype['encoding'];
     var type = enc.type;
+    s += '  ' + bin.getEncodingName(type);
 
     var newline = enc.newline;
-    s += '  ' + bin.getEncodingName(type);
-    if (newline['lf']) {
-      s += ' [LF]';
-    }
     if (newline['cr']) {
       s += ' [CR]';
+    }
+    if (newline['lf']) {
+      s += ' [LF]';
     }
     if (newline['crlf']) {
       s += ' [CRLF]';
@@ -550,6 +550,7 @@ bin.dumpAscii = function(pos, buf) {
   return b;
 };
 
+
 bin.getEncoding = function(buf) {
   var typeScore = {
     ascii: 1,
@@ -560,6 +561,14 @@ bin.getEncoding = function(buf) {
     euc_jp: 0,
     bin: 0
   };
+
+  if (bin.isUtf8Bom(buf)) {
+    typeScore = bin.setScore(typeScore, 'utf8');
+  } else if (bin.isUtf16LeBom(buf)) {
+    typeScore = bin.setScore(typeScore, 'utf16le_bom');
+  } else if (bin.isUtf16BeBom(buf)) {
+    typeScore = bin.setScore(typeScore, 'utf16be_bom');
+  }
 
   var evn = ((buf.length % 2) == 0);
   var newline = {
@@ -623,7 +632,9 @@ bin.getEncoding = function(buf) {
         typeScore = bin.incrementScore(typeScore, 'utf16');
         cnt++;
       } else {
-        typeScore['bin'] = 1;
+        if (typeScore['bin'] != -1) {
+          typeScore['bin'] = 1;
+        }
       }
     } else if (code == 0x00) {
       typeScore['utf8'] = -1;
@@ -635,7 +646,9 @@ bin.getEncoding = function(buf) {
         typeScore = bin.incrementScore(typeScore, 'utf16');
         cnt++;
       } else {
-        typeScore['bin'] = 1;
+        if (typeScore['bin'] != -1) {
+          typeScore['bin'] = 1;
+        }
       }
     }
 
@@ -693,11 +706,25 @@ bin.getEncoding = function(buf) {
   return encoding;
 };
 
+bin.setScore = function(o, k) {
+  o = bin.disableAllScore(o);
+  o[k] = 1;
+  return o;
+};
+
 bin.incrementScore = function(o, k) {
   if (o[k] >= 0) o[k]++;
   o['ascii'] = -1;
   return o;
 };
+
+bin.disableAllScore = function(o) {
+  for (var k in o) {
+    o[k] = -1;
+  }
+  return o;
+};
+
 
 bin.analyzeBinary = function(b){
   var tp = bin.getFileType(b);
@@ -723,7 +750,7 @@ bin.getFileType = function(b) {
   }
 
   var dc = ftype['mime'].split('/')[0];
-  if ((dc == 'text') && (!ftype['encoding'])) {
+  if (dc == 'text') {
     var enc = bin.getEncoding(b);
     if (enc['type'] == 'bin') {
       ftype['mime'] = 'application/octet-stream';
@@ -778,6 +805,18 @@ bin.__hasBinaryPattern = function(buf, pos, binPattern) {
 
 bin.isAscii = function(b) {
   return ((b >= 0) && (b <= 0x7F));
+};
+
+bin.isUtf8Bom = function(buf) {
+  return bin._hasBinaryPattern(buf, 0, 'EF BB BF');
+};
+
+bin.isUtf16BeBom = function(buf) {
+  return bin._hasBinaryPattern(buf, 0, 'FE FF');
+};
+
+bin.isUtf16LeBom = function(buf) {
+  return bin._hasBinaryPattern(buf, 0, 'FF FE');
 };
 
 bin.isUtf16Le = function(buf) {
