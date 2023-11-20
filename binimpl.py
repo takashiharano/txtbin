@@ -19,6 +19,7 @@ FILETYPES = {
     'bmp': {'head': '42 4D', 'mime': 'image/bmp', 'ext': 'bmp'},
     'cab': {'head': '4D 53 43 46 00 00 00 00', 'mime': 'application/vnd.ms-cab-compressed', 'ext': 'cab'},
     'class': {'head': 'CA FE BA BE', 'mime': 'application/octet-stream', 'ext': 'class'},
+    'eps': {'head': 'C5 D0 D3 C6', 'mime': 'application/postscript', 'ext': 'eps'},
     'exe': {'head': '4D 5A', 'mime': 'application/x-msdownload', 'ext': 'exe'},
     'gif': {'head': '47 49 46 38', 'mime': 'image/gif', 'ext': 'gif'},
     'gz': {'head': '1F 8B', 'mime': 'application/gzip', 'ext': 'gz'},
