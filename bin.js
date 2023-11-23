@@ -122,6 +122,7 @@ bin.switchRadix = function(mode, buf) {
   var r;
   switch (mode) {
     case 'hex':
+    case 'dec':
     case 'bin':
       var b64 = util.encodeBase64(buf, true);
       r = bin.getHexDump(mode, buf);
@@ -193,6 +194,7 @@ bin.dump = function(s) {
   var r;
   switch (mode) {
     case 'hex':
+    case 'dec':
     case 'bin':
       var buf = new Uint8Array(s);
       var b64 = util.encodeBase64(buf, true);
@@ -406,6 +408,12 @@ bin.getHexDump = function(mode, buf) {
     } else {
       hd += '+0      +1      +2      +3      +4      +5      +6      +7      +8      +9      +A      +B      +C      +D      +E      +F      ';
     }
+  } else if (mode == 'dec') {
+    if (showSp) {
+      hd += ' +0  +1  +2  +3  +4  +5  +6  +7   +8  +9  +A  +B  +C  +D  +E  +F';
+    } else {
+      hd += ' +0 +1 +2 +3 +4 +5 +6 +7 +8 +9 +A +B +C +D +E +F';
+    }
   } else {
     if (showSp) {
       hd += '+0 +1 +2 +3 +4 +5 +6 +7  +8 +9 +A +B +C +D +E +F';
@@ -460,6 +468,8 @@ bin.getDump = function(mode, i, buf, len, showSp, showAddr, showAscii) {
   var b;
   if (mode == 'bin') {
     b = bin.dumpBin(i, buf);
+  } else if (mode == 'dec') {
+    b = bin.dumpDec(i, buf);
   } else {
     b = bin.dumpHex(i, buf);
   }
@@ -775,7 +785,6 @@ bin.disableAllScore = function(o) {
   }
   return o;
 };
-
 
 bin.analyzeBinary = function(b){
   var tp = bin.getFileType(b);

@@ -81,10 +81,17 @@ def deccode_and_send_file(mode, s):
     util.send_binary(b, filename=filename, etag=etag)
 
 def extract_bintext_part(mode, s):
-  unit = 8 if mode == 'bin' else 2
+  if mode == 'bin':
+      unit = 8
+  elif mode == 'dec':
+      unit = 3
+  else:
+      unit = 2
+
   v_start = 11
   v_end = v_start + (unit * 16) + 16
   s = s.strip();
+  s = util.replace(s, '\\+', ' ')
   if not s.upper().startswith('ADDRESS'):
       return s
   a = util.text2list(s)
@@ -93,22 +100,33 @@ def extract_bintext_part(mode, s):
       l = a[i]
       w = l[v_start:v_end]
       b += w + '\n'
+  b = b.strip();
   return b
-
-def dec_hex(s):
-    s = extract_bintext_part('hex', s)
-    s = util.remove_space_newline(s)
-    s = util.replace(s, '\\+', '')
-    s = util.replace(s, '%', '')
-    b = util.hex2bytes(s)
-    return b
 
 def dec_bin(s):
     s = extract_bintext_part('bin', s)
     s = util.remove_space_newline(s)
-    s = util.replace(s, '\\+', '')
     s = util.replace(s, '%', '')
     b = util.bin2bytes(s)
+    return b
+
+def dec_dec(s):
+    s = extract_bintext_part('dec', s)
+    s = util.replace(s, '\\n', ' ')
+    s = util.replace(s, '%', '')
+    s = util.replace(s, r' {2,}', ' ')
+    a = s.split(' ')
+    b = bytearray()
+    for i in range(len(a)):
+        v = int(a[i])
+        b.append(v)
+    return b
+
+def dec_hex(s):
+    s = extract_bintext_part('hex', s)
+    s = util.remove_space_newline(s)
+    s = util.replace(s, '%', '')
+    b = util.hex2bytes(s)
     return b
 
 def dec_b64(s):
