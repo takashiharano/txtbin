@@ -222,3 +222,7 @@ select {
   float: left;
   margin-right: 10px;
 }
+
+.status-inactive {
+  color: #888;
+}

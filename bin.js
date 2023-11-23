@@ -264,15 +264,22 @@ bin.buildFileTypeInfoString = function(ftype) {
     s += '  ' + bin.getEncodingName(type);
 
     var newline = enc.newline;
-    if (newline['cr']) {
-      s += ' [CR]';
+    var clzCrLf = 'status-inactive';
+    var clzLf = 'status-inactive';
+    var clzCr = 'status-inactive';
+    if (newline['crlf']) {
+      clzCrLf = 'status-active';
     }
     if (newline['lf']) {
-      s += ' [LF]';
+      clzLf = 'status-active';
     }
-    if (newline['crlf']) {
-      s += ' [CRLF]';
+    if (newline['cr']) {
+      clzCr = 'status-active';
     }
+
+    s += '  <span class="' + clzCrLf + '">[CRLF]</span>';
+    s += '<span class="' + clzLf + '">[LF]</span>';
+    s += '<span class="' + clzCr + '">[CR]</span>';
   }
 
   if (ftype['bin_detail']) {
@@ -576,10 +583,44 @@ bin.getEncoding = function(buf) {
     cr: false,
     crlf: false
   };
+  var newline16le = {
+    lf: false,
+    cr: false,
+    crlf: false
+  };
+  var newline16be = {
+    lf: false,
+    cr: false,
+    crlf: false
+  };
   var tmpNL = null;
   var cnt = 0;
   for (var i = 0; i < buf.length; i++) {
     var code = buf[i];
+
+    var ptn4 = bin.scanBin(buf, i, 4);
+    var ptn2U = (ptn4 & 0xFFFF0000) >> 16;
+    var ptn2L = (ptn4 & 0x0000FFFF);
+
+    if (i % 2 == 0) {
+      if (ptn4 == 0x000D000A) {
+        newline16be['crlf'] = true;
+      } else if (ptn4 == 0x0D000A00) {
+        newline16le['crlf'] = true;
+      } else if ((ptn2L == 0x000A) && (ptn2U != 0x000D)) {
+        newline16be['lf'] = true;
+      } else if ((ptn2L == 0x0A00) && (ptn2U != 0x0D00)) {
+        newline16le['lf'] = true;
+      } else if ((ptn2U == 0x000D) && (ptn2L != 0x000A)) {
+        newline16be['cr'] = true;
+      } else if ((ptn2U == 0x0D00) && (ptn2L != 0x0AA0)) {
+        newline16le['cr'] = true;
+      }
+    }
+
+    if (ptn2U == 0x0D0A) {
+      newline['crlf'] = true;
+    }
 
     if (code == 0x0D) {
       tmpNL = 'CR';
@@ -587,9 +628,7 @@ bin.getEncoding = function(buf) {
         newline['cr'] = true;
       }
     } else if (code == 0x0A) {
-      if (tmpNL == 'CR') {
-        newline['crlf'] = true;
-      } else {
+      if (tmpNL != 'CR') {
         newline['lf'] = true;
       }
       tmpNL = null;
@@ -696,6 +735,13 @@ bin.getEncoding = function(buf) {
     } else {
       type = 'bin';
     }
+  }
+
+  var w = type.substr(0, 7);
+  if (w == 'utf16le') {
+    newline = newline16le;
+  } else if (w == 'utf16be') {
+    newline = newline16be;
   }
 
   var encoding = {
