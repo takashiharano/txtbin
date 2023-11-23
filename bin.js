@@ -331,14 +331,25 @@ bin.updateInfoAndPreview = function() {
   return b;
 };
 
-bin.hex2uint8Array = function(s) {
-  s = s.replace(/\s/g, '');
-  return bin.str2binArr(s, 2, '0x');
-};
-
 bin.bin2uint8Array = function(s) {
   s = s.replace(/\s/g, '');
   return bin.str2binArr(s, 8, '0b');
+};
+
+bin.dec2uint8Array = function(s) {
+  s = s.replace(/\n/g, ' ');
+  s = s.replace(/\s{2,}/g, ' ');
+  var w = s.split(' ');
+  var a = [];
+  for (var i = 0; i < w.length; i++) {
+    a.push(w[i] | 0);
+  }
+  return a;
+};
+
+bin.hex2uint8Array = function(s) {
+  s = s.replace(/\s/g, '');
+  return bin.str2binArr(s, 2, '0x');
 };
 
 bin.b642uint8Array = function(s) {
@@ -1063,7 +1074,12 @@ bin.formatHex = function(hex, uc, pFix, d) {
 };
 
 bin.extractBinTextPart = function(mode, s) {
-  var unit = (mode == 'bin' ? 8 : 2);
+  var unit = 2;
+  if (mode == 'bin') {
+    unit = 8;
+  } else if (mode == 'dec') {
+    unit = 3;
+  }
   var vStart = 11;
   var eEnd = unit * 16 + 16;
   s = s.trim();
@@ -1148,13 +1164,16 @@ bin.drawInfo = function(s) {
 };
 
 bin.str2buf = function(mode, s) {
-  if ((mode == 'bin') || (mode == 'hex')) {
+  if ((mode == 'bin') || (mode == 'dec') || (mode == 'hex')) {
     s = bin.extractBinTextPart(mode, s);
   }
   var b;
   switch (mode) {
     case 'hex':
       b = bin.hex2uint8Array(s);
+      break;
+    case 'dec':
+      b = bin.dec2uint8Array(s);
       break;
     case 'bin':
       b = bin.bin2uint8Array(s);
