@@ -139,7 +139,7 @@ select {
 }
 
 #info-area {
-  height: 70px;
+  height: 86px;
   margin-bottom: 4px;
 }
 
@@ -148,7 +148,7 @@ select {
 }
 
 #area3 {
-  height: calc(100vh - 140px);
+  height: calc(100vh - 145px);
 }
 
 #input-area {

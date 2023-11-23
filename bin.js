@@ -64,6 +64,7 @@ bin.FILETYPES = {
 
 bin.auto = true;
 bin.buf = null;
+bin.file = null;
 bin.uiStatus = bin.UI_ST_NONE;
 bin.areaSize = {
   orgX: 0,
@@ -245,13 +246,17 @@ bin.extractB64fromDataUrl = function(s) {
 bin.drawBinInfo = function(ftype, buf, b64) {
   var bLen = buf.length;
   var b64Len = b64.length;
-  var x = util.round(b64Len / bLen, 2);
+  var x = ((bLen == 0) ?  0 : util.round(b64Len / bLen, 2));
   var bSize = util.formatNumber(bLen);
   var b64Size = util.formatNumber(b64Len);
   var s = '';
   s += 'Type    : ' + bin.buildFileTypeInfoString(ftype) + '\n';
   s += 'Size    : ' + bSize + ' bytes : ' + b64Size + ' bytes in Base64 (x ' + x + ')\n';
-  s += bin.getHashInfo(buf);
+  s += bin.getHashInfo(buf) + '\n';
+  if (bin.file) {
+    s += 'FileName: ' + bin.file.name + '  ';
+    s += 'LastMod: ' + util.getDateTimeString(bin.file.lastModified);
+  }
   bin.drawInfo(s);
 };
 
@@ -1066,10 +1071,14 @@ bin.extractBinTextPart = function(mode, s) {
 
 bin.onInput = function() {
   bin.buf = null;
+  bin.file = null;
   bin.forceNewline();
-  if (!bin.auto) return;
-  bin.updateInfoAndPreview();
-  bin.detectCurrentMode();
+  if ($el('#show-preview').checked) {
+    bin.updateInfoAndPreview();
+  }
+  if (bin.auto) {
+    bin.detectCurrentMode();
+  }
 };
 
 bin.forceNewline = function(s) {
@@ -1092,10 +1101,15 @@ bin.forceNewline = function(s) {
 };
 
 bin.onDnd = function(s, f) {
+  bin.file = f;
   if ((s instanceof ArrayBuffer) || (f && bin.isB64Mode())) {
     bin.dump(s);
   } else {
     bin.setSrcValue(s);
+    if (bin.auto) {
+      bin.detectCurrentMode();
+      bin.updateInfoAndPreview();
+    }
   }
   bin.forceNewline();
 };
@@ -1209,6 +1223,7 @@ bin.confirmClear = function() {
 
 bin.clear = function() {
   bin.buf = null;
+  bin.file = null;
   bin.drawInfo('');
   bin.setSrcValue('');
   bin.drawPreview('');
