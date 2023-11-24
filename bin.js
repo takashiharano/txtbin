@@ -283,10 +283,22 @@ bin.buildFileTypeInfoString = function(ftype) {
     if (newline['cr']) {
       clzCr = 'status-active';
     }
-
     s += '  <span class="' + clzCrLf + '">[CRLF]</span>';
     s += '<span class="' + clzLf + '">[LF]</span>';
     s += '<span class="' + clzCr + '">[CR]</span>';
+
+    if (bin.isUnicode(type)) {
+      var clzBmp = 'status-inactive';
+      var clzSmp = 'status-inactive';
+      if (enc.bmp) {
+        clzBmp = 'status-active';
+      }
+      if (enc.smp) {
+        clzSmp = 'status-active';
+      }
+      s += '  <span class="' + clzBmp + '">[<span data-tooltip="Basic Multilingual Plane">BMP</span>]</span>';
+      s += '<span class="' + clzSmp + '">[<span data-tooltip="Supplementary Multilingual Plane">SMP</span>]</span>';
+    }
   }
 
   if (ftype['bin_detail']) {
@@ -295,6 +307,11 @@ bin.buildFileTypeInfoString = function(ftype) {
 
   return s;
 }
+
+bin.isUnicode = function(type) {
+  var pFix = type.substr(0, 3);
+  return (pFix == 'utf');
+};
 
 bin.getEncodingName = function(id) {
   var name = '';
@@ -594,16 +611,6 @@ bin.getEncoding = function(buf) {
     euc_jp: 0,
     bin: 0
   };
-
-  if (bin.isUtf8Bom(buf)) {
-    typeScore = bin.setScore(typeScore, 'utf8');
-  } else if (bin.isUtf16LeBom(buf)) {
-    typeScore = bin.setScore(typeScore, 'utf16le_bom');
-  } else if (bin.isUtf16BeBom(buf)) {
-    typeScore = bin.setScore(typeScore, 'utf16be_bom');
-  }
-
-  var evn = ((buf.length % 2) == 0);
   var newline = {
     lf: false,
     cr: false,
@@ -619,14 +626,40 @@ bin.getEncoding = function(buf) {
     cr: false,
     crlf: false
   };
+  var flags = {
+    utf8: {
+      bmp: false,
+      smp: false
+    },
+    utf16be: {
+      bmp: false,
+      smp: false
+    },
+    utf16le: {
+      bmp: false,
+      smp: false
+    }
+  };
+
+  if (bin.isUtf8Bom(buf)) {
+    typeScore = bin.setScore(typeScore, 'utf8');
+  } else if (bin.isUtf16LeBom(buf)) {
+    typeScore = bin.setScore(typeScore, 'utf16le_bom');
+  } else if (bin.isUtf16BeBom(buf)) {
+    typeScore = bin.setScore(typeScore, 'utf16be_bom');
+  }
+
+  var evn = ((buf.length % 2) == 0);
   var tmpNL = null;
   var cnt = 0;
   for (var i = 0; i < buf.length; i++) {
     var code = buf[i];
 
     var ptn4 = bin.scanBin(buf, i, 4);
-    var ptn2U = (ptn4 & 0xFFFF0000) >> 16;
-    var ptn2L = (ptn4 & 0x0000FFFF);
+    var ptn2U = (ptn4 >> 16) & 0xFFFF;
+    var ptn2L = (ptn4 & 0xFFFF);
+    var ptn2Ur = bin.switchEndian(ptn2U);
+    var ptn2Lr = bin.switchEndian(ptn2L);
 
     if (i % 2 == 0) {
       if (ptn4 == 0x000D000A) {
@@ -641,6 +674,15 @@ bin.getEncoding = function(buf) {
         newline16be['cr'] = true;
       } else if ((ptn2U == 0x0D00) && (ptn2L != 0x0AA0)) {
         newline16le['cr'] = true;
+      }
+
+      if (((ptn2U >= 0xD800) && (ptn2U <= 0xDBFF)) && ((ptn2L >= 0xDC00) && (ptn2L <= 0xDFFF))) {
+        flags['utf16be']['smp'] = true;
+      } else if (((ptn2Ur >= 0xD800) && (ptn2Ur <= 0xDBFF)) && ((ptn2Lr >= 0xDC00) && (ptn2Lr <= 0xDFFF))) {
+        flags['utf16le']['smp'] = true;
+      } else {
+        flags['utf16be']['bmp'] = true;
+        flags['utf16le']['bmp'] = true;
       }
     }
 
@@ -676,6 +718,7 @@ bin.getEncoding = function(buf) {
         uri = '%' + c0 + '%' + c1 + '%' + c2 + '%' + c3;
       }
       skip = 3;
+      flags['utf8']['smp'] = true;
     } else if ((code & 0xE0) == 0xE0) {
       var c0 = bin.i2hex(buf[i]);
       var c1 = bin.i2hex(buf[i + 1]);
@@ -684,6 +727,7 @@ bin.getEncoding = function(buf) {
         uri = '%' + c0 + '%' + c1 + '%' + c2;
       }
       skip = 2;
+      flags['utf8']['bmp'] = true;
     } else if ((code & 0xC0) == 0xC0) {
       var c0 = bin.i2hex(buf[i]);
       var c1 = bin.i2hex(buf[i + 1]);
@@ -691,6 +735,7 @@ bin.getEncoding = function(buf) {
         uri = '%' + c0 + '%' + c1;
       }
       skip = 1;
+      flags['utf8']['bmp'] = true;
     } else if (code > 0x7F) {
       typeScore['utf8'] = -1;
       if (evn) {
@@ -709,6 +754,7 @@ bin.getEncoding = function(buf) {
 
       if (evn) {
         typeScore = bin.incrementScore(typeScore, 'utf16');
+        flags['utf16be']['bmp'] = true;
         cnt++;
       } else {
         if (typeScore['bin'] != -1) {
@@ -743,16 +789,13 @@ bin.getEncoding = function(buf) {
       typeScore['utf16'] = -1;
       cnt++;
     }
-
-    if (cnt >= 1024) {
-      break;
-    }
   }
 
   typeScore = util.sortObjectKeyByValue(typeScore, true);
   for (var type in typeScore) {
     break;
   }
+
   if (type == 'utf16') {
     if (bin.isUtf16Le(buf)) {
       type = 'utf16le';
@@ -763,19 +806,37 @@ bin.getEncoding = function(buf) {
     }
   }
 
+  var bmp = false;
+  var smp = false;
   var w = type.substr(0, 7);
   if (w == 'utf16le') {
     newline = newline16le;
+    bmp = flags['utf16le']['bmp'];
+    smp = flags['utf16le']['smp'];
   } else if (w == 'utf16be') {
     newline = newline16be;
+    bmp = flags['utf16be']['bmp'];
+    smp = flags['utf16be']['smp'];
+  } else if (type == 'utf8') {
+    bmp = flags['utf8']['bmp'];
+    smp = flags['utf8']['smp'];
   }
 
   var encoding = {
     type: type,
-    newline: newline
+    newline: newline,
+    bmp: bmp,
+    smp: smp
   }
 
   return encoding;
+};
+
+bin.switchEndian = function(u16) {
+  var vU = u16 >> 8;
+  var vL = u16 & 0xFF;
+  var r = (vL << 8) + vU;
+  return r;
 };
 
 bin.setScore = function(o, k) {
