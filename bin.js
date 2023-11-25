@@ -31,6 +31,7 @@ bin.ENCODING_NAME = {
 };
 
 bin.FILETYPES = {
+  accdb: {head: '00 01 00 00 53 74 61 6E 64 61 72 64 20 41 43 45 20 44 42', mime: 'application/msaccess', ext: 'accdb'},
   bmp: {head: '42 4D', mime: 'image/bmp', ext: 'bmp'},
   cab: {head: '4D 53 43 46 00 00 00 00', mime: 'application/vnd.ms-cab-compressed', ext: 'cab'},
   class: {head: 'CA FE BA BE', mime: 'application/octet-stream', ext: 'class'},
