@@ -135,6 +135,143 @@ bin.CODE_BLOCKS = [
   }
 ];
 
+bin.CODE_BLOCKS2 = [
+  {
+    name: 'emoji',
+    utf16_s: 0xD83CDF00,
+    utf16_e: 0xD83EDFFF,
+    utf8_s: 0xF09F8C80,
+    utf8_e: 0xF09FAFBF
+  },
+  {
+    name: 'sip',
+    utf16_s: 0xD840DC00,
+    utf16_e: 0xD87FDFFF,
+    utf8_s: 0xF0A08080,
+    utf8_e: 0xF0AFBFBF
+  },
+  {
+    name: 'tip',
+    utf16_s: 0xD880DC00,
+    utf16_e: 0xDB3FDFFF,
+    utf8_s: 0xF0B08080,
+    utf8_e: 0xF39FBFBF
+  },
+  {
+    name: 'ssp',
+    utf16_s: 0xDB40DC00,
+    utf16_e: 0xDB7FDFFF,
+    utf8_s: 0xF3A08080,
+    utf8_e: 0xF3AFBFBF
+  },
+  {
+    name: 'variation_selectors2',
+    utf16_s: 0xDB40DD00,
+    utf16_e: 0xDB40DDEF,
+    utf8_s: 0xF3A08480,
+    utf8_e: 0xF3A087AF
+  },
+  {
+    name: 'pua15',
+    utf16_s: 0xDB80DC00,
+    utf16_e: 0xDBBFDFFF,
+    utf8_s: 0xF3B08080,
+    utf8_e: 0xF3BFBFBF
+  },
+  {
+    name: 'pua16',
+    utf16_s: 0xDBC0DC00,
+    utf16_e: 0xDBFFDFFE,
+    utf8_s: 0xF4808080,
+    utf8_e: 0xF48FBFBF
+  },
+];
+
+bin.CODEBLOCKS_IND = {
+  'bmp': {
+    label: 'U+0000-U+FFFF(BMP)',
+    fullname: 'Basic Multilingual Plane',
+    plane: true
+  },
+  'ascii': {
+    label: 'A',
+    fullname: 'ASCII'
+  },
+  'symbols': {
+    label: '☆',
+    fullname: 'Symbols'
+  },
+  'hiragana': {
+    label: 'あ',
+    fullname: 'Hiragana'
+  },
+  'katakana': {
+    label: 'ア',
+    fullname: 'Katakana'
+  },
+  'bopomofo': {
+    label: 'ㄅ',
+    fullname: 'Bopomofo'
+  },
+  'kanji': {
+    label: '漢',
+    fullname: 'CJK unified ideographs'
+  },
+  'hangul': {
+    label: '한',
+    fullname: 'Hangul'
+  },
+  'kanji_comp': {
+    label: '漢2',
+    fullname: 'CJK Compatibility Ideographs'
+  },
+  'variation_selectors': {
+    label: 'VS',
+    fullname: 'Variation Selectors'
+  },
+  'fillwidth_forms': {
+    label: 'Ａ',
+    fullname: 'Fullwidth Forms'
+  },
+  'half_kana': {
+    label: 'ｱ',
+    fullname: 'Halfwidth Kana'
+  },
+  'non_bmp': {
+    label: 'U+10000-U+10FFFF',
+    fullname: 'Supplementary Multilingual Plane',
+    plane: true
+  },
+  'emoji': {
+    label: 'Emoji',
+    fullname: 'Emoji'
+  },
+  'sip': {
+    label: 'SIP',
+    fullname: 'Supplementary Ideographic Plane'
+  },
+  'tip': {
+    label: 'TIP',
+    fullname: 'Tertiary Ideographic Plane'
+  },
+  'ssp': {
+    label: 'SSP',
+    fullname: 'Supplementary Special-purpose Plane'
+  },
+  'variation_selectors2': {
+    label: 'VS2',
+    fullname: 'Variation Selectors 2'
+  },
+  'pua15': {
+    label: 'PUA15',
+    fullname: 'Private Use Plane'
+  },
+  'pua16': {
+    label: 'PUA16',
+    fullname: 'Private Use Plane'
+  }
+};
+
 bin.auto = true;
 bin.buf = null;
 bin.file = null;
@@ -361,88 +498,33 @@ bin.buildFileTypeInfoString = function(ftype) {
     s += '<span class="' + clzCr + '">[CR]</span>';
 
     if (bin.isUnicode(type)) {
-      var codeBlocks = {
-        'bmp': {
-          label: 'U+0000-U+FFFF(BMP)',
-          fullname: 'Basic Multilingual Plane',
-          plane: true
-        },
-        'ascii': {
-          label: 'A',
-          fullname: 'ASCII'
-        },
-        'symbols': {
-          label: '☆',
-          fullname: 'Symbols'
-        },
-        'hiragana': {
-          label: 'あ',
-          fullname: 'Hiragana'
-        },
-        'katakana': {
-          label: 'ア',
-          fullname: 'Katakana'
-        },
-        'bopomofo': {
-          label: 'ㄅ',
-          fullname: 'Bopomofo'
-        },
-        'kanji': {
-          label: '漢',
-          fullname: 'CJK unified ideographs'
-        },
-        'hangul': {
-          label: '한',
-          fullname: 'Hangul'
-        },
-        'kanji_comp': {
-          label: '漢2',
-          fullname: 'CJK Compatibility Ideographs'
-        },
-        'variation_selectors': {
-          label: 'VS',
-          fullname: 'Variation Selectors'
-        },
-        'fillwidth_forms': {
-          label: 'Ａ',
-          fullname: 'Fullwidth Forms'
-        },
-        'half_kana': {
-          label: 'ｱ',
-          fullname: 'Halfwidth Kana'
-        },
-        'non_bmp': {
-          label: 'U+10000-U+10FFFF',
-          fullname: 'Supplementary Multilingual Plane',
-          plane: true
-        }
-      };
-
       var i, blockName;
       var clz = {};
-      for (blockName in codeBlocks) {
+      for (blockName in bin.CODEBLOCKS_IND) {
         clz[blockName] = 'status-inactive';
       }
 
       var codeblockInd = encInfo['codeblock_ind'];
-      for (blockName in codeBlocks) {
+      for (blockName in bin.CODEBLOCKS_IND) {
         if (codeblockInd[blockName]) {
           clz[blockName] = 'status-active';
         }
       }
 
-      s += ' ';
-      for (blockName in codeBlocks) {
-        var codeBlock = codeBlocks[blockName];
+      s += '';
+      for (blockName in bin.CODEBLOCKS_IND) {
+        var codeBlock = bin.CODEBLOCKS_IND[blockName];
         if (codeBlock['plane']) {
-          s += ' ';
+          s += '  ';
         }
         s += '<span class="' + clz[blockName] + '">';
         if (!codeBlock['plane']) {
           s += '[';
         }
         s += '<span data-tooltip="' + codeBlock['fullname'] + '">' + codeBlock['label'] + '</span>';
-        if (!codeBlock['plane']) {
+        if (codeBlock['plane']) {
+          s += ':';
+        } else {
           s += ']';
         }
         s += '</span>';
@@ -804,6 +886,7 @@ bin.getEncoding = function(buf) {
   var cnt = 0;
   for (var i = 0; i < buf.length; i++) {
     var code = buf[i];
+    var leftLen = buf.length - i;
 
     var ptn4 = bin.scanBin(buf, i, 4);
     var ptn3 = bin.scanBin(buf, i, 3);
@@ -815,6 +898,7 @@ bin.getEncoding = function(buf) {
     var ptn2Lr = bin.switchEndian(ptn2L);
 
     var chunk = {
+      leftLen: leftLen,
       ptn4: ptn4,
       ptn2: ptn2,
       ptn2U: ptn2U,
@@ -831,6 +915,11 @@ bin.getEncoding = function(buf) {
     for (var j = 0; j < bin.CODE_BLOCKS.length; j++) {
       var codeBlock = bin.CODE_BLOCKS[j];
       bin.checkCodeBlock(buf, i, code, chunk, flags, codeBlock);
+    }
+
+    for (j = 0; j < bin.CODE_BLOCKS2.length; j++) {
+      codeBlock = bin.CODE_BLOCKS2[j];
+      bin.checkCodeBlock2(buf, i, code, chunk, flags, codeBlock);
     }
 
     var uri = null;
@@ -1029,6 +1118,33 @@ bin.checkCodeBlock = function(buf, pos, code, chunk, flags, codeBlock) {
   return flags;
 };
 
+bin.checkCodeBlock2 = function(buf, pos, code, chunk, flags, codeBlock) {
+  if (chunk['leftLen'] < 4) {
+    return flags;
+  }
+
+  var blockName = codeBlock['name'];
+  var utf16S = codeBlock['utf16_s'];
+  var utf16E = codeBlock['utf16_e'];
+  var utf8S = codeBlock['utf8_s'];
+  var utf8E = codeBlock['utf8_e'];
+
+  if (pos % 2 == 0) {
+    var u4r = (chunk['ptn2Ur'] * (2 ** 16));
+    var ptn4r = u4r + chunk['ptn2Lr'];
+    if ((chunk['ptn4'] >= utf16S) && (chunk['ptn4'] <= utf16E)) {
+      flags['utf16be']['codeblock_ind'][blockName] = true;
+    } else if ((ptn4r >= utf16S) && (ptn4r <= utf16E)) {
+      flags['utf16le']['codeblock_ind'][blockName] = true;
+    }
+  }
+
+  if ((chunk['ptn4'] >= utf8S) && (chunk['ptn4'] <= utf8E)) {
+    flags['utf8']['codeblock_ind'][blockName] = true;
+  }
+  return flags;
+};
+
 bin.checkNonBmp = function(buf, pos, code, chunk, flags) {
   if (pos % 2 == 0) {
     if (bin.isUpperSurrogate(chunk['ptn2U']) && bin.isLowerSurrogate(chunk['ptn2L'])) {
@@ -1045,26 +1161,30 @@ bin.checkNonBmp = function(buf, pos, code, chunk, flags) {
   return flags;
 };
 
+bin.inByteRange = function(c, s, e) {
+  return ((c >= s) && (c <= e));
+};
+
 bin.isSurrogate = function(v) {
   return (bin.isUpperSurrogate(v) || bin.isLowerSurrogate(v));
 };
 
 bin.isUpperSurrogate = function(v) {
-  return ((v >= 0xD800) && (v <= 0xDBFF));
+  return bin.inByteRange(v, 0xD800, 0xDBFF);
 };
 
 bin.isLowerSurrogate = function(v) {
-  return ((v >= 0xDC00) && (v <= 0xDFFF));
+  return bin.inByteRange(v, 0xDC00, 0xDFFF);
 };
 
 bin.isUtf16BomSeq = function(v) {
-  return ((v == '0xFFFE') || (v == '0xFEFF'));
+  return ((v == 0xFFFE) || (v == 0xFEFF));
 };
 
 bin.switchEndian = function(u16) {
-  var vU = u16 >> 8;
+  var vU = (u16 >> 8) & 0xFF;
   var vL = u16 & 0xFF;
-  var r = (vL << 8) + vU;
+  var r = ((vL << 8) + vU) & 0xFFFF;
   return r;
 };
 
