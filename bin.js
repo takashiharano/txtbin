@@ -64,6 +64,18 @@ bin.FILETYPES = {
 
 bin.CODE_BLOCKS = [
   {
+    name: 'latin1_suppl',
+    utf16_s: 0x0080,
+    utf16_e: 0x00FF
+  },
+  {
+    name: 'thai',
+    utf16_s: 0x0E00,
+    utf16_e: 0x0E7F,
+    utf8_s: 0xE0B880,
+    utf8_e: 0xE0B9BF
+  },
+  {
     name: 'symbols',
     utf16_s: 0x2000,
     utf16_e: 0x2BFF,
@@ -196,6 +208,14 @@ bin.CODEBLOCKS_IND = {
   'ascii': {
     label: 'A',
     fullname: 'ASCII'
+  },
+  'latin1_suppl': {
+    label: 'Ä',
+    fullname: 'Latin-1 Supplement'
+  },
+  'thai': {
+    label: 'ไทย',
+    fullname: 'Thai'
   },
   'symbols': {
     label: '☆',
@@ -984,6 +1004,10 @@ bin.getEncoding = function(buf) {
         var c = decodeURI(uri);
         i += skip;
         typeScore = bin.incrementScore(typeScore, 'utf8');
+        var cp = c.charCodeAt(0);
+        if (bin.inByteRange(cp, 0x80, 0xFF)) {
+          flags['utf8']['codeblock_ind']['latin1_suppl'] = true;
+        }
         cnt++;
       }
     } catch(e) {}
