@@ -769,11 +769,6 @@ bin.getEncoding = function(buf) {
       }
     },
     utf8: {
-      newline: {
-        lf: false,
-        cr: false,
-        crlf: false
-      },
       codeblock_ind: {}
     },
     utf16be: {
