@@ -62,6 +62,79 @@ bin.FILETYPES = {
   jar: {hexptn: '4D 45 54 41 2D 49 4E 46 2F', mime: 'application/java-archive', ext: 'jar', supertype: 'zip'}
 };
 
+bin.CODE_BLOCKS = [
+  {
+    name: 'symbols',
+    utf16_s: 0x2000,
+    utf16_e: 0x2BFF,
+    utf8_s: 0xE28080,
+    utf8_e: 0xE2AFBF
+  },
+  {
+    name: 'hiragana',
+    utf16_s: 0x3041,
+    utf16_e: 0x3096,
+    utf8_s: 0xE38181,
+    utf8_e: 0xE38296
+  },
+  {
+    name: 'katakana',
+    utf16_s: 0x30A1,
+    utf16_e: 0x30FF,
+    utf8_s: 0xE382A1,
+    utf8_e: 0xE383BF
+  },
+  {
+    name: 'bopomofo',
+    utf16_s: 0x3100,
+    utf16_e: 0x312F,
+    utf8_s: 0xE38480,
+    utf8_e: 0xE384AF
+  },
+  {
+    name: 'kanji',
+    utf16_s: 0x3400,
+    utf16_e: 0x9FFF,
+    utf8_s: 0xE39080,
+    utf8_e: 0xE9BFBF
+  },
+  {
+    name: 'hangul',
+    utf16_s: 0xAC00,
+    utf16_e: 0xD7AF,
+    utf8_s: 0xEAB080,
+    utf8_e: 0xED9EAF
+  },
+  {
+    name: 'kanji_comp',
+    utf16_s: 0xF900,
+    utf16_e: 0xFAFF,
+    utf8_s: 0xEFA480,
+    utf8_e: 0xEFABBF
+  },
+  {
+    name: 'variation_selectors',
+    utf16_s: 0xFE00,
+    utf16_e: 0xFE0F,
+    utf8_s: 0xEFB880,
+    utf8_e: 0xEFB88F
+  },
+  {
+    name: 'fillwidth_forms',
+    utf16_s: 0xFF00,
+    utf16_e: 0xFF5E,
+    utf8_s: 0xEFBC80,
+    utf8_e: 0xEFBD9E
+  },
+  {
+    name: 'half_kana',
+    utf16_s: 0xFF61,
+    utf16_e: 0xFF9F,
+    utf8_s: 0xEFBDA1,
+    utf8_e: 0xEFBE9F
+  }
+];
+
 bin.auto = true;
 bin.buf = null;
 bin.file = null;
@@ -266,11 +339,11 @@ bin.buildFileTypeInfoString = function(ftype) {
   var s = '.' + ftype['ext'] + '  ' + ftype['mime'];
 
   if (ftype['encoding']) {
-    var enc = ftype['encoding'];
-    var type = enc.type;
+    var encInfo = ftype['encoding'];
+    var type = encInfo.type;
     s += '  ' + bin.getEncodingName(type);
 
-    var newline = enc.newline;
+    var newline = encInfo['newline'];
     var clzCrLf = 'status-inactive';
     var clzLf = 'status-inactive';
     var clzCr = 'status-inactive';
@@ -288,16 +361,92 @@ bin.buildFileTypeInfoString = function(ftype) {
     s += '<span class="' + clzCr + '">[CR]</span>';
 
     if (bin.isUnicode(type)) {
-      var clzBmp = 'status-inactive';
-      var clzSmp = 'status-inactive';
-      if (enc.bmp) {
-        clzBmp = 'status-active';
+      var codeBlocks = {
+        'bmp': {
+          label: 'U+0000-U+FFFF(BMP)',
+          fullname: 'Basic Multilingual Plane',
+          plane: true
+        },
+        'ascii': {
+          label: 'A',
+          fullname: 'ASCII'
+        },
+        'symbols': {
+          label: '☆',
+          fullname: 'Symbols'
+        },
+        'hiragana': {
+          label: 'あ',
+          fullname: 'Hiragana'
+        },
+        'katakana': {
+          label: 'ア',
+          fullname: 'Katakana'
+        },
+        'bopomofo': {
+          label: 'ㄅ',
+          fullname: 'Bopomofo'
+        },
+        'kanji': {
+          label: '漢',
+          fullname: 'CJK unified ideographs'
+        },
+        'hangul': {
+          label: '한',
+          fullname: 'Hangul'
+        },
+        'kanji_comp': {
+          label: '漢2',
+          fullname: 'CJK Compatibility Ideographs'
+        },
+        'variation_selectors': {
+          label: 'VS',
+          fullname: 'Variation Selectors'
+        },
+        'fillwidth_forms': {
+          label: 'Ａ',
+          fullname: 'Fullwidth Forms'
+        },
+        'half_kana': {
+          label: 'ｱ',
+          fullname: 'Halfwidth Kana'
+        },
+        'non_bmp': {
+          label: 'U+10000-U+10FFFF',
+          fullname: 'Supplementary Multilingual Plane',
+          plane: true
+        }
+      };
+
+      var i, blockName;
+      var clz = {};
+      for (blockName in codeBlocks) {
+        clz[blockName] = 'status-inactive';
       }
-      if (enc.smp) {
-        clzSmp = 'status-active';
+
+      var codeblockInd = encInfo['codeblock_ind'];
+      for (blockName in codeBlocks) {
+        if (codeblockInd[blockName]) {
+          clz[blockName] = 'status-active';
+        }
       }
-      s += '  <span class="' + clzBmp + '">[<span data-tooltip="Basic Multilingual Plane">BMP</span>]</span>';
-      s += '<span class="' + clzSmp + '">[<span data-tooltip="Supplementary Multilingual Plane">SMP</span>]</span>';
+
+      s += ' ';
+      for (blockName in codeBlocks) {
+        var codeBlock = codeBlocks[blockName];
+        if (codeBlock['plane']) {
+          s += ' ';
+        }
+        s += '<span class="' + clz[blockName] + '">';
+        if (!codeBlock['plane']) {
+          s += '[';
+        }
+        s += '<span data-tooltip="' + codeBlock['fullname'] + '">' + codeBlock['label'] + '</span>';
+        if (!codeBlock['plane']) {
+          s += ']';
+        }
+        s += '</span>';
+      }
     }
   }
 
@@ -600,7 +749,6 @@ bin.dumpAscii = function(pos, buf) {
   return b;
 };
 
-
 bin.getEncoding = function(buf) {
   var typeScore = {
     ascii: 1,
@@ -611,33 +759,41 @@ bin.getEncoding = function(buf) {
     euc_jp: 0,
     bin: 0
   };
-  var newline = {
-    lf: false,
-    cr: false,
-    crlf: false
-  };
-  var newline16le = {
-    lf: false,
-    cr: false,
-    crlf: false
-  };
-  var newline16be = {
-    lf: false,
-    cr: false,
-    crlf: false
-  };
+
   var flags = {
+    general: {
+      newline: {
+        lf: false,
+        cr: false,
+        crlf: false
+      }
+    },
     utf8: {
-      bmp: false,
-      smp: false
+      newline: {
+        lf: false,
+        cr: false,
+        crlf: false
+      },
+      codeblock_ind: {}
     },
     utf16be: {
-      bmp: false,
-      smp: false
+      newline: {
+        lf: false,
+        cr: false,
+        crlf: false
+      },
+      codeblock_ind: {}
     },
     utf16le: {
-      bmp: false,
-      smp: false
+      newline: {
+        lf: false,
+        cr: false,
+        crlf: false
+      },
+      codeblock_ind: {}
+    },
+    wk: {
+      tmpNL: null
     }
   };
 
@@ -650,61 +806,36 @@ bin.getEncoding = function(buf) {
   }
 
   var evn = ((buf.length % 2) == 0);
-  var tmpNL = null;
   var cnt = 0;
   for (var i = 0; i < buf.length; i++) {
     var code = buf[i];
 
     var ptn4 = bin.scanBin(buf, i, 4);
-    var ptn2U = (ptn4 >> 16) & 0xFFFF;
+    var ptn3 = bin.scanBin(buf, i, 3);
+    var ptn2 = bin.scanBin(buf, i, 2);
+
+    var ptn2U = ptn2;
     var ptn2L = (ptn4 & 0xFFFF);
     var ptn2Ur = bin.switchEndian(ptn2U);
     var ptn2Lr = bin.switchEndian(ptn2L);
 
-    if (i % 2 == 0) {
-      if (ptn4 == 0x000D000A) {
-        newline16be['crlf'] = true;
-      } else if (ptn4 == 0x0D000A00) {
-        newline16le['crlf'] = true;
-      } else if ((ptn2L == 0x000A) && (ptn2U != 0x000D)) {
-        newline16be['lf'] = true;
-      } else if ((ptn2L == 0x0A00) && (ptn2U != 0x0D00)) {
-        newline16le['lf'] = true;
-      } else if ((ptn2U == 0x000D) && (ptn2L != 0x000A)) {
-        newline16be['cr'] = true;
-      } else if ((ptn2U == 0x0D00) && (ptn2L != 0x0AA0)) {
-        newline16le['cr'] = true;
-      }
+    var chunk = {
+      ptn4: ptn4,
+      ptn2: ptn2,
+      ptn2U: ptn2U,
+      ptn2L: ptn2L,
+      ptn2Ur: ptn2Ur,
+      ptn2Lr: ptn2Lr,
+      ptn3: ptn3
+    };
 
-      if (((ptn2U >= 0xD800) && (ptn2U <= 0xDBFF)) && ((ptn2L >= 0xDC00) && (ptn2L <= 0xDFFF))) {
-        flags['utf16be']['smp'] = true;
-      } else if (((ptn2Ur >= 0xD800) && (ptn2Ur <= 0xDBFF)) && ((ptn2Lr >= 0xDC00) && (ptn2Lr <= 0xDFFF))) {
-        flags['utf16le']['smp'] = true;
-      } else {
-        flags['utf16be']['bmp'] = true;
-        flags['utf16le']['bmp'] = true;
-      }
-    }
+    bin.checkNewline(buf, i, code, chunk, flags);
+    bin.checkAscii(buf, i, code, chunk, flags);
+    bin.checkNonBmp(buf, i, code, chunk, flags);
 
-    if (ptn2U == 0x0D0A) {
-      newline['crlf'] = true;
-    }
-
-    if (code == 0x0D) {
-      tmpNL = 'CR';
-      if (i == buf.length - 1) {
-        newline['cr'] = true;
-      }
-    } else if (code == 0x0A) {
-      if (tmpNL != 'CR') {
-        newline['lf'] = true;
-      }
-      tmpNL = null;
-    } else {
-      if (tmpNL == 'CR') {
-        newline['cr'] = true;
-      }
-      tmpNL = null;
+    for (var j = 0; j < bin.CODE_BLOCKS.length; j++) {
+      var codeBlock = bin.CODE_BLOCKS[j];
+      bin.checkCodeBlock(buf, i, code, chunk, flags, codeBlock);
     }
 
     var uri = null;
@@ -718,7 +849,7 @@ bin.getEncoding = function(buf) {
         uri = '%' + c0 + '%' + c1 + '%' + c2 + '%' + c3;
       }
       skip = 3;
-      flags['utf8']['smp'] = true;
+      flags['utf8']['codeblock_ind']['non_bmp'] = true;
     } else if ((code & 0xE0) == 0xE0) {
       var c0 = bin.i2hex(buf[i]);
       var c1 = bin.i2hex(buf[i + 1]);
@@ -727,7 +858,7 @@ bin.getEncoding = function(buf) {
         uri = '%' + c0 + '%' + c1 + '%' + c2;
       }
       skip = 2;
-      flags['utf8']['bmp'] = true;
+      flags['utf8']['codeblock_ind']['bmp'] = true;
     } else if ((code & 0xC0) == 0xC0) {
       var c0 = bin.i2hex(buf[i]);
       var c1 = bin.i2hex(buf[i + 1]);
@@ -735,7 +866,7 @@ bin.getEncoding = function(buf) {
         uri = '%' + c0 + '%' + c1;
       }
       skip = 1;
-      flags['utf8']['bmp'] = true;
+      flags['utf8']['codeblock_ind']['bmp'] = true;
     } else if (code > 0x7F) {
       typeScore['utf8'] = -1;
       if (evn) {
@@ -754,13 +885,14 @@ bin.getEncoding = function(buf) {
 
       if (evn) {
         typeScore = bin.incrementScore(typeScore, 'utf16');
-        flags['utf16be']['bmp'] = true;
         cnt++;
       } else {
         if (typeScore['bin'] != -1) {
           typeScore['bin'] = 1;
         }
       }
+    } else {
+      flags['utf8']['codeblock_ind']['ascii'] = true;
     }
 
     try {
@@ -806,30 +938,132 @@ bin.getEncoding = function(buf) {
     }
   }
 
-  var bmp = false;
-  var smp = false;
-  var w = type.substr(0, 7);
-  if (w == 'utf16le') {
-    newline = newline16le;
-    bmp = flags['utf16le']['bmp'];
-    smp = flags['utf16le']['smp'];
-  } else if (w == 'utf16be') {
-    newline = newline16be;
-    bmp = flags['utf16be']['bmp'];
-    smp = flags['utf16be']['smp'];
-  } else if (type == 'utf8') {
-    bmp = flags['utf8']['bmp'];
-    smp = flags['utf8']['smp'];
-  }
-
   var encoding = {
     type: type,
-    newline: newline,
-    bmp: bmp,
-    smp: smp
+    newline: flags['general']['newline'],
+    codeblock_ind: {}
+  };
+
+  if (bin.isUnicode(type)) {
+    var wType = type.replace(/_bom$/, '');
+    var srcFlags = flags[wType];
+    for (var key in encoding) {
+      if (key in srcFlags) {
+        encoding[key] = srcFlags[key];
+      }
+    }
   }
 
   return encoding;
+};
+
+bin.checkNewline = function(buf, pos, code, chunk, flags) {
+  if (pos % 2 == 0) {
+    if (chunk['ptn4'] == 0x000D000A) {
+      flags['utf16be']['newline']['crlf'] = true;
+    } else if (chunk['ptn4'] == 0x0D000A00) {
+      flags['utf16le']['newline']['crlf'] = true;
+    } else if ((chunk['ptn2L'] == 0x000A) && (chunk['ptn2U'] != 0x000D)) {
+      flags['utf16be']['newline']['lf'] = true;
+    } else if ((chunk['ptn2L'] == 0x0A00) && (chunk['ptn2U'] != 0x0D00)) {
+      flags['utf16le']['newline']['lf'] = true;
+    } else if ((chunk['ptn2U'] == 0x000D) && (chunk['ptn2L'] != 0x000A)) {
+      flags['utf16be']['newline']['cr'] = true;
+    } else if ((chunk['ptn2U'] == 0x0D00) && (chunk['ptn2L'] != 0x0AA0)) {
+      flags['utf16le']['newline']['cr'] = true;
+    }
+  }
+
+  if (chunk['ptn2U'] == 0x0D0A) {
+    flags['general']['newline']['crlf'] = true;
+  }
+
+  if (code == 0x0D) {
+    flags['wk']['tmpNL'] = 'CR';
+    if (pos == buf.length - 1) {
+      flags['general']['newline']['cr'] = true;
+    }
+  } else if (code == 0x0A) {
+    if (flags['wk']['tmpNL'] != 'CR') {
+      flags['general']['newline']['lf'] = true;
+    }
+    flags['wk']['tmpNL'] = null;
+  } else {
+    if (flags['wk']['tmpNL'] == 'CR') {
+      flags['general']['newline']['cr'] = true;
+    }
+    flags['wk']['tmpNL'] = null;
+  }
+
+  return flags;
+};
+
+bin.checkAscii = function(buf, pos, code, chunk, flags) {
+  if (pos % 2 == 0) {
+    if ((chunk['ptn2U'] >= 0x0020) && (chunk['ptn2U'] <= 0x007F)) {
+      flags['utf16be']['codeblock_ind']['ascii'] = true;
+    } else if ((chunk['ptn2Ur'] >= 0x0020) && (chunk['ptn2Ur'] <= 0x007F)) {
+      flags['utf16le']['codeblock_ind']['ascii'] = true;
+    }
+  }
+
+  if ((code >= 0x0020) && (code <= 0x007F)) {
+    flags['utf8']['codeblock_ind']['ascii'] = true;
+  }
+
+  return flags;
+};
+
+bin.checkCodeBlock = function(buf, pos, code, chunk, flags, codeBlock) {
+  var blockName = codeBlock['name'];
+  var utf16S = codeBlock['utf16_s'];
+  var utf16E = codeBlock['utf16_e'];
+  var utf8S = codeBlock['utf8_s'];
+  var utf8E = codeBlock['utf8_e'];
+
+  if (pos % 2 == 0) {
+    if ((chunk['ptn2U'] >= utf16S) && (chunk['ptn2U'] <= utf16E)) {
+      flags['utf16be']['codeblock_ind'][blockName] = true;
+    } else if ((chunk['ptn2Ur'] >= utf16S) && (chunk['ptn2Ur'] <= utf16E)) {
+      flags['utf16le']['codeblock_ind'][blockName] = true;
+    }
+  }
+  if ((chunk['ptn3'] >= utf8S) && (chunk['ptn3'] <= utf8E)) {
+    flags['utf8']['codeblock_ind'][blockName] = true;
+  }
+  return flags;
+};
+
+bin.checkNonBmp = function(buf, pos, code, chunk, flags) {
+  if (pos % 2 == 0) {
+    if (bin.isUpperSurrogate(chunk['ptn2U']) && bin.isLowerSurrogate(chunk['ptn2L'])) {
+      flags['utf16be']['codeblock_ind']['non_bmp'] = true;
+    } else if (bin.isUpperSurrogate(chunk['ptn2Ur']) && bin.isLowerSurrogate(chunk['ptn2Lr'])) {
+      flags['utf16le']['codeblock_ind']['non_bmp'] = true;
+    } else {
+      if (!(bin.isUtf16BomSeq(chunk['ptn2U']) || bin.isUtf16BomSeq(chunk['ptn2Ur']) || bin.isSurrogate(chunk['ptn2U']) || bin.isSurrogate(chunk['ptn2Ur']))) {
+        flags['utf16le']['codeblock_ind']['bmp'] = true;
+        flags['utf16be']['codeblock_ind']['bmp'] = true;
+      }
+    }
+  }
+  return flags;
+};
+
+bin.isSurrogate = function(v) {
+  return (bin.isUpperSurrogate(v) || bin.isLowerSurrogate(v));
+};
+
+bin.isUpperSurrogate = function(v) {
+  return ((v >= 0xD800) && (v <= 0xDBFF));
+};
+
+bin.isLowerSurrogate = function(v) {
+  return ((v >= 0xDC00) && (v <= 0xDFFF));
+};
+
+bin.isUtf16BomSeq = function(v) {
+  return ((v == '0xFFFE') || (v == '0xFEFF'));
 };
 
 bin.switchEndian = function(u16) {
