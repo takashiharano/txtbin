@@ -1561,22 +1561,6 @@ bin.isUtf16Be = function(buf) {
   return f;
 };
 
-bin.isSjis = function(buf, pos, exclAscii) {
-  var b1 = buf[pos];
-  var b2 = buf[pos + 1];
-  if ((b1 == undefined) || (b2 == undefined)) return false;
-  if (exclAscii) {
-    if (bin.isAscii(b1) && bin.isAscii(b2)) return false;
-  }
-  return (bin.isSjis1x(b1) && bin.isSjis2(b2));
-};
-bin.isSjis1x = function(b) {
-  return (((b >= 0x81) && (b <= 0x9F)) || ((b >= 0xE0) && (b <= 0xFC)));
-};
-bin.isSjis2 = function(b) {
-  return (((b >= 0x40) && (b <= 0xFC)) && (b != 0x7F));
-};
-
 bin.isIso2022jp = function(buf, pos) {
   var ESCSEQ_ASCII = '1B 28 42';
   var ESCSEQ_LATIN = '1B 28 4A';
@@ -1587,6 +1571,22 @@ bin.isIso2022jp = function(buf, pos) {
   return false;
 };
 
+bin.isSjis = function(buf, pos, exclAscii) {
+  var b1 = buf[pos];
+  var b2 = buf[pos + 1];
+  if ((b1 == undefined) || (b2 == undefined)) return false;
+  if (exclAscii) {
+    if (bin.isAscii(b1) && bin.isAscii(b2)) return false;
+  }
+  return (bin.isSjisMultiByte1(b1) && bin.isSjisMultiByte2(b2));
+};
+bin.isSjisMultiByte1 = function(b) {
+  return (((b >= 0x81) && (b <= 0x9F)) || ((b >= 0xE0) && (b <= 0xFC)));
+};
+bin.isSjisMultiByte2 = function(b) {
+  return (((b >= 0x40) && (b <= 0xFC)) && (b != 0x7F));
+};
+
 bin.isEuc = function(buf, pos, exclAscii) {
   var b1 = buf[pos];
   var b2 = buf[pos + 1];
@@ -1594,11 +1594,19 @@ bin.isEuc = function(buf, pos, exclAscii) {
   if (exclAscii) {
     if (bin.isAscii(b1) && bin.isAscii(b2)) return false;
   }
-  return (bin.isEucByte(b1) && bin.isEucByte(b2));
+  return (bin.isEucMultiByte1(b1) && bin.isEucMultiByte2(b2));
 };
-bin.isEucByte = function(b) {
-  if ((b >= 0x80) && (b <= 0xA0)) return false;
-  if ((b & 0x80) == 0x80) return true;
+bin.isEucMultiByte1 = function(b) {
+  if ((b == 0x8E) || (b == 0x8F) || ((b >= 0xA1) && (b <= 0xFE))) {
+    return true;
+  }
+  return false;
+};
+bin.isEucMultiByte2 = function(b) {
+  if ((b >= 0xA1) && (b <= 0xFE)) {
+    return true;
+  }
+  return false;
 };
 
 bin.getZipContentType = function(buf) {
