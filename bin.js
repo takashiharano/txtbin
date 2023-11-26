@@ -438,6 +438,10 @@ $onReady = function() {
   $el('#adjuster').addEventListener('mousedown', bin.onAreaResizeStart);
   $el('#adjuster').addEventListener('dblclick', bin.resetAreaSize);
 
+  $el('#dump-flag-show-addr').addEventListener('input', bin.onChangeDumpFlag);
+  $el('#dump-flag-show-sp').addEventListener('input', bin.onChangeDumpFlag);
+  $el('#dump-flag-show-ascii').addEventListener('input', bin.onChangeDumpFlag);
+
   $el('#src').addEventListener('input', bin.onInput);
   $el('#src').addEventListener('change', bin.onInput);
   bin.clear();
@@ -787,9 +791,9 @@ bin.checkRadix = function(v) {
 };
 
 bin.getHexDump = function(mode, buf) {
-  var showSp = 1;
-  var showAddr = 1;
-  var showAscii = 1;
+  var showAddr = $el('#dump-flag-show-addr').checked;
+  var showSp = $el('#dump-flag-show-sp').checked;
+  var showAscii = $el('#dump-flag-show-ascii').checked;
   var dmp = '';
 
   var lm = 0;
@@ -1686,6 +1690,13 @@ bin.onInput = function() {
   }
 };
 
+bin.onChangeDumpFlag = function() {
+  if (bin.buf) {
+    var mode = bin.getMode();
+    bin.switchRadix(mode, bin.buf);
+  }
+};
+
 bin.forceNewline = function(s) {
   var TH = 10240;
   var s = bin.getSrcValue();
@@ -1826,7 +1837,12 @@ bin.drawPreview = function(s) {
 };
 
 bin.confirmClear = function() {
-  util.confirm('Clear?', bin.clear);
+  var v = bin.getSrcValue();
+  if (v && !bin.buf) {
+    util.confirm('Clear?', bin.clear);
+  } else {
+    bin.clear();
+  }
 };
 
 bin.clear = function() {
