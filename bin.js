@@ -76,6 +76,21 @@ bin.CODE_BLOCKS = [
     utf16_e: 0x00FF
   },
   {
+    name: 'nbsp',
+    utf16_s: 0x00A0,
+    utf8_s: 0xC2A0
+  },
+  {
+    name: 'zwsp',
+    utf16_s: 0x200B,
+    utf8_s: 0xE2808B
+  },
+  {
+    name: 'rlm',
+    utf16_s: 0x200F,
+    utf8_s: 0xE2808F
+  },
+  {
     name: 'thai',
     utf16_s: 0x0E00,
     utf16_e: 0x0E7F,
@@ -91,7 +106,7 @@ bin.CODE_BLOCKS = [
   },
   {
     name: 'hiragana',
-    utf16_s: 0x3041,
+    utf16_s: 0x3040,
     utf16_e: 0x3096,
     utf8_s: 0xE38181,
     utf8_e: 0xE38296
@@ -123,6 +138,13 @@ bin.CODE_BLOCKS = [
     utf16_e: 0xD7AF,
     utf8_s: 0xEAB080,
     utf8_e: 0xED9EAF
+  },
+  {
+    name: 'surrogates',
+    utf16_s: 0xD800,
+    utf16_e: 0xDFFF,
+    utf8_s: 0xEFBFBD,
+    utf8_e: 0xEFBFBD
   },
   {
     name: 'kanji_comp',
@@ -217,96 +239,163 @@ bin.CODEBLOCKS_IND = {
   'bmp': {
     label: 'U+0000-U+FFFF   ',
     fullname: 'Basic Multilingual Plane',
+    cp_s: '0000',
+    cp_e: 'FFFF',
     plane: true
   },
   'ascii': {
     label: 'A',
-    fullname: 'ASCII'
+    fullname: 'ASCII',
+    cp_s: '0000',
+    cp_e: '007F'
   },
   'latin1_suppl': {
     label: 'Ü',
-    fullname: 'Latin-1 Supplement'
+    fullname: 'Latin-1 Supplement',
+    cp_s: '0080',
+    cp_e: '00FF'
+  },
+  'nbsp': {
+    label: 'NBSP',
+    fullname: 'Non-breaking space',
+    cp_s: '00A0'
+  },
+  'zwsp': {
+    label: 'ZWSP',
+    fullname: 'Zero-width space',
+    cp_s: '200B'
+  },
+  'rlm': {
+    label: 'RLM',
+    fullname: 'Right-to-left mark',
+    cp_s: '200F'
   },
   'thai': {
     label: 'ไทย',
-    fullname: 'Thai'
+    fullname: 'Thai',
+    cp_s: '0E00',
+    cp_e: '0E7F'
   },
   'symbols': {
     label: '☆',
-    fullname: 'Symbols'
+    fullname: 'Symbols',
+    cp_s: '2000',
+    cp_e: '2BFF'
   },
   'hiragana': {
     label: 'あ',
-    fullname: 'Hiragana'
+    fullname: 'Hiragana',
+    cp_s: '3040',
+    cp_e: '3096'
   },
   'katakana': {
     label: 'ア',
-    fullname: 'Katakana'
+    fullname: 'Katakana',
+    cp_s: '30A1',
+    cp_e: '30FF'
   },
   'bopomofo': {
     label: 'ㄅ',
-    fullname: 'Bopomofo'
+    fullname: 'Bopomofo',
+    cp_s: '3100',
+    cp_e: '312F'
   },
   'kanji': {
     label: '漢',
-    fullname: 'CJK unified ideographs'
+    fullname: 'CJK unified ideographs',
+    cp_s: '3400',
+    cp_e: '9FFF'
   },
   'hangul': {
     label: '한',
-    fullname: 'Hangul'
+    fullname: 'Hangul',
+    cp_s: 'AC00',
+    cp_e: 'D7AF'
+  },
+  'surrogates': {
+    label: 'SURR',
+    fullname: 'Surrogates',
+    cp_s: 'D800',
+    cp_e: 'DFFF'
   },
   'kanji_comp': {
     label: '漢2',
-    fullname: 'CJK Compatibility Ideographs'
+    fullname: 'CJK Compatibility Ideographs',
+    cp_s: 'F900',
+    cp_e: 'FAFF'
   },
   'variation_selectors': {
     label: 'VS',
-    fullname: 'Variation Selectors'
+    fullname: 'Variation Selectors',
+    cp_s: 'FE00',
+    cp_e: 'FE0F'
   },
   'fillwidth_forms': {
     label: 'Ａ',
-    fullname: 'Fullwidth Forms'
+    fullname: 'Fullwidth Forms',
+    cp_s: 'FF00',
+    cp_e: 'FF5E'
   },
   'half_kana': {
     label: 'ｱ',
-    fullname: 'Halfwidth Kana'
+    fullname: 'Halfwidth Kana',
+    cp_s: 'FF61',
+    cp_e: 'FF9F'
   },
   'non_bmp': {
     label: 'U+10000-U+10FFFF',
     fullname: 'Supplementary Multilingual Plane',
+    cp_s: '10000',
+    cp_e: '10FFFF',
     plane: true
   },
   'smp': {
     label: '1:SMP',
-    fullname: 'Supplementary Multilingual Plane'
+    fullname: 'Supplementary Multilingual Plane',
+    cp_s: '10000',
+    cp_e: '1FFFF'
   },
   'emoji': {
     label: 'Emoji',
-    fullname: 'Emoji'
+    fullname: 'Emoji',
+    cp_s: '1F300',
+    cp_e: '1FBFF'
   },
   'sip': {
     label: '2:SIP',
-    fullname: 'Supplementary Ideographic Plane'
+    fullname: 'Supplementary Ideographic Plane',
+    cp_s: '20000',
+    cp_e: '2FFFF'
   },
   'tip': {
     label: '3:TIP',
-    fullname: 'Tertiary Ideographic Plane'
+    fullname: 'Tertiary Ideographic Plane',
+    cp_s: '30000',
+    cp_e: '3FFFF'
   },
   'ssp': {
     label: '14:SSP',
-    fullname: 'Supplementary Special-purpose Plane'
+    fullname: 'Supplementary Special-purpose Plane',
+    cp_s: 'E0000',
+    cp_e: 'EFFFF'
   },
   'variation_selectors2': {
     label: 'VS2',
-    fullname: 'Variation Selectors 2'
+    fullname: 'Variation Selectors 2',
+    cp_s: 'E0100',
+    cp_e: 'E01EF'
   },
   'pua15': {
     label: '15:PUA',
-    fullname: 'Private Use Plane'
+    fullname: 'Private Use Plane',
+    cp_s: 'F0000',
+    cp_e: 'FFFFF'
   },
   'pua16': {
     label: '16:PUA',
-    fullname: 'Private Use Plane'
+    fullname: 'Private Use Plane',
+    cp_s: '100000',
+    cp_e: '10FFFF'
   }
 };
 
@@ -566,6 +655,9 @@ bin.buildTextFileInfo = function(ftype) {
     s += '';
     for (blockName in bin.CODEBLOCKS_IND) {
       var codeBlock = bin.CODEBLOCKS_IND[blockName];
+      var cpRange = bin.buildCodeRangeString(codeBlock);
+      var tooltip =  codeBlock['fullname'] + ' (' + cpRange + ')';
+
       if (codeBlock['plane']) {
         s += '\n';
       }
@@ -573,7 +665,7 @@ bin.buildTextFileInfo = function(ftype) {
       if (!codeBlock['plane']) {
         s += '[';
       }
-      s += '<span data-tooltip="' + codeBlock['fullname'] + '">' + codeBlock['label'] + '</span>';
+      s += '<span data-tooltip="' + tooltip + '">' + codeBlock['label'] + '</span>';
       if (codeBlock['plane']) {
         s += ': ';
       } else {
@@ -586,6 +678,15 @@ bin.buildTextFileInfo = function(ftype) {
   return s;
 };
 
+bin.buildCodeRangeString = function(codeBlock) {
+  var cp_s = codeBlock['cp_s'];
+  var cp_e = codeBlock['cp_e'];
+  var s = 'U+' + cp_s;
+  if (cp_e) {
+    s += '-U+' + cp_e;
+  }
+  return s;
+};
 
 bin.isUnicode = function(type) {
   var pFix = type.substr(0, 3);
@@ -1027,7 +1128,7 @@ bin.getEncoding = function(buf) {
         i += skip;
         typeScore = bin.incrementScore(typeScore, 'utf8');
         var cp = c.charCodeAt(0);
-        if (bin.inByteRange(cp, 0x80, 0xFF)) {
+        if (bin.inRange(cp, 0x80, 0xFF)) {
           flags['utf8']['codeblock_ind']['latin1_suppl'] = true;
         }
         cnt++;
@@ -1151,6 +1252,14 @@ bin.checkCodeBlock = function(buf, pos, code, chunk, flags, codeBlock) {
   var utf8S = codeBlock['utf8_s'];
   var utf8E = codeBlock['utf8_e'];
 
+  if (utf16E == undefined) {
+    utf16E = utf16S;
+  }
+
+  if (utf8E == undefined) {
+    utf8E = utf8S;
+  }
+
   if (pos % 2 == 0) {
     if ((chunk['ptn2U'] >= utf16S) && (chunk['ptn2U'] <= utf16E)) {
       flags['utf16be']['codeblock_ind'][blockName] = true;
@@ -1158,9 +1267,16 @@ bin.checkCodeBlock = function(buf, pos, code, chunk, flags, codeBlock) {
       flags['utf16le']['codeblock_ind'][blockName] = true;
     }
   }
-  if ((chunk['ptn3'] >= utf8S) && (chunk['ptn3'] <= utf8E)) {
+
+  var utf8B = chunk['ptn3'];
+  if (bin.inRange(utf8S, 0xC280, 0xDFBF)) {
+    utf8B = chunk['ptn2'];
+  }
+
+  if ((utf8B >= utf8S) && (utf8B <= utf8E)) {
     flags['utf8']['codeblock_ind'][blockName] = true;
   }
+
   return flags;
 };
 
@@ -1174,6 +1290,14 @@ bin.checkCodeBlock2 = function(buf, pos, code, chunk, flags, codeBlock) {
   var utf16E = codeBlock['utf16_e'];
   var utf8S = codeBlock['utf8_s'];
   var utf8E = codeBlock['utf8_e'];
+
+  if (utf16E == undefined) {
+    utf16E = utf16S;
+  }
+
+  if (utf8E == undefined) {
+    utf8E = utf8S;
+  }
 
   if (pos % 2 == 0) {
     var u4r = (chunk['ptn2Ur'] * (2 ** 16));
@@ -1207,7 +1331,7 @@ bin.checkNonBmp = function(buf, pos, code, chunk, flags) {
   return flags;
 };
 
-bin.inByteRange = function(c, s, e) {
+bin.inRange = function(c, s, e) {
   return ((c >= s) && (c <= e));
 };
 
@@ -1216,11 +1340,11 @@ bin.isSurrogate = function(v) {
 };
 
 bin.isUpperSurrogate = function(v) {
-  return bin.inByteRange(v, 0xD800, 0xDBFF);
+  return bin.inRange(v, 0xD800, 0xDBFF);
 };
 
 bin.isLowerSurrogate = function(v) {
-  return bin.inByteRange(v, 0xDC00, 0xDFFF);
+  return bin.inRange(v, 0xDC00, 0xDFFF);
 };
 
 bin.isUtf16BomSeq = function(v) {
