@@ -150,7 +150,7 @@ def dec_b64s(s):
     return b
 
 def dec_bsb64(s):
-    n = util.get_request_param_as_int('n', 1)
+    n = util.get_request_param_as_int('key', 1)
     s = util.remove_space_newline(s)
     if s.startswith('data:'):
         p = s.find(',')

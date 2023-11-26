@@ -1932,8 +1932,17 @@ bin.clearBuf = function() {
 };
 
 bin.submit = function() {
-  $el('#key-h').value = $el('#key').value;
-  $el('#n-h').value = $el('#bsb64-n').value;
+  var v = ''
+  var mode = bin.getMode();
+  switch (mode) {
+    case 'b64s':
+      v  = $el('#key').value;
+      break;
+    case 'bsb64':
+      v = $el('#bsb64-n').value;
+      break;
+  }
+  $el('#h-key').value = v;
   document.f1.submit();
 };
 
