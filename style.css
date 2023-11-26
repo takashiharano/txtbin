@@ -32,6 +32,10 @@ button, input[type="submit"] {
 button:hover, input[type="submit"]:hover {
   background: #e0e0e0 !important;
 }
+button:disabled {
+  color: #333;
+  background: #888;
+}
 
 .small-button {
   height: 18px;

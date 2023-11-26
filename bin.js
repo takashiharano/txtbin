@@ -449,6 +449,8 @@ $onReady = function() {
   $el('#dump-flag-show-sp').addEventListener('input', bin.onChangeDumpFlag);
   $el('#dump-flag-show-ascii').addEventListener('input', bin.onChangeDumpFlag);
 
+  $el('#bsb64-n').addEventListener('change', bin.onChangeBsb64);
+
   $el('#src').addEventListener('input', bin.onInput);
   $el('#src').addEventListener('change', bin.onInput);
   bin.clear();
@@ -482,7 +484,7 @@ bin.switchRadix = function(mode, buf) {
       b64 = util.encodeBase64(buf, true);
       break;
     case 'bsb64':
-      var n = $el('#n').value | 0;
+      var n = $el('#bsb64-n').value | 0;
       var b64s = util.BSB64.encode(buf, n);
       r = bin.formatB64(b64s);
       b64 = util.encodeBase64(buf, true);
@@ -556,7 +558,7 @@ bin.dump = function(s) {
       b64 = util.encodeBase64(buf, true);
       break;
     case 'bsb64':
-      var n = $el('#n').value | 0;
+      var n = $el('#bsb64-n').value | 0;
       var buf = new Uint8Array(s);
       var b64s = util.BSB64.encode(buf, n);
       r = bin.formatB64(b64s);
@@ -577,6 +579,7 @@ bin.dump = function(s) {
   bin.setSrcValue(r, true);
   bin.showPreview(ftype, b64);
   bin.buf = buf;
+  $el('#key-update-button').disabled = false;
 };
 
 bin.decodeBase64 = function(s) {
@@ -758,6 +761,7 @@ bin.getSHA = function(a, b, f) {
 
 bin.decode = function() {
   bin.buf = bin.updateInfoAndPreview();
+  $el('#key-update-button').disabled = false;
 };
 
 bin.updateInfoAndPreview = function() {
@@ -1737,8 +1741,7 @@ bin.extractBinTextPart = function(mode, s) {
 };
 
 bin.onInput = function() {
-  bin.buf = null;
-  bin.file = null;
+  bin.clearBuf();
   bin.forceNewline();
   if ($el('#show-preview').checked) {
     bin.updateInfoAndPreview();
@@ -1841,7 +1844,7 @@ bin.str2buf = function(mode, s) {
       b = util.decodeBase64s(s, k, true);
       break;
     case 'bsb64':
-      var n = $el('#n').value | 0;
+      var n = $el('#bsb64-n').value | 0;
       b = util.decodeBSB64(s, n, true);
       break;
     case 'txt':
@@ -1915,17 +1918,22 @@ bin.confirmClear = function() {
 };
 
 bin.clear = function() {
-  bin.buf = null;
-  bin.file = null;
+  bin.clearBuf();
   bin.setSrcValue('', true);
   bin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
   bin.drawPreview('<span style="color:#888;">PREVIEW</span>');
   $el('#src').focus();
 };
 
+bin.clearBuf = function() {
+  bin.buf = null;
+  bin.file = null;
+  $el('#key-update-button').disabled = true;
+};
+
 bin.submit = function() {
   $el('#key-h').value = $el('#key').value;
-  $el('#n-h').value = $el('#n').value;
+  $el('#n-h').value = $el('#bsb64-n').value;
   document.f1.submit();
 };
 
@@ -1972,6 +1980,20 @@ bin.switchKeyViewHide = function() {
     $el('#key-hide-button').removeClass('button-inactive');
   } else {
     $el('#key-hide-button').addClass('button-inactive');
+  }
+};
+
+bin.updateB64sKey = function() {
+  var mode = bin.getMode();
+  if ((mode == 'b64s') && (bin.buf)) {
+    bin.switchRadix(mode, bin.buf);
+  }
+};
+
+bin.onChangeBsb64 = function() {
+  var mode = bin.getMode();
+  if ((mode == 'bsb64') && (bin.buf)) {
+    bin.switchRadix(mode, bin.buf);
   }
 };
 
