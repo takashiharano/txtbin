@@ -258,7 +258,8 @@ bin.CODEBLOCKS_IND = {
   'nbsp': {
     label: 'NBSP',
     fullname: 'Non-breaking space',
-    cp_s: '00A0'
+    cp_s: '00A0',
+    caution: true
   },
   'thai': {
     label: 'ไทย',
@@ -275,12 +276,14 @@ bin.CODEBLOCKS_IND = {
   'zwsp': {
     label: 'ZWSP',
     fullname: 'Zero-width space',
-    cp_s: '200B'
+    cp_s: '200B',
+    caution: true
   },
   'rlm': {
     label: 'RLM',
     fullname: 'Right-to-left mark',
-    cp_s: '200F'
+    cp_s: '200F',
+    caution: true
   },  'hiragana': {
     label: 'あ',
     fullname: 'Hiragana',
@@ -315,7 +318,10 @@ bin.CODEBLOCKS_IND = {
     label: 'SURR',
     fullname: 'Surrogates',
     cp_s: 'D800',
-    cp_e: 'DFFF'
+    cp_e: 'DFFF',
+    caution: {
+      utf8: true
+    }
   },
   'kanji_comp': {
     label: '漢2',
@@ -327,7 +333,8 @@ bin.CODEBLOCKS_IND = {
     label: 'VS',
     fullname: 'Variation Selectors',
     cp_s: 'FE00',
-    cp_e: 'FE0F'
+    cp_e: 'FE0F',
+    caution: true
   },
   'fillwidth_forms': {
     label: 'Ａ',
@@ -382,7 +389,8 @@ bin.CODEBLOCKS_IND = {
     label: 'VS2',
     fullname: 'Variation Selectors 2',
     cp_s: 'E0100',
-    cp_e: 'E01EF'
+    cp_e: 'E01EF',
+    caution: true
   },
   'pua15': {
     label: '15:PUA',
@@ -613,12 +621,19 @@ bin.drawBinInfo = function(ftype, buf, b64) {
   s += 'SHA-256 : ' + bin.getSHA('SHA-256', buf, 1) + '\n';
   s += 'Type    : ' + '.' + ftype['ext'] + '  ' + ftype['mime'] + '\n';
 
-  if (ftype['bin_detail']) {
-    s += '' + ftype['bin_detail'];
-  }
-
   if (ftype['encoding']) {
     s += '\n' + bin.buildTextFileInfo(ftype);
+  }
+
+  var binDetail = ftype['bin_detail'];
+  if (binDetail && (typeof binDetail == 'string')) {
+    s += '' + binDetail;
+  }
+
+  if (bin.isZip(ftype)) {
+    if (binDetail['has_pw']) {
+      s += '<span class="caution">PW LOCKED</span>'
+    }
   }
 
   bin.drawInfo(s);
@@ -632,20 +647,28 @@ bin.buildTextFileInfo = function(ftype) {
   var clzCrLf = 'status-inactive';
   var clzLf = 'status-inactive';
   var clzCr = 'status-inactive';
+
+  var ttCrLf = '0';
+  var ttLf = '0';
+  var ttCr = '0';
+
   if (newline['crlf']) {
     clzCrLf = 'status-active';
+    ttCrLf = newline['crlf'];
   }
   if (newline['lf']) {
     clzLf = 'status-active';
+    ttLf = newline['lf'];
   }
   if (newline['cr']) {
     clzCr = 'status-active';
+    ttCr = newline['cr'];
   }
 
   var s = 'Encoding: ' + bin.getEncodingName(type) + '  ';
-  s += '<span class="' + clzCrLf + '">[CRLF]</span>';
-  s += '<span class="' + clzLf + '">[LF]</span>';
-  s += '<span class="' + clzCr + '">[CR]</span>\n';
+  s += '<span class="' + clzCrLf + '" data-tooltip="' + ttCrLf + '">[CRLF]</span>';
+  s += '<span class="' + clzLf + '" data-tooltip="' + ttLf + '">[LF]</span>';
+  s += '<span class="' + clzCr + '" data-tooltip="' + ttCr + '">[CR]</span>\n';
 
   if (bin.isUnicode(type)) {
     var i, blockName;
@@ -656,8 +679,13 @@ bin.buildTextFileInfo = function(ftype) {
 
     var codeblockInd = encInfo['codeblock_ind'];
     for (blockName in bin.CODEBLOCKS_IND) {
+      var codeBlockInfo4Enc = bin.CODEBLOCKS_IND[blockName];
+      var caution = codeBlockInfo4Enc['caution'];
       if (codeblockInd[blockName]) {
         clz[blockName] = 'status-active';
+        if ((caution === true) || (caution && caution[type])) {
+          clz[blockName] += ' caution';
+        }
       }
     }
 
@@ -665,7 +693,7 @@ bin.buildTextFileInfo = function(ftype) {
     for (blockName in bin.CODEBLOCKS_IND) {
       var codeBlock = bin.CODEBLOCKS_IND[blockName];
       var cpRange = bin.buildCodeRangeString(codeBlock);
-      var tooltip =  codeBlock['fullname'] + ' (' + cpRange + ')';
+      var tooltip = codeBlock['fullname'] + ' (' + cpRange + ')';
 
       if (codeBlock['plane']) {
         s += '\n';
@@ -675,6 +703,7 @@ bin.buildTextFileInfo = function(ftype) {
       if (bin.isSingleCode(codeBlock)) {
         clazz += ' code-single';
       }
+
       s += '<span class="' + clazz + '">';
       if (!codeBlock['plane']) {
         s += '[';
@@ -1008,9 +1037,9 @@ bin.getEncoding = function(buf) {
   var flags = {
     general: {
       newline: {
-        lf: false,
-        cr: false,
-        crlf: false
+        lf: 0,
+        cr: 0,
+        crlf: 0
       }
     },
     utf8: {
@@ -1018,17 +1047,17 @@ bin.getEncoding = function(buf) {
     },
     utf16be: {
       newline: {
-        lf: false,
-        cr: false,
-        crlf: false
+        lf: 0,
+        cr: 0,
+        crlf: 0
       },
       codeblock_ind: {}
     },
     utf16le: {
       newline: {
-        lf: false,
-        cr: false,
-        crlf: false
+        lf: 0,
+        cr: 0,
+        crlf: 0
       },
       codeblock_ind: {}
     },
@@ -1211,37 +1240,37 @@ bin.getEncoding = function(buf) {
 bin.checkNewline = function(buf, pos, code, chunk, flags) {
   if (pos % 2 == 0) {
     if (chunk['ptn4'] == 0x000D000A) {
-      flags['utf16be']['newline']['crlf'] = true;
+      flags['utf16be']['newline']['crlf']++;
     } else if (chunk['ptn4'] == 0x0D000A00) {
-      flags['utf16le']['newline']['crlf'] = true;
+      flags['utf16le']['newline']['crlf']++;
     } else if ((chunk['ptn2L'] == 0x000A) && (chunk['ptn2U'] != 0x000D)) {
-      flags['utf16be']['newline']['lf'] = true;
+      flags['utf16be']['newline']['lf']++;
     } else if ((chunk['ptn2L'] == 0x0A00) && (chunk['ptn2U'] != 0x0D00)) {
-      flags['utf16le']['newline']['lf'] = true;
+      flags['utf16le']['newline']['lf']++;
     } else if ((chunk['ptn2U'] == 0x000D) && (chunk['ptn2L'] != 0x000A)) {
-      flags['utf16be']['newline']['cr'] = true;
+      flags['utf16be']['newline']['cr']++;
     } else if ((chunk['ptn2U'] == 0x0D00) && (chunk['ptn2L'] != 0x0AA0)) {
-      flags['utf16le']['newline']['cr'] = true;
+      flags['utf16le']['newline']['cr']++;
     }
   }
 
   if (chunk['ptn2U'] == 0x0D0A) {
-    flags['general']['newline']['crlf'] = true;
+    flags['general']['newline']['crlf']++;
   }
 
   if (code == 0x0D) {
     flags['wk']['tmpNL'] = 'CR';
     if (pos == buf.length - 1) {
-      flags['general']['newline']['cr'] = true;
+      flags['general']['newline']['cr']++;
     }
   } else if (code == 0x0A) {
     if (flags['wk']['tmpNL'] != 'CR') {
-      flags['general']['newline']['lf'] = true;
+      flags['general']['newline']['lf']++;
     }
     flags['wk']['tmpNL'] = null;
   } else {
     if (flags['wk']['tmpNL'] == 'CR') {
-      flags['general']['newline']['cr'] = true;
+      flags['general']['newline']['cr']++;
     }
     flags['wk']['tmpNL'] = null;
   }
@@ -1434,7 +1463,7 @@ bin.getFileType = function(b) {
     if (binDetail) ftype['bin_detail'] = binDetail;
   }
 
-  if (ftype['mime'] == 'application/x-zip-compressed') {
+  if (bin.isZip(ftype)) {
     var w = bin.getZipContentType(b);
     if (w) ftype = w;
   }
@@ -1472,6 +1501,10 @@ bin.__hasBinaryPattern = function(buf, pos, binPattern) {
     if (v != buf[i + pos]) return false;
   }
   return true;
+};
+
+bin.isZip = function(ftype) {
+  return (ftype['mime'] == 'application/x-zip-compressed');
 };
 
 bin.isAscii = function(b) {
@@ -1605,10 +1638,11 @@ bin.getBinDetail = function(type, b) {
   var r = '';
   if (type == 'exe') {
     var a = bin.getExeArch(b);
-    if (a) r = 'Arch    : ' + a;
+    r = 'Arch    : ' + a;
+  } else if (type == 'zip') {
+    r = bin.getZipInfo(b);
   } else if (type == 'class') {
-    var j = bin.getJavaClassVersion(b);
-    if (j) r = j;
+    r = bin.getJavaClassVersion(b);
   }
   return r;
 };
@@ -1634,6 +1668,14 @@ bin.getExeArch = function(b) {
     arch = 'x86 (32bit)';
   }
   return arch;
+};
+
+bin.getZipInfo = function(b) {
+  var hasPw = b[6] & 1;
+  var r = {
+    has_pw: hasPw
+  };
+  return r;
 };
 
 bin.getJavaClassVersion = function(b) {
@@ -1707,9 +1749,15 @@ bin.onInput = function() {
 };
 
 bin.onChangeDumpFlag = function() {
-  if (bin.buf) {
-    var mode = bin.getMode();
-    bin.switchRadix(mode, bin.buf);
+  if (!bin.buf) {
+    return;
+  }
+  var mode = bin.getMode();
+  switch (mode) {
+    case 'hex':
+    case 'dec':
+    case 'bin':
+      bin.switchRadix(mode, bin.buf);
   }
 };
 

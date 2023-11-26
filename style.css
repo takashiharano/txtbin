@@ -248,3 +248,7 @@ select {
 .code-single {
   font-size: 0.8em;
 }
+
+.caution {
+  color: #ff5354;
+}
