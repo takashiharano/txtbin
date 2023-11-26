@@ -600,10 +600,16 @@ bin.drawBinInfo = function(ftype, buf, b64) {
     lastMod = util.getDateTimeString(bin.file.lastModified);
   }
 
+  var sizeInfo = bSize + ' bytes';
+  if (bLen > 1024) {
+    sizeInfo += ' (' + util.convByte(bLen) + 'B)';
+  }
+  sizeInfo += ' : ' + b64Size + ' bytes in Base64 (x ' + x + ')';
+
   var s = '';
   s += 'FileName: ' + fileName + '\n';
   s += 'LastMod : ' + lastMod + '\n';
-  s += 'Size    : ' + bSize + ' bytes : ' + b64Size + ' bytes in Base64 (x ' + x + ')\n';
+  s += 'Size    : ' + sizeInfo + '\n';
   s += 'SHA-1   : ' + bin.getSHA('SHA-1', buf, 1) + '\n';
   s += 'SHA-256 : ' + bin.getSHA('SHA-256', buf, 1) + '\n';
   s += 'Type    : ' + '.' + ftype['ext'] + '  ' + ftype['mime'] + '\n';
