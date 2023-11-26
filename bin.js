@@ -489,7 +489,7 @@ bin.switchRadix = function(mode, buf) {
   }
   var ftype = bin.analyzeBinary(buf);
   bin.drawBinInfo(ftype, buf, b64);
-  bin.setSrcValue(r);
+  bin.setSrcValue(r, false);
   bin.showPreview(ftype, b64);
 };
 
@@ -566,7 +566,7 @@ bin.dump = function(s) {
   }
   var ftype = bin.analyzeBinary(buf);
   bin.drawBinInfo(ftype, buf, b64);
-  bin.setSrcValue(r);
+  bin.setSrcValue(r, true);
   bin.showPreview(ftype, b64);
   bin.buf = buf;
 };
@@ -1729,7 +1729,7 @@ bin.forceNewline = function(s) {
       r += v;
     }
   }
-  bin.setSrcValue(r);
+  bin.setSrcValue(r, false);
 };
 
 bin.onDnd = function(s, f) {
@@ -1737,7 +1737,7 @@ bin.onDnd = function(s, f) {
   if ((s instanceof ArrayBuffer) || (f && bin.isB64Mode())) {
     bin.dump(s);
   } else {
-    bin.setSrcValue(s);
+    bin.setSrcValue(s, true);
     if (bin.auto) {
       bin.detectCurrentMode();
       bin.updateInfoAndPreview();
@@ -1750,10 +1750,12 @@ bin.getSrcValue = function() {
   return $el('#src').value;
 };
 
-bin.setSrcValue = function(s) {
+bin.setSrcValue = function(s, resetPos) {
   $el('#src').value = s;
-  $el('#src').scrollToTop();
-  $el('#src').scrollToLeft();
+  if (resetPos) {
+    $el('#src').scrollToTop();
+    $el('#src').scrollToLeft();
+  }
 };
 
 bin.detectCurrentMode = function() {
@@ -1867,7 +1869,7 @@ bin.confirmClear = function() {
 bin.clear = function() {
   bin.buf = null;
   bin.file = null;
-  bin.setSrcValue('');
+  bin.setSrcValue('', true);
   bin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
   bin.drawPreview('<span style="color:#888;">PREVIEW</span>');
   $el('#src').focus();
