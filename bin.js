@@ -1753,6 +1753,7 @@ bin.getSrcValue = function() {
 bin.setSrcValue = function(s) {
   $el('#src').value = s;
   $el('#src').scrollToTop();
+  $el('#src').scrollToLeft();
 };
 
 bin.detectCurrentMode = function() {
@@ -1850,6 +1851,8 @@ bin.showAudioPreview = function(b64) {
 
 bin.drawPreview = function(s) {
   $el('#preview').innerHTML = s;
+  $el('#preview-area').scrollToTop();
+  $el('#preview-area').scrollToLeft();
 };
 
 bin.confirmClear = function() {
