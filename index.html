@@ -37,27 +37,25 @@
 </div>
 </div>
 
-<span style="margin-left:16px;"><input type="checkbox" id="dump-multibyte"><label for="dump-multibyte">Dump Multi Byte Char</label></span>
-<span style="margin-left:16px;"><input type="checkbox" id="show-preview" checked><label for="show-preview">Preview</label></span>
-
 <div style="position:absolute;right:8px;display:inline-block;height:100%;">
 <span id="clock" style="margin-right:16px;"></span>
-<button style="position:relative;" onclick="bin.parse();">PARSE</button>
+<button style="position:relative;" onclick="bin.decode();">DECODE</button>
 <button style="position:relative;" onclick="bin.confirmClear();">CLEAR</button>
 </div>
-
-</div>
-<div id="info-area">
-<pre id="info"></pre>
 </div>
 
 <div id="area3">
+<div>
+<span><input type="checkbox" id="dump-multibyte"><label for="dump-multibyte">Dump Multi Byte Char</label></span>
+<span style="margin-left:16px;"><input type="checkbox" id="show-preview" checked><label for="show-preview">Preview</label></span>
+</div>
+
 <div id="input-area">
 <form name="f1" id="f1" action="bin.cgi" method="post">
 <input type="hidden" id="mode" name="mode">
 <input type="hidden" id="key-h" name="key">
 <input type="hidden" id="n-h" name="n">
-<textarea id="src" name="src" spellcheck="false"></textarea><br>
+<textarea id="src" name="src" spellcheck="false" placeholder="BINARY DATA"></textarea><br>
 </form>
 
 <div style="margin-top:10px;height:25px;">
@@ -70,11 +68,17 @@
 
 </div>
 <div id="adjuster"></div>
-<div id="preview-area">
+
+<div id="right-area">
+<div id="info-area" class="block">
+<pre id="info"></pre>
+</div>
+<div id="preview-area" class="block">
 <pre id="preview"></pre>
 </div>
 </div>
 
+</div>
 </div>
 </body>
 </html>

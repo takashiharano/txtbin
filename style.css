@@ -1,7 +1,7 @@
 body {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
-  min-width: 1500px;
+  min-width: 1330px;
   background: #1e1e1e;
   color: #fff;
   font-size: 14px;
@@ -101,6 +101,7 @@ input:-webkit-autofill {
 }
 
 textarea {
+  padding: 2px 4px;
   outline: none;
   border: 1px solid #888;
   border-radius: 4px;
@@ -138,34 +139,55 @@ select {
   color: #888;
 }
 
+#area3 {
+  height: calc(100vh - 80px);
+}
+
+#input-area {
+  display: inline-block;
+  position: relative;
+  width: 824px;
+  height: 100%;
+  float: left;
+  overflow: auto;
+}
+
+#src {
+  width: calc(100% - 10px);
+  height: 100%;
+}
+
+#right-area {
+  display: inline-block;
+  position: relative;
+  width: calc(100% - 844px);
+  height: 100%;
+  float: left;
+  overflow: auto;
+}
+
+.block {
+  border: 1px solid #888;
+  border-radius: 4px;
+}
+
 #info-area {
-  height: 86px;
+  height: 200px;
+  padding: 2px 4px;
   margin-bottom: 4px;
+  overflow: auto;
 }
 
 #info {
   color: #ddd;
 }
 
-#area3 {
-  height: calc(100vh - 145px);
-}
-
-#input-area {
-  display: inline-block;
-  position: relative;
-  width: 1380px;
-  height: 100%;
-  float: left;
-  overflow: auto;
-}
-
 #preview-area {
   display: inline-block;
   position: relative;
-  width: calc(100% - 1400px);
-  height: 100%;
-  float: left;
+  width: calc(100% - 10px);
+  height: calc(100% - 248px);
+  padding: 2px 4px;
   overflow: auto;
 }
 
@@ -178,10 +200,6 @@ select {
   height: calc(100% - 40px);
 }
 
-#src {
-  width: calc(100% - 6px);
-  height: 100%;
-}
 .pseudo-link {
   color: #0cf;
 }

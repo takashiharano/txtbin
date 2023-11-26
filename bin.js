@@ -1,3 +1,9 @@
+/*!
+ * Binary Decoder
+ * Copyright 2023 Takashi Harano
+ * Released under the MIT license
+ * https://github.com/takashiharano/binarydecoder
+ */
 var bin = {};
 bin.TXT_CHR_LF = '|';
 bin.TXT_CHR_CR = '_';
@@ -150,6 +156,13 @@ bin.CODE_BLOCKS = [
 
 bin.CODE_BLOCKS2 = [
   {
+    name: 'smp',
+    utf16_s: 0xD800DC00,
+    utf16_e: 0xD83FDFFF,
+    utf8_s: 0xF0908080,
+    utf8_e: 0xF09FBFBF
+  },
+  {
     name: 'emoji',
     utf16_s: 0xD83CDF00,
     utf16_e: 0xD83EDFFF,
@@ -202,7 +215,7 @@ bin.CODE_BLOCKS2 = [
 
 bin.CODEBLOCKS_IND = {
   'bmp': {
-    label: 'U+0000-U+FFFF(BMP)',
+    label: 'U+0000-U+FFFF   ',
     fullname: 'Basic Multilingual Plane',
     plane: true
   },
@@ -211,7 +224,7 @@ bin.CODEBLOCKS_IND = {
     fullname: 'ASCII'
   },
   'latin1_suppl': {
-    label: 'Ä',
+    label: 'Ü',
     fullname: 'Latin-1 Supplement'
   },
   'thai': {
@@ -263,20 +276,24 @@ bin.CODEBLOCKS_IND = {
     fullname: 'Supplementary Multilingual Plane',
     plane: true
   },
+  'smp': {
+    label: '1:SMP',
+    fullname: 'Supplementary Multilingual Plane'
+  },
   'emoji': {
     label: 'Emoji',
     fullname: 'Emoji'
   },
   'sip': {
-    label: 'SIP',
+    label: '2:SIP',
     fullname: 'Supplementary Ideographic Plane'
   },
   'tip': {
-    label: 'TIP',
+    label: '3:TIP',
     fullname: 'Tertiary Ideographic Plane'
   },
   'ssp': {
-    label: 'SSP',
+    label: '14:SSP',
     fullname: 'Supplementary Special-purpose Plane'
   },
   'variation_selectors2': {
@@ -284,11 +301,11 @@ bin.CODEBLOCKS_IND = {
     fullname: 'Variation Selectors 2'
   },
   'pua15': {
-    label: 'PUA15',
+    label: '15:PUA',
     fullname: 'Private Use Plane'
   },
   'pua16': {
-    label: 'PUA16',
+    label: '16:PUA',
     fullname: 'Private Use Plane'
   }
 };
@@ -334,7 +351,7 @@ $onReady = function() {
 
   $el('#src').addEventListener('input', bin.onInput);
   $el('#src').addEventListener('change', bin.onInput);
-  $el('#src').focus();
+  bin.clear();
 };
 
 bin.getMode = function() {
@@ -482,83 +499,93 @@ bin.drawBinInfo = function(ftype, buf, b64) {
   var x = ((bLen == 0) ?  0 : util.round(b64Len / bLen, 2));
   var bSize = util.formatNumber(bLen);
   var b64Size = util.formatNumber(b64Len);
-  var s = '';
-  s += 'Type    : ' + bin.buildFileTypeInfoString(ftype) + '\n';
-  s += 'Size    : ' + bSize + ' bytes : ' + b64Size + ' bytes in Base64 (x ' + x + ')\n';
-  s += bin.getHashInfo(buf) + '\n';
+
+  var fileName = '-';
+  var lastMod = '-';
   if (bin.file) {
-    s += 'FileName: ' + bin.file.name + '  ';
-    s += 'LastMod: ' + util.getDateTimeString(bin.file.lastModified);
+    fileName = bin.file.name;
+    lastMod = util.getDateTimeString(bin.file.lastModified);
   }
+
+  var s = '';
+  s += 'FileName: ' + fileName + '\n';
+  s += 'LastMod : ' + lastMod + '\n';
+  s += 'Size    : ' + bSize + ' bytes : ' + b64Size + ' bytes in Base64 (x ' + x + ')\n';
+  s += 'SHA-1   : ' + bin.getSHA('SHA-1', buf, 1) + '\n';
+  s += 'SHA-256 : ' + bin.getSHA('SHA-256', buf, 1) + '\n';
+  s += 'Type    : ' + '.' + ftype['ext'] + '  ' + ftype['mime'] + '\n';
+
+  if (ftype['bin_detail']) {
+    s += '' + ftype['bin_detail'];
+  }
+
+  if (ftype['encoding']) {
+    s += '\n' + bin.buildTextFileInfo(ftype);
+  }
+
   bin.drawInfo(s);
 };
 
-bin.buildFileTypeInfoString = function(ftype) {
-  var s = '.' + ftype['ext'] + '  ' + ftype['mime'];
+bin.buildTextFileInfo = function(ftype) {
+  var encInfo = ftype['encoding'];
+  var type = encInfo.type;
 
-  if (ftype['encoding']) {
-    var encInfo = ftype['encoding'];
-    var type = encInfo.type;
-    s += '  ' + bin.getEncodingName(type);
-
-    var newline = encInfo['newline'];
-    var clzCrLf = 'status-inactive';
-    var clzLf = 'status-inactive';
-    var clzCr = 'status-inactive';
-    if (newline['crlf']) {
-      clzCrLf = 'status-active';
-    }
-    if (newline['lf']) {
-      clzLf = 'status-active';
-    }
-    if (newline['cr']) {
-      clzCr = 'status-active';
-    }
-    s += '  <span class="' + clzCrLf + '">[CRLF]</span>';
-    s += '<span class="' + clzLf + '">[LF]</span>';
-    s += '<span class="' + clzCr + '">[CR]</span>';
-
-    if (bin.isUnicode(type)) {
-      var i, blockName;
-      var clz = {};
-      for (blockName in bin.CODEBLOCKS_IND) {
-        clz[blockName] = 'status-inactive';
-      }
-
-      var codeblockInd = encInfo['codeblock_ind'];
-      for (blockName in bin.CODEBLOCKS_IND) {
-        if (codeblockInd[blockName]) {
-          clz[blockName] = 'status-active';
-        }
-      }
-
-      s += '';
-      for (blockName in bin.CODEBLOCKS_IND) {
-        var codeBlock = bin.CODEBLOCKS_IND[blockName];
-        if (codeBlock['plane']) {
-          s += '  ';
-        }
-        s += '<span class="' + clz[blockName] + '">';
-        if (!codeBlock['plane']) {
-          s += '[';
-        }
-        s += '<span data-tooltip="' + codeBlock['fullname'] + '">' + codeBlock['label'] + '</span>';
-        if (codeBlock['plane']) {
-          s += ':';
-        } else {
-          s += ']';
-        }
-        s += '</span>';
-      }
-    }
+  var newline = encInfo['newline'];
+  var clzCrLf = 'status-inactive';
+  var clzLf = 'status-inactive';
+  var clzCr = 'status-inactive';
+  if (newline['crlf']) {
+    clzCrLf = 'status-active';
+  }
+  if (newline['lf']) {
+    clzLf = 'status-active';
+  }
+  if (newline['cr']) {
+    clzCr = 'status-active';
   }
 
-  if (ftype['bin_detail']) {
-    s += '  ' + ftype['bin_detail'];
+  var s = 'Encoding: ' + bin.getEncodingName(type) + '  ';
+  s += '<span class="' + clzCrLf + '">[CRLF]</span>';
+  s += '<span class="' + clzLf + '">[LF]</span>';
+  s += '<span class="' + clzCr + '">[CR]</span>\n';
+
+  if (bin.isUnicode(type)) {
+    var i, blockName;
+    var clz = {};
+    for (blockName in bin.CODEBLOCKS_IND) {
+      clz[blockName] = 'status-inactive';
+    }
+
+    var codeblockInd = encInfo['codeblock_ind'];
+    for (blockName in bin.CODEBLOCKS_IND) {
+      if (codeblockInd[blockName]) {
+        clz[blockName] = 'status-active';
+      }
+    }
+
+    s += '';
+    for (blockName in bin.CODEBLOCKS_IND) {
+      var codeBlock = bin.CODEBLOCKS_IND[blockName];
+      if (codeBlock['plane']) {
+        s += '\n';
+      }
+      s += '<span class="' + clz[blockName] + '">';
+      if (!codeBlock['plane']) {
+        s += '[';
+      }
+      s += '<span data-tooltip="' + codeBlock['fullname'] + '">' + codeBlock['label'] + '</span>';
+      if (codeBlock['plane']) {
+        s += ': ';
+      } else {
+        s += ']';
+      }
+      s += '</span>';
+    }
   }
 
   return s;
-}
+};
+
 
 bin.isUnicode = function(type) {
   var pFix = type.substr(0, 3);
@@ -573,19 +600,13 @@ bin.getEncodingName = function(id) {
   return name;
 };
 
-bin.getHashInfo = function(b) {
-  var s = 'SHA-1   : ' + bin.getSHA('SHA-1', b, 1) + '\n';
-  s += 'SHA-256 : ' + bin.getSHA('SHA-256', b, 1);
-  return s;
-};
-
 bin.getSHA = function(a, b, f) {
   var s = new window.jsSHA(a, (f ? 'UINT8ARRAY' : 'TEXT'));
   s.update(b);
   return s.getHash('HEX');
 };
 
-bin.parse = function() {
+bin.decode = function() {
   bin.buf = bin.updateInfoAndPreview();
 };
 
@@ -1440,7 +1461,7 @@ bin.getBinDetail = function(type, b) {
   var r = '';
   if (type == 'exe') {
     var a = bin.getExeArch(b);
-    if (a) r = 'Arch: ' + a;
+    if (a) r = 'Arch    : ' + a;
   } else if (type == 'class') {
     var j = bin.getJavaClassVersion(b);
     if (j) r = j;
@@ -1479,7 +1500,7 @@ bin.getJavaClassVersion = function(b) {
   } else {
     j = v - 44;
   }
-  var s = 'Java version: Java SE ' + j + ' = ' + v + ' (' + bin.toHex(v, true, '0x', 2) + ')';
+  var s = 'Java    : Java SE ' + j + ' : version = ' + v + ' (' + bin.toHex(v, true, '0x', 2) + ')';
   return s;
 };
 
@@ -1660,7 +1681,7 @@ bin.showTextPreview = function(b64) {
 
 bin.showImagePreview = function(b64) {
   var d = 'data:image/png;base64,' + b64;
-  var v = '<img src="' + d + '" style="max-width:100%;max-height:100%;">';
+  var v = '<img src="' + d + '" style="max-width:100%;max-height:calc(100% - 8px);">';
   bin.drawPreview(v);
 };
 
@@ -1687,9 +1708,9 @@ bin.confirmClear = function() {
 bin.clear = function() {
   bin.buf = null;
   bin.file = null;
-  bin.drawInfo('');
   bin.setSrcValue('');
-  bin.drawPreview('');
+  bin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
+  bin.drawPreview('<span style="color:#888;">PREVIEW</span>');
   $el('#src').focus();
 };
 
@@ -1784,7 +1805,7 @@ bin.onAreaResizeStart = function(e) {
   var x = e.clientX;
   var y = e.clientY;
   var sp1 = bin.getSelfSizePos($el('#input-area'));
-  var sp2 = bin.getSelfSizePos($el('#preview-area'));
+  var sp2 = bin.getSelfSizePos($el('#right-area'));
   bin.areaSize.orgX = x;
   bin.areaSize.orgSP1 = sp1;
   bin.areaSize.orgSP2 = sp2;
@@ -1801,7 +1822,8 @@ bin.onAreaResize = function(e) {
   var w2 = bin.areaSize.orgSP2.w + dX - adj;
   var dW = bin.areaSize.orgDW - dX;
   bin.areaSize.dW = dW;
-  if ((w1 < 200) || (w1 > 1400)) {
+  var bw = document.body.clientWidth;
+  if ((w1 < 200) || (w1 > (bw - 200))) {
     return;
   }
   bin.setAreaSize(w1, dW);
@@ -1822,7 +1844,7 @@ bin.setAreaSize = function(w1, dW) {
   var adj = 8;
   $el('#input-area').style.width = w1 + adj + 'px';
   var w2 = w1 + 28;
-  $el('#preview-area').style.width = 'calc(100% - ' + w2 + 'px)';
+  $el('#right-area').style.width = 'calc(100% - ' + w2 + 'px)';
 };
 bin.onAreaResizeEnd = function(e) {
   bin.enableTextSelect();
