@@ -81,16 +81,6 @@ bin.CODE_BLOCKS = [
     utf8_s: 0xC2A0
   },
   {
-    name: 'zwsp',
-    utf16_s: 0x200B,
-    utf8_s: 0xE2808B
-  },
-  {
-    name: 'rlm',
-    utf16_s: 0x200F,
-    utf8_s: 0xE2808F
-  },
-  {
     name: 'thai',
     utf16_s: 0x0E00,
     utf16_e: 0x0E7F,
@@ -103,6 +93,16 @@ bin.CODE_BLOCKS = [
     utf16_e: 0x2BFF,
     utf8_s: 0xE28080,
     utf8_e: 0xE2AFBF
+  },
+  {
+    name: 'zwsp',
+    utf16_s: 0x200B,
+    utf8_s: 0xE2808B
+  },
+  {
+    name: 'rlm',
+    utf16_s: 0x200F,
+    utf8_s: 0xE2808F
   },
   {
     name: 'hiragana',
@@ -260,16 +260,6 @@ bin.CODEBLOCKS_IND = {
     fullname: 'Non-breaking space',
     cp_s: '00A0'
   },
-  'zwsp': {
-    label: 'ZWSP',
-    fullname: 'Zero-width space',
-    cp_s: '200B'
-  },
-  'rlm': {
-    label: 'RLM',
-    fullname: 'Right-to-left mark',
-    cp_s: '200F'
-  },
   'thai': {
     label: 'ไทย',
     fullname: 'Thai',
@@ -282,7 +272,16 @@ bin.CODEBLOCKS_IND = {
     cp_s: '2000',
     cp_e: '2BFF'
   },
-  'hiragana': {
+  'zwsp': {
+    label: 'ZWSP',
+    fullname: 'Zero-width space',
+    cp_s: '200B'
+  },
+  'rlm': {
+    label: 'RLM',
+    fullname: 'Right-to-left mark',
+    cp_s: '200F'
+  },  'hiragana': {
     label: 'あ',
     fullname: 'Hiragana',
     cp_s: '3040',
@@ -671,16 +670,23 @@ bin.buildTextFileInfo = function(ftype) {
       if (codeBlock['plane']) {
         s += '\n';
       }
-      s += '<span class="' + clz[blockName] + '">';
+
+      var clazz = clz[blockName];
+      if (bin.isSingleCode(codeBlock)) {
+        clazz += ' code-single';
+      }
+      s += '<span class="' + clazz + '">';
       if (!codeBlock['plane']) {
         s += '[';
       }
+
       s += '<span data-tooltip="' + tooltip + '">' + codeBlock['label'] + '</span>';
       if (codeBlock['plane']) {
         s += ': ';
       } else {
         s += ']';
       }
+
       s += '</span>';
     }
   }
@@ -696,6 +702,10 @@ bin.buildCodeRangeString = function(codeBlock) {
     s += '-U+' + cp_e;
   }
   return s;
+};
+
+bin.isSingleCode = function(codeBlock) {
+  return (codeBlock['cp_e'] == undefined);
 };
 
 bin.isUnicode = function(type) {

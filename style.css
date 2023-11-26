@@ -244,3 +244,7 @@ select {
 .status-inactive {
   color: #888;
 }
+
+.code-single {
+  font-size: 0.8em;
+}
