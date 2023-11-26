@@ -71,24 +71,57 @@ bin.FILETYPES = {
 
 bin.CODE_BLOCKS = [
   {
+    name: 'bmp',
+    fullname: 'Basic Multilingual Plane',
+    label: 'U+0000-U+FFFF   ',
+    cp_s: 0x0000,
+    cp_e: 0xFFFF,
+    plane: true,
+    skip_check: true
+  },
+  {
+    name: 'ascii',
+    fullname: 'ASCII',
+    label: 'A',
+    cp_s: 0x0000,
+    cp_e: 0x007F,
+    skip_check: true
+  },
+  {
     name: 'latin1_suppl',
+    fullname: 'Latin-1 Supplement',
+    label: 'Ü',
+    cp_s: 0x0080,
+    cp_e: 0x00FF,
     utf16_s: 0x0080,
     utf16_e: 0x00FF
   },
   {
     name: 'nbsp',
+    fullname: 'Non-breaking space',
+    label: 'NBSP',
+    cp_s: 0x00A0,
     utf16_s: 0x00A0,
-    utf8_s: 0xC2A0
+    utf8_s: 0xC2A0,
+    caution: true
   },
   {
     name: 'thai',
+    fullname: 'Thai',
+    label: 'ไทย',
     utf16_s: 0x0E00,
     utf16_e: 0x0E7F,
+    cp_s: 0x0E00,
+    cp_e: 0x0E7F,
     utf8_s: 0xE0B880,
     utf8_e: 0xE0B9BF
   },
   {
     name: 'symbols',
+    fullname: 'Symbols',
+    label: '☆',
+    cp_s: 0x2000,
+    cp_e: 0x2BFF,
     utf16_s: 0x2000,
     utf16_e: 0x2BFF,
     utf8_s: 0xE28080,
@@ -96,16 +129,28 @@ bin.CODE_BLOCKS = [
   },
   {
     name: 'zwsp',
+    fullname: 'Zero-width space',
+    label: 'ZWSP',
+    cp_s: 0x200B,
     utf16_s: 0x200B,
-    utf8_s: 0xE2808B
+    utf8_s: 0xE2808B,
+    caution: true
   },
   {
     name: 'rlm',
+    fullname: 'Right-to-left mark',
+    label: 'RLM',
+    cp_s: 0x200F,
     utf16_s: 0x200F,
-    utf8_s: 0xE2808F
+    utf8_s: 0xE2808F,
+    caution: true
   },
   {
     name: 'hiragana',
+    fullname: 'Hiragana',
+    label: 'あ',
+    cp_s: 0x3040,
+    cp_e: 0x3096,
     utf16_s: 0x3040,
     utf16_e: 0x3096,
     utf8_s: 0xE38181,
@@ -113,6 +158,10 @@ bin.CODE_BLOCKS = [
   },
   {
     name: 'katakana',
+    fullname: 'Katakana',
+    label: 'ア',
+    cp_s: 0x30A1,
+    cp_e: 0x30FF,
     utf16_s: 0x30A1,
     utf16_e: 0x30FF,
     utf8_s: 0xE382A1,
@@ -120,6 +169,10 @@ bin.CODE_BLOCKS = [
   },
   {
     name: 'bopomofo',
+    fullname: 'Bopomofo',
+    label: 'ㄅ',
+    cp_s: 0x3100,
+    cp_e: 0x312F,
     utf16_s: 0x3100,
     utf16_e: 0x312F,
     utf8_s: 0xE38480,
@@ -127,6 +180,10 @@ bin.CODE_BLOCKS = [
   },
   {
     name: 'kanji',
+    fullname: 'CJK unified ideographs',
+    label: '漢',
+    cp_s: 0x3400,
+    cp_e: 0x9FFF,
     utf16_s: 0x3400,
     utf16_e: 0x9FFF,
     utf8_s: 0xE39080,
@@ -134,6 +191,10 @@ bin.CODE_BLOCKS = [
   },
   {
     name: 'hangul',
+    fullname: 'Hangul',
+    label: '한',
+    cp_s: 0xAC00,
+    cp_e: 0xD7AF,
     utf16_s: 0xAC00,
     utf16_e: 0xD7AF,
     utf8_s: 0xEAB080,
@@ -141,13 +202,24 @@ bin.CODE_BLOCKS = [
   },
   {
     name: 'surrogates',
+    fullname: 'Surrogates',
+    label: 'SURR',
+    cp_s: 0xD800,
+    cp_e: 0xDFFF,
     utf16_s: 0xD800,
     utf16_e: 0xDFFF,
     utf8_s: 0xEFBFBD,
-    utf8_e: 0xEFBFBD
+    utf8_e: 0xEFBFBD,
+    caution: {
+      utf8: true
+    }
   },
   {
     name: 'kanji_comp',
+    fullname: 'CJK Compatibility Ideographs',
+    label: '漢2',
+    cp_s: 0xF900,
+    cp_e: 0xFAFF,
     utf16_s: 0xF900,
     utf16_e: 0xFAFF,
     utf8_s: 0xEFA480,
@@ -155,6 +227,10 @@ bin.CODE_BLOCKS = [
   },
   {
     name: 'variation_selectors',
+    fullname: 'Variation Selectors',
+    label: 'VS',
+    cp_s: 0xFE00,
+    cp_e: 0xFE0F,
     utf16_s: 0xFE00,
     utf16_e: 0xFE0F,
     utf8_s: 0xEFB880,
@@ -162,6 +238,10 @@ bin.CODE_BLOCKS = [
   },
   {
     name: 'fillwidth_forms',
+    fullname: 'Fullwidth Forms',
+    label: 'Ａ',
+    cp_s: 0xFF00,
+    cp_e: 0xFF5E,
     utf16_s: 0xFF00,
     utf16_e: 0xFF5E,
     utf8_s: 0xEFBC80,
@@ -169,16 +249,30 @@ bin.CODE_BLOCKS = [
   },
   {
     name: 'half_kana',
+    fullname: 'Halfwidth Kana',
+    label: 'ｱ',
+    cp_s: 0xFF61,
+    cp_e: 0xFF9F,
     utf16_s: 0xFF61,
     utf16_e: 0xFF9F,
     utf8_s: 0xEFBDA1,
     utf8_e: 0xEFBE9F
-  }
-];
-
-bin.CODE_BLOCKS2 = [
+  },
+  {
+    name: 'non_bmp',
+    label: 'U+10000-U+10FFFF',
+    fullname: '4 bytes character',
+    cp_s: 0x10000,
+    cp_e: 0x10FFFF,
+    plane: true,
+    skip_check: true
+  },
   {
     name: 'smp',
+    fullname: 'Supplementary Multilingual Plane',
+    label: '1:SMP',
+    cp_s: 0x10000,
+    cp_e: 0x1FFFF,
     utf16_s: 0xD800DC00,
     utf16_e: 0xD83FDFFF,
     utf8_s: 0xF0908080,
@@ -186,6 +280,10 @@ bin.CODE_BLOCKS2 = [
   },
   {
     name: 'emoji',
+    fullname: 'Emoji',
+    label: 'Emoji',
+    cp_s: 0x1F300,
+    cp_e: 0x1FBFF,
     utf16_s: 0xD83CDF00,
     utf16_e: 0xD83EDFFF,
     utf8_s: 0xF09F8C80,
@@ -193,6 +291,10 @@ bin.CODE_BLOCKS2 = [
   },
   {
     name: 'sip',
+    fullname: 'Supplementary Ideographic Plane',
+    label: '2:SIP',
+    cp_s: 0x20000,
+    cp_e: 0x2FFFF,
     utf16_s: 0xD840DC00,
     utf16_e: 0xD87FDFFF,
     utf8_s: 0xF0A08080,
@@ -200,6 +302,10 @@ bin.CODE_BLOCKS2 = [
   },
   {
     name: 'tip',
+    fullname: 'Tertiary Ideographic Plane',
+    label: '3:TIP',
+    cp_s: 0x30000,
+    cp_e: 0x3FFFF,
     utf16_s: 0xD880DC00,
     utf16_e: 0xDB3FDFFF,
     utf8_s: 0xF0B08080,
@@ -207,6 +313,10 @@ bin.CODE_BLOCKS2 = [
   },
   {
     name: 'ssp',
+    fullname: 'Supplementary Special-purpose Plane',
+    label: '14:SSP',
+    cp_s: 0xE0000,
+    cp_e: 0xEFFFF,
     utf16_s: 0xDB40DC00,
     utf16_e: 0xDB7FDFFF,
     utf8_s: 0xF3A08080,
@@ -214,6 +324,10 @@ bin.CODE_BLOCKS2 = [
   },
   {
     name: 'variation_selectors2',
+    fullname: 'Variation Selector 17-256',
+    label: 'VS2',
+    cp_s: 0xE0100,
+    cp_e: 0xE01EF,
     utf16_s: 0xDB40DD00,
     utf16_e: 0xDB40DDEF,
     utf8_s: 0xF3A08480,
@@ -221,6 +335,10 @@ bin.CODE_BLOCKS2 = [
   },
   {
     name: 'pua15',
+    fullname: 'Private Use Plane',
+    label: '15:PUA',
+    cp_s: 0xF0000,
+    cp_e: 0xFFFFF,
     utf16_s: 0xDB80DC00,
     utf16_e: 0xDBBFDFFF,
     utf8_s: 0xF3B08080,
@@ -228,183 +346,16 @@ bin.CODE_BLOCKS2 = [
   },
   {
     name: 'pua16',
+    fullname: 'Private Use Plane',
+    label: '16:PUA',
+    cp_s: 0x100000,
+    cp_e: 0x10FFFF,
     utf16_s: 0xDBC0DC00,
     utf16_e: 0xDBFFDFFE,
     utf8_s: 0xF4808080,
     utf8_e: 0xF48FBFBF
-  },
-];
-
-bin.CODEBLOCKS_IND = {
-  'bmp': {
-    label: 'U+0000-U+FFFF   ',
-    fullname: 'Basic Multilingual Plane',
-    cp_s: '0000',
-    cp_e: 'FFFF',
-    plane: true
-  },
-  'ascii': {
-    label: 'A',
-    fullname: 'ASCII',
-    cp_s: '0000',
-    cp_e: '007F'
-  },
-  'latin1_suppl': {
-    label: 'Ü',
-    fullname: 'Latin-1 Supplement',
-    cp_s: '0080',
-    cp_e: '00FF'
-  },
-  'nbsp': {
-    label: 'NBSP',
-    fullname: 'Non-breaking space',
-    cp_s: '00A0',
-    caution: true
-  },
-  'thai': {
-    label: 'ไทย',
-    fullname: 'Thai',
-    cp_s: '0E00',
-    cp_e: '0E7F'
-  },
-  'symbols': {
-    label: '☆',
-    fullname: 'Symbols',
-    cp_s: '2000',
-    cp_e: '2BFF'
-  },
-  'zwsp': {
-    label: 'ZWSP',
-    fullname: 'Zero-width space',
-    cp_s: '200B',
-    caution: true
-  },
-  'rlm': {
-    label: 'RLM',
-    fullname: 'Right-to-left mark',
-    cp_s: '200F',
-    caution: true
-  },  'hiragana': {
-    label: 'あ',
-    fullname: 'Hiragana',
-    cp_s: '3040',
-    cp_e: '3096'
-  },
-  'katakana': {
-    label: 'ア',
-    fullname: 'Katakana',
-    cp_s: '30A1',
-    cp_e: '30FF'
-  },
-  'bopomofo': {
-    label: 'ㄅ',
-    fullname: 'Bopomofo',
-    cp_s: '3100',
-    cp_e: '312F'
-  },
-  'kanji': {
-    label: '漢',
-    fullname: 'CJK unified ideographs',
-    cp_s: '3400',
-    cp_e: '9FFF'
-  },
-  'hangul': {
-    label: '한',
-    fullname: 'Hangul',
-    cp_s: 'AC00',
-    cp_e: 'D7AF'
-  },
-  'surrogates': {
-    label: 'SURR',
-    fullname: 'Surrogates',
-    cp_s: 'D800',
-    cp_e: 'DFFF',
-    caution: {
-      utf8: true
-    }
-  },
-  'kanji_comp': {
-    label: '漢2',
-    fullname: 'CJK Compatibility Ideographs',
-    cp_s: 'F900',
-    cp_e: 'FAFF'
-  },
-  'variation_selectors': {
-    label: 'VS',
-    fullname: 'Variation Selectors',
-    cp_s: 'FE00',
-    cp_e: 'FE0F',
-    caution: true
-  },
-  'fillwidth_forms': {
-    label: 'Ａ',
-    fullname: 'Fullwidth Forms',
-    cp_s: 'FF00',
-    cp_e: 'FF5E'
-  },
-  'half_kana': {
-    label: 'ｱ',
-    fullname: 'Halfwidth Kana',
-    cp_s: 'FF61',
-    cp_e: 'FF9F'
-  },
-  'non_bmp': {
-    label: 'U+10000-U+10FFFF',
-    fullname: 'Supplementary Multilingual Plane',
-    cp_s: '10000',
-    cp_e: '10FFFF',
-    plane: true
-  },
-  'smp': {
-    label: '1:SMP',
-    fullname: 'Supplementary Multilingual Plane',
-    cp_s: '10000',
-    cp_e: '1FFFF'
-  },
-  'emoji': {
-    label: 'Emoji',
-    fullname: 'Emoji',
-    cp_s: '1F300',
-    cp_e: '1FBFF'
-  },
-  'sip': {
-    label: '2:SIP',
-    fullname: 'Supplementary Ideographic Plane',
-    cp_s: '20000',
-    cp_e: '2FFFF'
-  },
-  'tip': {
-    label: '3:TIP',
-    fullname: 'Tertiary Ideographic Plane',
-    cp_s: '30000',
-    cp_e: '3FFFF'
-  },
-  'ssp': {
-    label: '14:SSP',
-    fullname: 'Supplementary Special-purpose Plane',
-    cp_s: 'E0000',
-    cp_e: 'EFFFF'
-  },
-  'variation_selectors2': {
-    label: 'VS2',
-    fullname: 'Variation Selectors 2',
-    cp_s: 'E0100',
-    cp_e: 'E01EF',
-    caution: true
-  },
-  'pua15': {
-    label: '15:PUA',
-    fullname: 'Private Use Plane',
-    cp_s: 'F0000',
-    cp_e: 'FFFFF'
-  },
-  'pua16': {
-    label: '16:PUA',
-    fullname: 'Private Use Plane',
-    cp_s: '100000',
-    cp_e: '10FFFF'
   }
-};
+];
 
 bin.auto = true;
 bin.buf = null;
@@ -676,14 +627,15 @@ bin.buildTextFileInfo = function(ftype) {
   if (bin.isUnicode(type)) {
     var i, blockName;
     var clz = {};
-    for (blockName in bin.CODEBLOCKS_IND) {
-      clz[blockName] = 'status-inactive';
-    }
 
     var codeblockInd = encInfo['codeblock_ind'];
-    for (blockName in bin.CODEBLOCKS_IND) {
-      var codeBlockInfo4Enc = bin.CODEBLOCKS_IND[blockName];
-      var caution = codeBlockInfo4Enc['caution'];
+
+    for (i = 0; i < bin.CODE_BLOCKS.length; i++) {
+      codeBlock = bin.CODE_BLOCKS[i];
+      blockName = codeBlock['name'];
+
+      var caution = codeBlock['caution'];
+      clz[blockName] = 'status-inactive';
       if (codeblockInd[blockName]) {
         clz[blockName] = 'status-active';
         if ((caution === true) || (caution && caution[type])) {
@@ -693,8 +645,10 @@ bin.buildTextFileInfo = function(ftype) {
     }
 
     s += '';
-    for (blockName in bin.CODEBLOCKS_IND) {
-      var codeBlock = bin.CODEBLOCKS_IND[blockName];
+    for (i = 0; i < bin.CODE_BLOCKS.length; i++) {
+      codeBlock = bin.CODE_BLOCKS[i];
+      blockName = codeBlock['name'];
+
       var cpRange = bin.buildCodeRangeString(codeBlock);
       var tooltip = codeBlock['fullname'] + ' (' + cpRange + ')';
 
@@ -729,9 +683,9 @@ bin.buildTextFileInfo = function(ftype) {
 bin.buildCodeRangeString = function(codeBlock) {
   var cp_s = codeBlock['cp_s'];
   var cp_e = codeBlock['cp_e'];
-  var s = 'U+' + cp_s;
+  var s = 'U+' + bin.toHex(cp_s, true, '', 4);
   if (cp_e) {
-    s += '-U+' + cp_e;
+    s += '-U+' + bin.toHex(cp_e, true, '', 4);
   }
   return s;
 };
@@ -1110,12 +1064,14 @@ bin.getEncoding = function(buf) {
 
     for (var j = 0; j < bin.CODE_BLOCKS.length; j++) {
       var codeBlock = bin.CODE_BLOCKS[j];
-      bin.checkCodeBlock(buf, i, code, chunk, flags, codeBlock);
-    }
-
-    for (j = 0; j < bin.CODE_BLOCKS2.length; j++) {
-      codeBlock = bin.CODE_BLOCKS2[j];
-      bin.checkCodeBlock2(buf, i, code, chunk, flags, codeBlock);
+      var cpS = codeBlock['cp_s'];
+      if (!codeBlock['cp_s']['skip_check']) {
+        if (cpS >= 0x10000) {
+          bin.checkCodeBlock2(buf, i, code, chunk, flags, codeBlock);
+        } else {
+          bin.checkCodeBlock(buf, i, code, chunk, flags, codeBlock);
+        }
+      }
     }
 
     var uri = null;
