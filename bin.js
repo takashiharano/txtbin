@@ -1024,12 +1024,25 @@ bin.getEncoding = function(buf) {
     }
   };
 
+  var f = false;
   if (bin.isUtf8Bom(buf)) {
     typeScore = bin.setScore(typeScore, 'utf8');
+    f = true;
+    typeScore['utf16'] = -1;
   } else if (bin.isUtf16LeBom(buf)) {
     typeScore = bin.setScore(typeScore, 'utf16le_bom');
+    f = true;
+    typeScore['utf8'] = -1;
   } else if (bin.isUtf16BeBom(buf)) {
     typeScore = bin.setScore(typeScore, 'utf16be_bom');
+    f = true;
+    typeScore['utf8'] = -1;
+  }
+
+  if (f) {
+    typeScore['sjis'] = -1;
+    typeScore['iso2022jp'] = -1;
+    typeScore['euc_jp'] = -1;
   }
 
   var evn = ((buf.length % 2) == 0);
@@ -1038,9 +1051,9 @@ bin.getEncoding = function(buf) {
     var code = buf[i];
     var leftLen = buf.length - i;
 
-    var ptn4 = bin.scanBin(buf, i, 4);
-    var ptn3 = bin.scanBin(buf, i, 3);
-    var ptn2 = bin.scanBin(buf, i, 2);
+    var ptn4 = bin.fetchBufAsInt(buf, i, 4);
+    var ptn3 = bin.fetchBufAsInt(buf, i, 3);
+    var ptn2 = bin.fetchBufAsInt(buf, i, 2);
 
     var ptn2U = ptn2;
     var ptn2L = (ptn4 & 0xFFFF);
@@ -1131,8 +1144,8 @@ bin.getEncoding = function(buf) {
       flags['utf8']['codeblock_ind']['ascii'] = true;
     }
 
-    try {
-      if (uri) {
+    if (uri && (typeScore['utf8'] >= 0)) {
+      try {
         var c = decodeURI(uri);
         i += skip;
         typeScore = bin.incrementScore(typeScore, 'utf8');
@@ -1141,25 +1154,31 @@ bin.getEncoding = function(buf) {
           flags['utf8']['codeblock_ind']['latin1_suppl'] = true;
         }
         cnt++;
+      } catch(e) {}
+    }
+
+    if (typeScore['sjis'] >= 0) {
+      if (bin.isSjis(buf, i, true)) {
+        typeScore = bin.incrementScore(typeScore, 'sjis');
+        typeScore['utf16'] = -1;
+        cnt++;
       }
-    } catch(e) {}
-
-    if (bin.isSjis(buf, i, true)) {
-      typeScore = bin.incrementScore(typeScore, 'sjis');
-      typeScore['utf16'] = -1;
-      cnt++;
     }
 
-    if (bin.isIso2022jp(buf, i)) {
-      typeScore = bin.incrementScore(typeScore, 'iso2022jp');
-      typeScore['utf16'] = -1;
-      cnt++;
+    if (typeScore['iso2022jp'] >= 0) {
+      if (bin.isIso2022jp(buf, i)) {
+        typeScore = bin.incrementScore(typeScore, 'iso2022jp');
+        typeScore['utf16'] = -1;
+        cnt++;
+      }
     }
 
-    if (bin.isEuc(buf, i, true)) {
-      typeScore = bin.incrementScore(typeScore, 'euc_jp');
-      typeScore['utf16'] = -1;
-      cnt++;
+    if (typeScore['euc_jp'] >= 0) {
+      if (bin.isEuc(buf, i, true)) {
+        typeScore = bin.incrementScore(typeScore, 'euc_jp');
+        typeScore['utf16'] = -1;
+        cnt++;
+      }
     }
   }
 
@@ -1620,14 +1639,14 @@ bin.getExeArch = function(b) {
   var len = 512;
   for (var i = 0; i < len; i++) {
     if (i + 3 >= len) break;
-    var ptn = bin.scanBin(b, i, 4);
+    var ptn = bin.fetchBufAsInt(b, i, 4);
     if (ptn == 0x50450000) {
       pe = i;break;
     }
   }
   var v = 0;
   if ((pe >= 0) && (pe + 5 < len)) {
-    v = bin.scanBin(b, pe + 4, 2);
+    v = bin.fetchBufAsInt(b, pe + 4, 2);
   }
   var arch = '';
   if (v == 0x6486) {
@@ -1658,7 +1677,7 @@ bin.getJavaClassVersion = function(b) {
   return s;
 };
 
-bin.scanBin = function(b, p, ln) {
+bin.fetchBufAsInt = function(b, p, ln) {
   var upto = 6;
   if ((p + (ln - 1) >= b.length) || (ln > upto)) return -1;
   var r = 0;
