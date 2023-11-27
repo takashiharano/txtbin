@@ -583,7 +583,7 @@ bin.drawBinInfo = function(ftype, buf, b64) {
 
   if (bin.isImage(ftype)) {
     if (binDetail) {
-      s += 'ImgSize : W ' + binDetail['w'] + ' x ' + 'H '  + binDetail['h']
+      s += bin.buildImageInfo(binDetail);
     }
   } else if (bin.isZip(ftype)) {
     if (binDetail['has_pw']) {
@@ -594,6 +594,11 @@ bin.drawBinInfo = function(ftype, buf, b64) {
   }
 
   bin.drawInfo(s);
+};
+
+bin.buildImageInfo = function(binDetail) {
+  var s = 'ImgSize : W ' + binDetail['w'] + ' x ' + 'H '  + binDetail['h'];
+  return s;
 };
 
 bin.buildTextFileInfo = function(ftype) {
@@ -1709,8 +1714,8 @@ bin.getBmpInfo = function(b) {
 };
 
 bin.getJpegInfo = function(b) {
-  var SOF = 'FF C0|C1|C2|C3|C5|C6|C7|C8|C9|CA|CB|CD|CE|CF';
   var r = {w: 0, h: 0};
+  var SOF = 'FF C0|C2';
   var p = bin.scanBuf(b, SOF);
   if (p == -1) {
     return r;
@@ -1719,8 +1724,8 @@ bin.getJpegInfo = function(b) {
   var offsetW = 7;
   var posH = p + offsetH;
   var posW = p + offsetW;
-  var h = (b[posH] << 8) + b[posH + 1];
-  var w = (b[posW] << 8) + b[posW + 1];
+  var h = bin.fetchBufAsIntByBE(b, posH, 2);
+  var w = bin.fetchBufAsIntByBE(b, posW, 2);
   r['w'] = w;
   r['h'] = h;
   return r;
