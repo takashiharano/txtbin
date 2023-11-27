@@ -1140,7 +1140,8 @@ bin.getEncoding = function(buf) {
       }
       skip = 1;
       flags['utf8']['codeblock_ind']['bmp'] = true;
-    } else if (code > 0x7F) {
+    } else if (code >= 0x80) {
+      typeScore['ascii'] = -1;
       typeScore['utf8'] = -1;
       if (evn) {
         typeScore = bin.incrementScore(typeScore, 'utf16');
