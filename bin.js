@@ -1839,11 +1839,11 @@ bin.extractBinTextPart = function(mode, s) {
 bin.onInput = function() {
   bin.clearBuf();
   bin.forceNewline();
-  if ($el('#show-preview').checked) {
-    bin.updateInfoAndPreview();
-  }
   if (bin.auto) {
     bin.detectCurrentMode();
+  }
+  if ($el('#show-preview').checked) {
+    bin.updateInfoAndPreview();
   }
 };
 
