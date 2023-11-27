@@ -848,7 +848,9 @@ bin.getHexDump = function(mode, buf) {
   }
 
   for (var i = 0; i < len; i++) {
-    dmp += bin.getDump(mode, i, buf, len, showSp, showAddr, showAscii);
+    if (i < buf.length || showAscii) {
+      dmp += bin.getDump(mode, i, buf, len, showSp, showAddr, showAscii);
+    }
   }
   if (bLen > lm) {
     if (bLen - lm > (0x10 * lastRows)) {
@@ -867,7 +869,9 @@ bin.getHexDump = function(mode, buf) {
         dmp += bin.dumpAddr(st);
       }
       for (i = st; i < ed; i++) {
-        dmp += bin.getDump(mode, i, buf, ed, showSp, showAddr, showAscii);
+        if (i < buf.length || showAscii) {
+          dmp += bin.getDump(mode, i, buf, ed, showSp, showAddr, showAscii);
+        }
       }
     }
   }
