@@ -580,14 +580,17 @@ bin.drawBinInfo = function(ftype, buf, b64) {
   }
 
   var binDetail = ftype['bin_detail'];
-  if (binDetail && (typeof binDetail == 'string')) {
-    s += '' + binDetail;
-  }
 
-  if (bin.isZip(ftype)) {
+  if (bin.isImage(ftype)) {
+    if (binDetail) {
+      s += 'ImgSize : W ' + binDetail['w'] + ' x ' + 'H '  + binDetail['h']
+    }
+  } else if (bin.isZip(ftype)) {
     if (binDetail['has_pw']) {
       s += '<span class="caution">PW LOCKED</span>'
     }
+  } else if (binDetail && (typeof binDetail == 'string')) {
+    s += '' + binDetail;
   }
 
   bin.drawInfo(s);
@@ -1051,9 +1054,9 @@ bin.getEncoding = function(buf) {
     var code = buf[i];
     var leftLen = buf.length - i;
 
-    var ptn4 = bin.fetchBufAsInt(buf, i, 4);
-    var ptn3 = bin.fetchBufAsInt(buf, i, 3);
-    var ptn2 = bin.fetchBufAsInt(buf, i, 2);
+    var ptn4 = bin.fetchBufAsIntByBE(buf, i, 4);
+    var ptn3 = bin.fetchBufAsIntByBE(buf, i, 3);
+    var ptn2 = bin.fetchBufAsIntByBE(buf, i, 2);
 
     var ptn2U = ptn2;
     var ptn2L = (ptn4 & 0xFFFF);
@@ -1450,36 +1453,60 @@ bin.getFileType = function(b) {
   return ftype;
 };
 
-bin.hasBinaryPattern = function(buf, binPattern) {
-  var ptn = binPattern.split(' ');
+bin.hasBinaryPattern = function(buf, bytesPattern) {
+  var ptn = bytesPattern.split(' ');
   if (buf.length < ptn.length) return false;
   for (var i = 0; i < buf.length; i++) {
-    if (bin._hasBinaryPattern(buf, i, binPattern)) return true;
+    if (bin._hasBinaryPattern(buf, i, bytesPattern)) return true;
   }
   return false;
 };
 
-bin._hasBinaryPattern = function(buf, pos, binPattern) {
-  if (binPattern instanceof Array) {
-    for (var i = 0; i < binPattern.length; i++) {
-      if (bin.__hasBinaryPattern(buf, pos, binPattern[i])) return true;
+bin._hasBinaryPattern = function(buf, pos, bytesPattern) {
+  if (bytesPattern instanceof Array) {
+    for (var i = 0; i < bytesPattern.length; i++) {
+      if (bin.bytecmp(buf, pos, bytesPattern[i])) return true;
     }
   } else {
-    return bin.__hasBinaryPattern(buf, pos, binPattern);
+    return bin.bytecmp(buf, pos, bytesPattern);
   }
   return false;
 };
 
-bin.__hasBinaryPattern = function(buf, pos, binPattern) {
-  var ptn = binPattern.split(' ');
-  if (buf.length < ptn.length) return false;
+bin.bytecmp = function(buf, pos, bytesPattern) {
+  var ptn = bytesPattern.split(' ');
+  if (buf.length < ptn.length) {
+    return false;
+  }
+  var v;
   for (var i = 0; i < ptn.length; i++) {
     var hex = ptn[i];
-    if (hex == 'xx') continue;
-    var v = +('0x' + hex);
-    if (v != buf[i + pos]) return false;
+    if (hex == 'xx') {
+      continue;
+    }
+    if (hex.match(/\|/)) {
+      var w = hex.split('|');
+      for (var j = 0; j < w.length; j++) {
+        v = +('0x' + w[j]);
+        if (v == buf[i + pos]) {
+          break;
+        }
+      }
+      if (j == w.length) {
+        return false;
+      }
+    } else {
+      v = +('0x' + hex);
+      if (v != buf[i + pos]) {
+        return false;
+      }
+    }
   }
   return true;
+};
+
+bin.isImage = function(ftype) {
+  return (ftype['mime'].startsWith('image/'));
 };
 
 bin.isZip = function(ftype) {
@@ -1621,15 +1648,21 @@ bin.copyObjField = function(src, dest, key) {
   return dest;
 };
 
-bin.getBinDetail = function(type, b) {
+bin.getBinDetail = function(ext, b) {
   var r = '';
-  if (type == 'exe') {
+  if (ext == 'bmp') {
+    r = bin.getBmpInfo(b);
+  } else if (ext == 'class') {
+    r = bin.getJavaClassVersion(b);
+  } else if (ext == 'exe') {
     var a = bin.getExeArch(b);
     r = 'Arch    : ' + a;
-  } else if (type == 'zip') {
+  } else if (ext == 'jpg') {
+    r = bin.getJpegInfo(b);
+  } else if (ext == 'png') {
+    r = bin.getPngInfo(b);
+  } else if (ext == 'zip') {
     r = bin.getZipInfo(b);
-  } else if (type == 'class') {
-    r = bin.getJavaClassVersion(b);
   }
   return r;
 };
@@ -1639,14 +1672,14 @@ bin.getExeArch = function(b) {
   var len = 512;
   for (var i = 0; i < len; i++) {
     if (i + 3 >= len) break;
-    var ptn = bin.fetchBufAsInt(b, i, 4);
+    var ptn = bin.fetchBufAsIntByBE(b, i, 4);
     if (ptn == 0x50450000) {
       pe = i;break;
     }
   }
   var v = 0;
   if ((pe >= 0) && (pe + 5 < len)) {
-    v = bin.fetchBufAsInt(b, pe + 4, 2);
+    v = bin.fetchBufAsIntByBE(b, pe + 4, 2);
   }
   var arch = '';
   if (v == 0x6486) {
@@ -1655,6 +1688,53 @@ bin.getExeArch = function(b) {
     arch = 'x86 (32bit)';
   }
   return arch;
+};
+
+bin.getBmpInfo = function(b) {
+  var r = {w: 0, h: 0};
+  if (b.length < 26) {
+    return r;
+  }
+  var posW = 0x12;
+  var posH = 0x16;
+  var w = bin.fetchBufAsIntByLE(b, posW, 4);
+  var h = bin.fetchBufAsIntByLE(b, posH, 4);
+  r['w'] = w;
+  r['h'] = h;
+  return r;
+};
+
+bin.getJpegInfo = function(b) {
+  var SOF = 'FF C0|C1|C2|C3|C5|C6|C7|C8|C9|CA|CB|CD|CE|CF';
+  var r = {w: 0, h: 0};
+  var p = bin.scanBuf(b, SOF);
+  if (p == -1) {
+    return r;
+  }
+  var offsetH = 5;
+  var offsetW = 7;
+  var posH = p + offsetH;
+  var posW = p + offsetW;
+  var h = (b[posH] << 8) + b[posH + 1];
+  var w = (b[posW] << 8) + b[posW + 1];
+  r['w'] = w;
+  r['h'] = h;
+  return r;
+};
+
+bin.getPngInfo = function(b) {
+  var r = {w: 0, h: 0};
+  if (b.length < 26) {
+    return r;
+  }
+  var posIHDR = 0x08;
+  var posW = posIHDR + 0x08;
+  var posH = posIHDR + 0x0C;
+  var w = bin.fetchBufAsIntByBE(b, posW, 4);
+  var h = bin.fetchBufAsIntByBE(b, posH, 4);
+  r['w'] = w;
+  r['h'] = h;
+  return r;
 };
 
 bin.getZipInfo = function(b) {
@@ -1677,15 +1757,48 @@ bin.getJavaClassVersion = function(b) {
   return s;
 };
 
-bin.fetchBufAsInt = function(b, p, ln) {
-  var upto = 6;
-  if ((p + (ln - 1) >= b.length) || (ln > upto)) return -1;
+bin.fetchBufAsIntByLE = function(b, pos, size) {
+  if (pos == undefined) {
+    pos = 0;
+  }
+  if ((pos + size) > b.length) {
+    return -1;
+  }
   var r = 0;
-  for (var i = 0; i < ln; i++) {
-    var d = b[p + i] * Math.pow(256, ln - (i + 1));
-    r += d;
+  for (var i = 0; i < size; i++) {
+    r += b[pos + i] << (8 * i);
   }
   return r;
+};
+
+bin.fetchBufAsIntByBE = function(b, pos, size) {
+  if (pos == undefined) {
+    pos = 0;
+  }
+  if ((pos + size) > b.length) {
+    return -1;
+  }
+  var r = 0;
+  for (var i = 0; i < size; i++) {
+    r += b[pos + i] << (8 * (size - i - 1));
+  }
+  return r;
+};
+
+bin.scanBuf = function(buf, bytesPattern, pos) {
+  if (pos == undefined) {
+    pos = 0;
+  }
+  var targetLen = buf.length - pos;
+  if (targetLen < bytesPattern.length) {
+    return -1;
+  }
+  for (var i = pos; i < buf.length; i++) {
+    if (bin.bytecmp(buf, i, bytesPattern)) {
+      return i;
+    }
+  }
+  return -1;
 };
 
 bin.toHex = function(v, uc, pFix, d) {
