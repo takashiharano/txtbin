@@ -215,6 +215,18 @@ bin.CODE_BLOCKS = [
     }
   },
   {
+    name: 'pua',
+    fullname: 'Private Use Area',
+    label: 'PUA',
+    cp_s: 0xE000,
+    cp_e: 0xF8FF,
+    utf16_s: 0xE000,
+    utf16_e: 0xF8FF,
+    utf8_s: 0xEE8080,
+    utf8_e: 0xEFA3BF,
+    caution: true
+  },
+  {
     name: 'kanji_comp',
     fullname: 'CJK Compatibility Ideographs',
     label: '漢2',
