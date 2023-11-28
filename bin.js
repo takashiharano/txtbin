@@ -157,7 +157,7 @@ bin.CODE_BLOCKS = [
   },
   {
     name: 'lrm',
-    fullname: 'Left-to-right mark',
+    fullname: 'Left-to-Right mark',
     label: 'LRM',
     cp_s: 0x200E,
     utf16_s: 0x200E,
@@ -166,11 +166,56 @@ bin.CODE_BLOCKS = [
   },
   {
     name: 'rlm',
-    fullname: 'Right-to-left mark',
+    fullname: 'Right-to-Left mark',
     label: 'RLM',
     cp_s: 0x200F,
     utf16_s: 0x200F,
     utf8_s: 0xE2808F,
+    caution: true
+  },
+  {
+    name: 'lre',
+    fullname: 'Left-to-Right Embedding',
+    label: 'LRE',
+    cp_s: 0x202A,
+    utf16_s: 0x202A,
+    utf8_s: 0xE280AA,
+    caution: true
+  },
+  {
+    name: 'rle',
+    fullname: 'Right-to-Left Embedding',
+    label: 'RLE',
+    cp_s: 0x202B,
+    utf16_s: 0x202B,
+    utf8_s: 0xE280AB,
+    caution: true
+  },
+  {
+    name: 'pdf',
+    fullname: 'Pop Directional Formatting',
+    label: 'PDF',
+    cp_s: 0x202C,
+    utf16_s: 0x202C,
+    utf8_s: 0xE280AC,
+    caution: true
+  },
+  {
+    name: 'lro',
+    fullname: 'Left-to-Right Override',
+    label: 'LRO',
+    cp_s: 0x202D,
+    utf16_s: 0x202D,
+    utf8_s: 0xE280AD,
+    caution: true
+  },
+  {
+    name: 'rlo',
+    fullname: 'Right-to-Left Override',
+    label: 'RLO',
+    cp_s: 0x202E,
+    utf16_s: 0x202E,
+    utf8_s: 0xE280AE,
     caution: true
   },
   {
