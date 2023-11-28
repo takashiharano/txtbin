@@ -447,6 +447,8 @@ $onReady = function() {
   $el('#dump-flag-show-addr').addEventListener('input', bin.onChangeDumpFlag);
   $el('#dump-flag-show-sp').addEventListener('input', bin.onChangeDumpFlag);
   $el('#dump-flag-show-ascii').addEventListener('input', bin.onChangeDumpFlag);
+  $el('#dump-flag-uc').addEventListener('input', bin.onChangeDumpFlag);
+  $el('#dump-multibyte').addEventListener('input', bin.onChangeDumpFlag);
 
   $el('#bsb64-n').addEventListener('change', bin.onChangeBsb64);
 
@@ -852,6 +854,7 @@ bin.getHexDump = function(mode, buf) {
   var showAddr = $el('#dump-flag-show-addr').checked;
   var showSp = $el('#dump-flag-show-sp').checked;
   var showAscii = $el('#dump-flag-show-ascii').checked;
+  var uc = $el('#dump-flag-uc').checked;
   var dmp = '';
 
   var lm = 0;
@@ -901,7 +904,7 @@ bin.getHexDump = function(mode, buf) {
 
   for (var i = 0; i < len; i++) {
     if (i < buf.length || showAscii) {
-      dmp += bin.getDump(mode, i, buf, len, showSp, showAddr, showAscii);
+      dmp += bin.getDump(mode, i, buf, len, showSp, showAddr, showAscii, uc);
     }
   }
   if (bLen > lm) {
@@ -922,7 +925,7 @@ bin.getHexDump = function(mode, buf) {
       }
       for (i = st; i < ed; i++) {
         if (i < buf.length || showAscii) {
-          dmp += bin.getDump(mode, i, buf, ed, showSp, showAddr, showAscii);
+          dmp += bin.getDump(mode, i, buf, ed, showSp, showAddr, showAscii, uc);
         }
       }
     }
@@ -932,14 +935,14 @@ bin.getHexDump = function(mode, buf) {
   return dmp;
 };
 
-bin.getDump = function(mode, i, buf, len, showSp, showAddr, showAscii) {
+bin.getDump = function(mode, i, buf, len, showSp, showAddr, showAscii, uc) {
   var b;
   if (mode == 'bin') {
     b = bin.dumpBin(i, buf);
   } else if (mode == 'dec') {
     b = bin.dumpDec(i, buf);
   } else {
-    b = bin.dumpHex(i, buf);
+    b = bin.dumpHex(i, buf, uc);
   }
   if ((i + 1) % 0x10 == 0) {
     if (showAscii) {
@@ -964,8 +967,9 @@ bin.dumpBin = function(i, buf) {
 bin.dumpDec = function(i, buf) {
   return ((buf[i] == undefined) ? '   ' : ('  ' + buf[i].toString()).slice(-3));
 };
-bin.dumpHex = function(i, buf) {
-  return ((buf[i] == undefined) ? '  ' : ('0' + buf[i].toString(16)).slice(-2).toUpperCase());
+bin.dumpHex = function(i, buf, uc) {
+  var r = ((buf[i] == undefined) ? '  ' : ('0' + buf[i].toString(16)).slice(-2));
+  return (uc ? r.toUpperCase() : r);
 };
 
 bin.i2hex = function(i) {
