@@ -606,6 +606,7 @@ bin.dump = function(s) {
       b64s = util.encodeBase64s(buf, key);
       r = bin.formatB64(b64s);
       b64 = util.encodeBase64(buf, true);
+      $el('#key-update-button').disabled = false;
       break;
     case 'bsb64':
       var n = $el('#bsb64-n').value | 0;
@@ -629,7 +630,6 @@ bin.dump = function(s) {
   bin.setSrcValue(r, true);
   bin.showPreview(ftype, b64);
   bin.buf = buf;
-  $el('#key-update-button').disabled = false;
 };
 
 bin.decodeBase64 = function(s) {
