@@ -85,7 +85,26 @@ bin.CODE_BLOCKS = [
     label: 'A',
     cp_s: 0x0000,
     cp_e: 0x007F,
-    skip_check: true
+    utf16_s: 0x0020,
+    utf16_e: 0x007F,
+    utf8_s: 0x20,
+    utf8_e: 0x7F
+  },
+  {
+    name: 'tab',
+    fullname: 'Horizontal Tabulation',
+    label: 'TAB',
+    cp_s: 0x0009,
+    utf16_s: 0x0009,
+    utf8_s: 0x09
+  },
+  {
+    name: 'sp',
+    fullname: 'Space',
+    label: 'SP',
+    cp_s: 0x0020,
+    utf16_s: 0x0020,
+    utf8_s: 0x20
   },
   {
     name: 'latin1_suppl',
@@ -137,6 +156,15 @@ bin.CODE_BLOCKS = [
     caution: true
   },
   {
+    name: 'lrm',
+    fullname: 'Left-to-right mark',
+    label: 'LRM',
+    cp_s: 0x200E,
+    utf16_s: 0x200E,
+    utf8_s: 0xE2808E,
+    caution: true
+  },
+  {
     name: 'rlm',
     fullname: 'Right-to-left mark',
     label: 'RLM',
@@ -144,6 +172,14 @@ bin.CODE_BLOCKS = [
     utf16_s: 0x200F,
     utf8_s: 0xE2808F,
     caution: true
+  },
+  {
+    name: 'full_space',
+    fullname: 'Full-width space',
+    label: 'ＳＰ',
+    cp_s: 0x3000,
+    utf16_s: 0x3000,
+    utf8_s: 0xE38080
   },
   {
     name: 'hiragana',
@@ -649,7 +685,6 @@ bin.buildTextFileInfo = function(ftype) {
     var clz = {};
 
     var codeblockInd = encInfo['codeblock_ind'];
-
     for (i = 0; i < bin.CODE_BLOCKS.length; i++) {
       codeBlock = bin.CODE_BLOCKS[i];
       blockName = codeBlock['name'];
@@ -1096,7 +1131,6 @@ bin.getEncoding = function(buf) {
     };
 
     bin.checkNewline(buf, i, code, chunk, flags);
-    bin.checkAscii(buf, i, code, chunk, flags);
     bin.checkNonBmp(buf, i, code, chunk, flags);
 
     for (var j = 0; j < bin.CODE_BLOCKS.length; j++) {
@@ -1152,6 +1186,7 @@ bin.getEncoding = function(buf) {
         }
       }
     } else if (code == 0x00) {
+      typeScore['ascii'] = -1;
       typeScore['utf8'] = -1;
       typeScore['sjis'] = -1;
       typeScore['iso2022jp'] = -1;
@@ -1165,8 +1200,6 @@ bin.getEncoding = function(buf) {
           typeScore['bin'] = 1;
         }
       }
-    } else {
-      flags['utf8']['codeblock_ind']['ascii'] = true;
     }
 
     if (uri && (typeScore['utf8'] >= 0)) {
@@ -1284,14 +1317,14 @@ bin.checkNewline = function(buf, pos, code, chunk, flags) {
 
 bin.checkAscii = function(buf, pos, code, chunk, flags) {
   if (pos % 2 == 0) {
-    if ((chunk['ptn2U'] >= 0x0020) && (chunk['ptn2U'] <= 0x007F)) {
+    if (bin.inRange(chunk['ptn2U'], 0x0020, 0x007F)) {
       flags['utf16be']['codeblock_ind']['ascii'] = true;
-    } else if ((chunk['ptn2Ur'] >= 0x0020) && (chunk['ptn2Ur'] <= 0x007F)) {
+    } else if (bin.inRange(chunk['ptn2Ur'], 0x0020, 0x007F)) {
       flags['utf16le']['codeblock_ind']['ascii'] = true;
     }
   }
 
-  if ((code >= 0x0020) && (code <= 0x007F)) {
+  if (bin.inRange(code, 0x20, 0x7F)) {
     flags['utf8']['codeblock_ind']['ascii'] = true;
   }
 
@@ -1324,6 +1357,8 @@ bin.checkCodeBlock = function(buf, pos, code, chunk, flags, codeBlock) {
   var utf8B = chunk['ptn3'];
   if (bin.inRange(utf8S, 0xC280, 0xDFBF)) {
     utf8B = chunk['ptn2'];
+  } else if (bin.inRange(utf8S, 0x00, 0x7F)) {
+    utf8B = code;
   }
 
   if ((utf8B >= utf8S) && (utf8B <= utf8E)) {
@@ -1344,6 +1379,10 @@ bin.checkCodeBlock2 = function(buf, pos, code, chunk, flags, codeBlock) {
   var utf8S = codeBlock['utf8_s'];
   var utf8E = codeBlock['utf8_e'];
 
+  if (utf16S == undefined) {
+    return flags;
+  }
+
   if (utf16E == undefined) {
     utf16E = utf16S;
   }
@@ -1360,6 +1399,10 @@ bin.checkCodeBlock2 = function(buf, pos, code, chunk, flags, codeBlock) {
     } else if ((ptn4r >= utf16S) && (ptn4r <= utf16E)) {
       flags['utf16le']['codeblock_ind'][blockName] = true;
     }
+  }
+
+  if (utf8S == undefined) {
+    return flags;
   }
 
   if ((chunk['ptn4'] >= utf8S) && (chunk['ptn4'] <= utf8E)) {
@@ -1788,7 +1831,7 @@ bin.fetchBufAsIntByLE = function(b, pos, size) {
   }
   var r = 0;
   for (var i = 0; i < size; i++) {
-    r += b[pos + i] << (8 * i);
+    r += b[pos + i] * (2 ** (8 * i));
   }
   return r;
 };
@@ -1802,7 +1845,7 @@ bin.fetchBufAsIntByBE = function(b, pos, size) {
   }
   var r = 0;
   for (var i = 0; i < size; i++) {
-    r += b[pos + i] << (8 * (size - i - 1));
+    r += b[pos + i] * (2 ** (8 * (size - i - 1)));
   }
   return r;
 };
