@@ -471,6 +471,7 @@ bin.isB64Mode = function() {
 
 bin.switchRadix = function(mode, buf) {
   var r;
+  $el('#key-update-button').disabled = true;
   switch (mode) {
     case 'hex':
     case 'dec':
@@ -483,6 +484,9 @@ bin.switchRadix = function(mode, buf) {
       b64s = util.encodeBase64s(buf, key);
       r = bin.formatB64(b64s);
       b64 = util.encodeBase64(buf, true);
+      if (bin.buf) {
+        $el('#key-update-button').disabled = false;
+      }
       break;
     case 'bsb64':
       var n = $el('#bsb64-n').value | 0;
@@ -772,7 +776,10 @@ bin.getSHA = function(a, b, f) {
 
 bin.decode = function() {
   bin.buf = bin.updateInfoAndPreview();
-  $el('#key-update-button').disabled = false;
+  var mode = bin.getMode();
+  if (mode == 'b64s') {
+    $el('#key-update-button').disabled = false;
+  }
 };
 
 bin.updateInfoAndPreview = function() {
