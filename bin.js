@@ -14,6 +14,21 @@ bin.CHR_CR = '&#x2190;';
 bin.CHR_CRLF_S = '<span style="color:#0cf" class="cc">' + bin.CHR_CRLF + '</span>';
 bin.CHR_LF_S = '<span style="color:#0f0" class="cc">' + bin.CHR_LF + '</span>';
 bin.CHR_CR_S = '<span style="color:#f00" class="cc">' + bin.CHR_CR + '</span>';
+
+bin.TAB = '<span style="color:#2c2" class="cc2">&gt;</span>';
+bin.SP = '<span style="color:#0aa" class="cc">.</span>';
+bin.FULL_SP = '<span style="color:#05d" class="cc">．</span>';
+bin.NBSP = '<span style="color:#ff5354" class="cc">.</span>';
+bin.ZWSP = '<span style="color:#f8f" class="cc2">[ZWSP]</span>';
+bin.VS = '<span style="color:#fe0" class="cc2">[VS]</span>';
+bin.LRM = '<span style="color:#f80" class="cc2">[LRM]</span>';
+bin.RLM = '<span style="color:#f80" class="cc2">[RLM]</span>';
+bin.LRE = '<span style="color:#f80" class="cc2">[LRE]</span>';
+bin.RLE = '<span style="color:#f80" class="cc2">[RLE]</span>';
+bin.PDF = '<span style="color:#f80" class="cc2">[PDF]</span>';
+bin.LRO = '<span style="color:#f80" class="cc2">[LRO]</span>';
+bin.RLO = '<span style="color:#f80" class="cc2">[RLO]</span>';
+
 bin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
 bin.DEFAULT_FONT_SIZE = 14;
 bin.DEFAULT_MODE = 'auto';
@@ -328,7 +343,8 @@ bin.CODE_BLOCKS = [
     utf16_s: 0xFE00,
     utf16_e: 0xFE0F,
     utf8_s: 0xEFB880,
-    utf8_e: 0xEFB88F
+    utf8_e: 0xEFB88F,
+    caution: true
   },
   {
     name: 'fillwidth_forms',
@@ -425,7 +441,8 @@ bin.CODE_BLOCKS = [
     utf16_s: 0xDB40DD00,
     utf16_e: 0xDB40DDEF,
     utf8_s: 0xF3A08480,
-    utf8_e: 0xF3A087AF
+    utf8_e: 0xF3A087AF,
+    caution: true
   },
   {
     name: 'pua15',
@@ -2102,9 +2119,22 @@ bin.showPreview = function(ftype, b64) {
 bin.showTextPreview = function(b64) {
   var s = util.decodeBase64(b64);
   s = util.escHtml(s);
+  s = s.replace(/ /g, bin.SP);
   s = s.replace(/\r\n/g, bin.CHR_CRLF_S + '\n');
   s = s.replace(/([^>])\n/g, '$1' + bin.CHR_LF_S + '\n');
   s = s.replace(/\r/g, bin.CHR_CR_S + '\n');
+  s = s.replace(/\t/g, bin.TAB);
+  s = s.replace(/\u3000/g, bin.FULL_SP);
+  s = s.replace(/\u00A0/g, bin.NBSP);
+  s = s.replace(/\u200B/g, bin.ZWSP);
+  s = s.replace(/\u200E/g, bin.LRM);
+  s = s.replace(/\u200F/g, bin.RLM);
+  s = s.replace(/\u202A/g, bin.LRE);
+  s = s.replace(/\u202B/g, bin.RLE);
+  s = s.replace(/\u202C/g, bin.PDF);
+  s = s.replace(/\u202D/g, bin.LRO);
+  s = s.replace(/\u202E/g, bin.RLO);
+  s = s.replace(/([\uFE00-\uFE0F])(.)/g, bin.VS + '$1$2');
   s = s + bin.EOF + '\n';
   bin.drawPreview(s);
 };
