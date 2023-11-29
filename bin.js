@@ -37,36 +37,37 @@ bin.ENCODING_NAME = {
 };
 
 bin.FILETYPES = {
-  accdb: {head: '00 01 00 00 53 74 61 6E 64 61 72 64 20 41 43 45 20 44 42', mime: 'application/msaccess', ext: 'accdb'},
-  bmp: {head: '42 4D', mime: 'image/bmp', ext: 'bmp'},
-  cab: {head: '4D 53 43 46 00 00 00 00', mime: 'application/vnd.ms-cab-compressed', ext: 'cab'},
-  class: {head: 'CA FE BA BE', mime: 'application/octet-stream', ext: 'class'},
-  eps: {head: 'C5 D0 D3 C6', mime: 'application/postscript', ext: 'eps'},
-  exe: {head: '4D 5A', mime: 'application/x-msdownload', ext: 'exe'},
-  gif: {head: '47 49 46 38', mime: 'image/gif', ext: 'gif'},
-  gz: {head: '1F 8B', mime: 'application/gzip', ext: 'gz'},
-  html: {head: '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C', mime: 'text/html', ext: 'html'},
-  jpg: {head: 'FF D8', mime: 'image/jpeg', ext: 'jpg'},
-  lzh: {head: 'xx xx 2D 6C 68 xx 2D', mime: 'application/octet-stream', ext: 'lzh'},
-  mid: {head: '4D 54 68 64', mime: 'audio/midi', ext: 'mid'},
-  mov: {head: 'xx xx xx xx 6D 6F 6F 76', mime: 'video/quicktime', ext: 'mov'},
-  mp3: {head: ['FF FA', 'FF FB', '49 44 33'], mime: 'audio/mpeg', ext: 'mp3'},
-  mp4: {head: 'xx xx xx xx 66 74 79 70', mime: 'video/mp4', ext: 'mp4'},
-  msg: {head: 'D0 CF 11 E0 A1 B1 1A E1', mime: 'application/octet-stream', ext: 'msg'},
-  pdf: {head: '25 50 44 46 2D', mime: 'application/pdf', ext: 'pdf'},
-  png: {head: '89 50 4E 47 0D 0A 1A 0A 00', mime: 'image/png', ext: 'png'},
-  txt_utf8_bom: {head: 'EF BB BF', mime: 'text/plain', ext: 'txt', encoding: 'utf8_bom'},
-  txt_utf16be_bom: {head: 'FE FF', mime: 'text/plain', ext: 'txt', encoding: 'utf16be_bom'},
-  txt_utf16le_bom: {head: 'FF FE', mime: 'text/plain', ext: 'txt', encoding: 'utf16le_bom'},
-  wav: {head: '52 49 46 46 xx xx xx xx 57 41 56 45 66 6D 74', mime: 'audio/wav', ext: 'wav'},
-  webp: {head: '52 49 46 46 xx xx xx xx 57 45 42 50', mime: 'image/webp', ext: 'webp'},
-  xml: {head: '3C 3F 78 6D 6C 20', mime: 'text/xml', ext: 'xml'},
-  zip: {head: '50 4B 03 04', mime: 'application/x-zip-compressed', ext: 'zip'},
-  xlsx: {hexptn: '77 6F 72 6B 62 6F 6F 6B 2E 78 6D 6C', mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', ext: 'xlsx', supertype: 'zip'},
-  docx: {hexptn: '77 6F 72 64 2F 64 6F 63 75 6D 65 6E 74 2E 78 6D 6C', mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', ext: 'docx', supertype: 'zip'},
-  pptx: {hexptn: '70 70 74 2F 70 72 65 73 65 6E 74 61 74 69 6F 6E 2E 78 6D 6C', mime: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', ext: 'pptx', supertype: 'zip'},
-  war: {hexptn: '57 45 42 2D 49 4E 46 2F', mime: 'application/x-zip', ext: 'war', supertype: 'zip'},
-  jar: {hexptn: '4D 45 54 41 2D 49 4E 46 2F', mime: 'application/java-archive', ext: 'jar', supertype: 'zip'}
+  'accdb': {'head': '00 01 00 00 53 74 61 6E 64 61 72 64 20 41 43 45 20 44 42', 'mime': 'application/msaccess', 'ext': 'accdb'},
+  'bmp': {'head': '42 4D', 'mime': 'image/bmp', 'ext': 'bmp'},
+  'cab': {'head': '4D 53 43 46 00 00 00 00', 'mime': 'application/vnd.ms-cab-compressed', 'ext': 'cab'},
+  'class': {'head': 'CA FE BA BE', 'mime': 'application/octet-stream', 'ext': 'class'},
+  'elf': {'name': 'ELF', 'head': '7F 45 4C 46', 'mime': 'application/octet-stream', 'ext': 'o'},
+  'eps': {'head': 'C5 D0 D3 C6', 'mime': 'application/postscript', 'ext': 'eps'},
+  'exe': {'head': '4D 5A', 'mime': 'application/x-msdownload', 'ext': 'exe'},
+  'gif': {'head': '47 49 46 38', 'mime': 'image/gif', 'ext': 'gif'},
+  'gz': {'head': '1F 8B', 'mime': 'application/gzip', 'ext': 'gz'},
+  'html': {'head': '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C', 'mime': 'text/html', 'ext': 'html'},
+  'jpg': {'head': 'FF D8', 'mime': 'image/jpeg', 'ext': 'jpg'},
+  'lzh': {'head': 'xx xx 2D 6C 68 xx 2D', 'mime': 'application/octet-stream', 'ext': 'lzh'},
+  'mid': {'head': '4D 54 68 64', 'mime': 'audio/midi', 'ext': 'mid'},
+  'mov': {'head': 'xx xx xx xx 6D 6F 6F 76', 'mime': 'video/quicktime', 'ext': 'mov'},
+  'mp3': {'head': ['FF FA', 'FF FB', '49 44 33'], 'mime': 'audio/mpeg', 'ext': 'mp3'},
+  'mp4': {'head': 'xx xx xx xx 66 74 79 70', 'mime': 'video/mp4', 'ext': 'mp4'},
+  'msg': {'head': 'D0 CF 11 E0 A1 B1 1A E1', 'mime': 'application/octet-stream', 'ext': 'msg'},
+  'pdf': {'head': '25 50 44 46 2D', 'mime': 'application/pdf', 'ext': 'pdf'},
+  'png': {'head': '89 50 4E 47 0D 0A 1A 0A 00', 'mime': 'image/png', 'ext': 'png'},
+  'txt_utf8_bom': {'head': 'EF BB BF', 'mime': 'text/plain', 'ext': 'txt', 'encoding': 'utf8_bom'},
+  'txt_utf16be_bom': {'head': 'FE FF', 'mime': 'text/plain', 'ext': 'txt', 'encoding': 'utf16be_bom'},
+  'txt_utf16le_bom': {'head': 'FF FE', 'mime': 'text/plain', 'ext': 'txt', 'encoding': 'utf16le_bom'},
+  'wav': {'head': '52 49 46 46 xx xx xx xx 57 41 56 45 66 6D 74', 'mime': 'audio/wav', 'ext': 'wav'},
+  'webp': {'head': '52 49 46 46 xx xx xx xx 57 45 42 50', 'mime': 'image/webp', 'ext': 'webp'},
+  'xml': {'head': '3C 3F 78 6D 6C 20', 'mime': 'text/xml', 'ext': 'xml'},
+  'zip': {'head': '50 4B 03 04', 'mime': 'application/x-zip-compressed', 'ext': 'zip'},
+  'xlsx': {'hexptn': '77 6F 72 6B 62 6F 6F 6B 2E 78 6D 6C', 'mime': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'ext': 'xlsx', 'supertype': 'zip'},
+  'docx': {'hexptn': '77 6F 72 64 2F 64 6F 63 75 6D 65 6E 74 2E 78 6D 6C', 'mime': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'ext': 'docx', 'supertype': 'zip'},
+  'pptx': {'hexptn': '70 70 74 2F 70 72 65 73 65 6E 74 61 74 69 6F 6E 2E 78 6D 6C', 'mime': 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'ext': 'pptx', 'supertype': 'zip'},
+  'war': {'hexptn': '57 45 42 2D 49 4E 46 2F', 'mime': 'application/x-zip', 'ext': 'war', 'supertype': 'zip'},
+  'jar': {'hexptn': '4D 45 54 41 2D 49 4E 46 2F', 'mime': 'application/java-archive', 'ext': 'jar', 'supertype': 'zip'}
 };
 
 bin.CODE_BLOCKS = [
@@ -666,13 +667,19 @@ bin.drawBinInfo = function(ftype, buf, b64) {
   }
   sizeInfo += ' : ' + b64Size + ' bytes in Base64 (x ' + x + ')';
 
+  var fileType = '';
+  if (ftype['name']) {
+    fileType += ftype['name'] + '  ';
+  }
+  fileType += '.' + ftype['ext'] + '  ' + ftype['mime']
+
   var s = '';
   s += 'FileName: ' + fileName + '\n';
   s += 'LastMod : ' + lastMod + '\n';
   s += 'Size    : ' + sizeInfo + '\n';
   s += 'SHA-1   : ' + bin.getSHA('SHA-1', buf, 1) + '\n';
   s += 'SHA-256 : ' + bin.getSHA('SHA-256', buf, 1) + '\n';
-  s += 'Type    : ' + '.' + ftype['ext'] + '  ' + ftype['mime'] + '\n';
+  s += 'Type    : ' + fileType + '\n';
 
   if (ftype['encoding']) {
     s += '\n' + bin.buildTextFileInfo(ftype);
@@ -951,7 +958,7 @@ bin.getHexDump = function(mode, buf) {
     dmp += hd;
   }
   if (showAddr) {
-    dmp += bin.dumpAddr(0);
+    dmp += bin.dumpAddr(0, uc);
   }
 
   for (var i = 0; i < len; i++) {
@@ -973,7 +980,7 @@ bin.getHexDump = function(mode, buf) {
       var ed = bLen + (rem == 0 ? 0 : (0x10 - rem));
       dmp += '\n';
       if (showAddr) {
-        dmp += bin.dumpAddr(st);
+        dmp += bin.dumpAddr(st, uc);
       }
       for (i = st; i < ed; i++) {
         if (i < buf.length || showAscii) {
@@ -1002,7 +1009,7 @@ bin.getDump = function(mode, i, buf, len, showSp, showAddr, showAscii, uc) {
     }
     if ((i + 1) < len) {
       b += '\n';
-      if (showAddr) b += bin.dumpAddr(i + 1);
+      if (showAddr) b += bin.dumpAddr(i + 1, uc);
     }
   } else if (showSp) {
     b += (((i + 1) % 8 == 0) ? '  ' : ' ');
@@ -1010,8 +1017,9 @@ bin.getDump = function(mode, i, buf, len, showSp, showAddr, showAscii, uc) {
   return b;
 },
 
-bin.dumpAddr = function(i) {
-  return ('0000000' + i.toString(16)).slice(-8).toUpperCase() + ' : ';
+bin.dumpAddr = function(i, uc) {
+  var r = ('0000000' + i.toString(16)).slice(-8) + ' : ';
+  return (uc ? r.toUpperCase() : r);
 };
 bin.dumpBin = function(i, buf) {
   return ((buf[i] == undefined) ? '        ' : bin.toBin(buf[i]));
