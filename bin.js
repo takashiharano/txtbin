@@ -854,6 +854,9 @@ bin.decode = function() {
 bin.updateInfoAndPreview = function() {
   var mode = bin.getMode();
   var s = bin.getSrcValue();
+  if ((mode == 'hex') && (bin.isPercentEncoding(s))) {
+    s = s.replace(/%/g, '');
+  }
   var b = bin.str2buf(mode, s);
   var b64 = util.encodeBase64(b, true);
   var ftype = bin.analyzeBinary(b);
@@ -2033,10 +2036,16 @@ bin.onDnd = function(s, f) {
     bin.setSrcValue(s, true);
     if (bin.auto) {
       bin.detectCurrentMode();
-      bin.updateInfoAndPreview();
+    }
+    var mode = bin.getMode();
+    if (mode == 'hex') {
+
     }
   }
   bin.forceNewline();
+  mode = bin.getMode();
+  bin.setMode(mode);
+  bin.updateInfoAndPreview();
 };
 
 bin.getSrcValue = function() {
@@ -2056,10 +2065,18 @@ bin.detectCurrentMode = function() {
   var v = bin.getSrcValue();
   if (v.match(/^[01\s\n]+$/)) {
     m = 'bin';
-  } else if (v.match(/^[0-9A-Fa-f\s\n]+$/)) {
+  } else if (bin.isHexString(v) || bin.isPercentEncoding(v)) {
     m = 'hex';
   }
   bin.activeMode(m);
+};
+
+bin.isHexString = function(s) {
+  return ((s.match(/^[0-9A-Fa-f\s\n]+$/)) ? true : false);
+};
+
+bin.isPercentEncoding = function(s) {
+  return ((s.match(/^\s*((%[0-9A-Fa-f]{2})\s*)+$/)) ? true : false);
 };
 
 bin.drawInfo = function(s) {
