@@ -445,6 +445,17 @@ bin.CODE_BLOCKS = [
     utf8_e: 0xF39FBFBF
   },
   {
+    name: 'p4_13',
+    fullname: 'Plane 4 - Plane 13',
+    label: '4-13',
+    cp_s: 0x31350,
+    cp_e: 0xDFFFF,
+    utf16_s: 0xD884DF50,
+    utf16_e: 0xDB3FDFFF,
+    utf8_s: 0xF0B18D90,
+    utf8_e: 0xF39FBFBF
+  },
+  {
     name: 'ssp',
     fullname: 'Supplementary Special-purpose Plane',
     label: '14:SSP',
@@ -774,9 +785,9 @@ bin.buildTextFileInfo = function(ftype) {
   }
 
   var s = 'Encoding: ' + bin.getEncodingName(type) + '  ';
-  s += '<span class="' + clzCrLf + '" data-tooltip="' + ttCrLf + '">[CRLF]</span>';
-  s += '<span class="' + clzLf + '" data-tooltip="' + ttLf + '">[LF]</span>';
-  s += '<span class="' + clzCr + '" data-tooltip="' + ttCr + '">[CR]</span>\n';
+  s += '<span class="data-ind ' + clzCrLf + '" data-tooltip="count=' + ttCrLf + '">[CRLF]</span>';
+  s += '<span class="data-ind ' + clzLf + '" data-tooltip="count=' + ttLf + '">[LF]</span>';
+  s += '<span class="data-ind ' + clzCr + '" data-tooltip="count=' + ttCr + '">[CR]</span>\n';
 
   if (bin.isUnicode(type)) {
     var i, blockName;
@@ -819,7 +830,7 @@ bin.buildTextFileInfo = function(ftype) {
         s += '[';
       }
 
-      s += '<span data-tooltip="' + tooltip + '">' + codeBlock['label'] + '</span>';
+      s += '<span class="data-ind" data-tooltip="' + tooltip + '">' + codeBlock['label'] + '</span>';
       if (codeBlock['plane']) {
         s += ': ';
       } else {

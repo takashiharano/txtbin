@@ -176,7 +176,7 @@ select {
 }
 
 #info-area {
-  height: 200px;
+  height: 220px;
   padding: 2px 4px;
   margin-bottom: 4px;
   overflow: auto;
@@ -190,7 +190,7 @@ select {
   display: inline-block;
   position: relative;
   width: calc(100% - 10px);
-  height: calc(100% - 248px);
+  height: calc(100% - 268px);
   padding: 2px 4px;
   overflow: auto;
 }
@@ -259,4 +259,8 @@ select {
 
 .cc2 {
   font-size: 0.7em;
+}
+
+.data-ind {
+  cursor: default;
 }
