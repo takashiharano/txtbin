@@ -14,7 +14,7 @@ bin.CHR_CR = '&#x2190;';
 bin.CHR_CRLF_S = '<span style="color:#0cf" class="cc">' + bin.CHR_CRLF + '</span>';
 bin.CHR_LF_S = '<span style="color:#0f0" class="cc">' + bin.CHR_LF + '</span>';
 bin.CHR_CR_S = '<span style="color:#f00" class="cc">' + bin.CHR_CR + '</span>';
-bin.TAB = '<span style="color:#2c2" class="cc2">&gt;</span>';
+bin.TAB = '<span style="color:#2c2" class="cc">&gt;</span>';
 bin.SP = '<span style="color:#0aa" class="cc">.</span>';
 bin.CDM = '<span style="color:#fe0" class="cc2">[CDM]</span>';
 bin.FULL_SP = '<span style="color:#05d" class="cc">．</span>';
@@ -91,15 +91,16 @@ bin.CODE_BLOCKS = [
     name: 'bmp',
     fullname: 'Basic Multilingual Plane',
     label: 'U+0000-U+FFFF   ',
+    block_level: 1,
     cp_s: 0x0000,
     cp_e: 0xFFFF,
-    plane: true,
     skip_check: true
   },
   {
     name: 'ascii',
     fullname: 'ASCII',
     label: 'A',
+    block_level: 2,
     cp_s: 0x0000,
     cp_e: 0x007F,
     utf16_s: 0x0020,
@@ -111,6 +112,7 @@ bin.CODE_BLOCKS = [
     name: 'tab',
     fullname: 'Horizontal Tabulation',
     label: 'TAB',
+    block_level: 0,
     cp_s: 0x0009,
     utf16_s: 0x0009,
     utf8_s: 0x09
@@ -119,6 +121,7 @@ bin.CODE_BLOCKS = [
     name: 'sp',
     fullname: 'Space',
     label: 'SP',
+    block_level: 0,
     cp_s: 0x0020,
     utf16_s: 0x0020,
     utf8_s: 0x20
@@ -127,6 +130,7 @@ bin.CODE_BLOCKS = [
     name: 'latin1_suppl',
     fullname: 'Latin-1 Supplement',
     label: 'Ü',
+    block_level: 2,
     cp_s: 0x0080,
     cp_e: 0x00FF,
     utf16_s: 0x0080,
@@ -136,6 +140,7 @@ bin.CODE_BLOCKS = [
     name: 'nbsp',
     fullname: 'Non-breaking space',
     label: 'NBSP',
+    block_level: 0,
     cp_s: 0x00A0,
     utf16_s: 0x00A0,
     utf8_s: 0xC2A0,
@@ -145,6 +150,7 @@ bin.CODE_BLOCKS = [
     name: 'cdm',
     fullname: 'Combining Diacritical Marks',
     label: 'CDM',
+    block_level: 2,
     utf16_s: 0x0300,
     utf16_e: 0x036F,
     cp_s: 0x0300,
@@ -157,6 +163,7 @@ bin.CODE_BLOCKS = [
     name: 'thai',
     fullname: 'Thai',
     label: 'ไทย',
+    block_level: 2,
     utf16_s: 0x0E00,
     utf16_e: 0x0E7F,
     cp_s: 0x0E00,
@@ -168,6 +175,7 @@ bin.CODE_BLOCKS = [
     name: 'symbols',
     fullname: 'Symbols',
     label: '☆',
+    block_level: 2,
     cp_s: 0x2000,
     cp_e: 0x2BFF,
     utf16_s: 0x2000,
@@ -179,6 +187,7 @@ bin.CODE_BLOCKS = [
     name: 'zwsp',
     fullname: 'Zero-width space',
     label: 'ZWSP',
+    block_level: 0,
     cp_s: 0x200B,
     utf16_s: 0x200B,
     utf8_s: 0xE2808B,
@@ -188,6 +197,7 @@ bin.CODE_BLOCKS = [
     name: 'lrm',
     fullname: 'Left-to-Right mark',
     label: 'LRM',
+    block_level: 0,
     cp_s: 0x200E,
     utf16_s: 0x200E,
     utf8_s: 0xE2808E,
@@ -197,6 +207,7 @@ bin.CODE_BLOCKS = [
     name: 'rlm',
     fullname: 'Right-to-Left mark',
     label: 'RLM',
+    block_level: 0,
     cp_s: 0x200F,
     utf16_s: 0x200F,
     utf8_s: 0xE2808F,
@@ -206,6 +217,7 @@ bin.CODE_BLOCKS = [
     name: 'lre',
     fullname: 'Left-to-Right Embedding',
     label: 'LRE',
+    block_level: 0,
     cp_s: 0x202A,
     utf16_s: 0x202A,
     utf8_s: 0xE280AA,
@@ -215,6 +227,7 @@ bin.CODE_BLOCKS = [
     name: 'rle',
     fullname: 'Right-to-Left Embedding',
     label: 'RLE',
+    block_level: 0,
     cp_s: 0x202B,
     utf16_s: 0x202B,
     utf8_s: 0xE280AB,
@@ -224,6 +237,7 @@ bin.CODE_BLOCKS = [
     name: 'pdf',
     fullname: 'Pop Directional Formatting',
     label: 'PDF',
+    block_level: 0,
     cp_s: 0x202C,
     utf16_s: 0x202C,
     utf8_s: 0xE280AC,
@@ -233,6 +247,7 @@ bin.CODE_BLOCKS = [
     name: 'lro',
     fullname: 'Left-to-Right Override',
     label: 'LRO',
+    block_level: 0,
     cp_s: 0x202D,
     utf16_s: 0x202D,
     utf8_s: 0xE280AD,
@@ -242,6 +257,7 @@ bin.CODE_BLOCKS = [
     name: 'rlo',
     fullname: 'Right-to-Left Override',
     label: 'RLO',
+    block_level: 0,
     cp_s: 0x202E,
     utf16_s: 0x202E,
     utf8_s: 0xE280AE,
@@ -251,6 +267,7 @@ bin.CODE_BLOCKS = [
     name: 'full_space',
     fullname: 'Full-width space',
     label: 'ＳＰ',
+    block_level: 0,
     cp_s: 0x3000,
     utf16_s: 0x3000,
     utf8_s: 0xE38080
@@ -259,6 +276,7 @@ bin.CODE_BLOCKS = [
     name: 'hiragana',
     fullname: 'Hiragana',
     label: 'あ',
+    block_level: 2,
     cp_s: 0x3040,
     cp_e: 0x3096,
     utf16_s: 0x3040,
@@ -270,6 +288,7 @@ bin.CODE_BLOCKS = [
     name: 'katakana',
     fullname: 'Katakana',
     label: 'ア',
+    block_level: 2,
     cp_s: 0x30A1,
     cp_e: 0x30FF,
     utf16_s: 0x30A1,
@@ -281,6 +300,7 @@ bin.CODE_BLOCKS = [
     name: 'bopomofo',
     fullname: 'Bopomofo',
     label: 'ㄅ',
+    block_level: 2,
     cp_s: 0x3100,
     cp_e: 0x312F,
     utf16_s: 0x3100,
@@ -292,6 +312,7 @@ bin.CODE_BLOCKS = [
     name: 'kanji',
     fullname: 'CJK unified ideographs',
     label: '漢',
+    block_level: 2,
     cp_s: 0x3400,
     cp_e: 0x9FFF,
     utf16_s: 0x3400,
@@ -303,6 +324,7 @@ bin.CODE_BLOCKS = [
     name: 'hangul',
     fullname: 'Hangul',
     label: '한',
+    block_level: 2,
     cp_s: 0xAC00,
     cp_e: 0xD7AF,
     utf16_s: 0xAC00,
@@ -314,6 +336,7 @@ bin.CODE_BLOCKS = [
     name: 'surrogates',
     fullname: 'Surrogates',
     label: 'SURR',
+    block_level: 2,
     cp_s: 0xD800,
     cp_e: 0xDFFF,
     utf16_s: 0xD800,
@@ -328,6 +351,7 @@ bin.CODE_BLOCKS = [
     name: 'pua',
     fullname: 'Private Use Area',
     label: 'PUA',
+    block_level: 2,
     cp_s: 0xE000,
     cp_e: 0xF8FF,
     utf16_s: 0xE000,
@@ -340,6 +364,7 @@ bin.CODE_BLOCKS = [
     name: 'kanji_comp',
     fullname: 'CJK Compatibility Ideographs',
     label: '漢2',
+    block_level: 2,
     cp_s: 0xF900,
     cp_e: 0xFAFF,
     utf16_s: 0xF900,
@@ -351,6 +376,7 @@ bin.CODE_BLOCKS = [
     name: 'variation_selectors',
     fullname: 'Variation Selectors',
     label: 'VS',
+    block_level: 2,
     cp_s: 0xFE00,
     cp_e: 0xFE0F,
     utf16_s: 0xFE00,
@@ -363,6 +389,7 @@ bin.CODE_BLOCKS = [
     name: 'fillwidth_forms',
     fullname: 'Fullwidth Forms',
     label: 'Ａ',
+    block_level: 2,
     cp_s: 0xFF00,
     cp_e: 0xFF5E,
     utf16_s: 0xFF00,
@@ -374,6 +401,7 @@ bin.CODE_BLOCKS = [
     name: 'fillwidth_numbers',
     fullname: 'Fullwidth Numbers',
     label: '１',
+    block_level: 2,
     cp_s: 0xFF10,
     cp_e: 0xFF19,
     utf16_s: 0xFF10,
@@ -385,6 +413,7 @@ bin.CODE_BLOCKS = [
     name: 'half_kana',
     fullname: 'Halfwidth Kana',
     label: 'ｱ',
+    block_level: 2,
     cp_s: 0xFF61,
     cp_e: 0xFF9F,
     utf16_s: 0xFF61,
@@ -398,13 +427,14 @@ bin.CODE_BLOCKS = [
     fullname: '4 bytes character',
     cp_s: 0x10000,
     cp_e: 0x10FFFF,
-    plane: true,
+    block_level: 1,
     skip_check: true
   },
   {
     name: 'smp',
     fullname: 'Supplementary Multilingual Plane',
     label: '1:SMP',
+    block_level: 2,
     cp_s: 0x10000,
     cp_e: 0x1FFFF,
     utf16_s: 0xD800DC00,
@@ -416,6 +446,7 @@ bin.CODE_BLOCKS = [
     name: 'emoji',
     fullname: 'Emoji',
     label: 'Emoji',
+    block_level: 2,
     cp_s: 0x1F300,
     cp_e: 0x1FBFF,
     utf16_s: 0xD83CDF00,
@@ -427,6 +458,7 @@ bin.CODE_BLOCKS = [
     name: 'sip',
     fullname: 'Supplementary Ideographic Plane',
     label: '2:SIP',
+    block_level: 2,
     cp_s: 0x20000,
     cp_e: 0x2FFFF,
     utf16_s: 0xD840DC00,
@@ -438,6 +470,7 @@ bin.CODE_BLOCKS = [
     name: 'tip',
     fullname: 'Tertiary Ideographic Plane',
     label: '3:TIP',
+    block_level: 2,
     cp_s: 0x30000,
     cp_e: 0x3FFFF,
     utf16_s: 0xD880DC00,
@@ -449,6 +482,7 @@ bin.CODE_BLOCKS = [
     name: 'p4_13',
     fullname: 'Plane 4 - Plane 13',
     label: '4-13',
+    block_level: 2,
     cp_s: 0x31350,
     cp_e: 0xDFFFF,
     utf16_s: 0xD884DF50,
@@ -460,6 +494,7 @@ bin.CODE_BLOCKS = [
     name: 'ssp',
     fullname: 'Supplementary Special-purpose Plane',
     label: '14:SSP',
+    block_level: 2,
     cp_s: 0xE0000,
     cp_e: 0xEFFFF,
     utf16_s: 0xDB40DC00,
@@ -471,6 +506,7 @@ bin.CODE_BLOCKS = [
     name: 'variation_selectors2',
     fullname: 'Variation Selector 17-256',
     label: 'VS2',
+    block_level: 2,
     cp_s: 0xE0100,
     cp_e: 0xE01EF,
     utf16_s: 0xDB40DD00,
@@ -483,6 +519,7 @@ bin.CODE_BLOCKS = [
     name: 'pua15',
     fullname: 'Private Use Plane',
     label: '15:PUA',
+    block_level: 2,
     cp_s: 0xF0000,
     cp_e: 0xFFFFF,
     utf16_s: 0xDB80DC00,
@@ -494,6 +531,7 @@ bin.CODE_BLOCKS = [
     name: 'pua16',
     fullname: 'Private Use Plane',
     label: '16:PUA',
+    block_level: 2,
     cp_s: 0x100000,
     cp_e: 0x10FFFF,
     utf16_s: 0xDBC0DC00,
@@ -547,6 +585,9 @@ $onReady = function() {
   $el('#dump-flag-show-ascii').addEventListener('input', bin.onChangeDumpFlag);
   $el('#dump-flag-uc').addEventListener('input', bin.onChangeDumpFlag);
   $el('#dump-multibyte').addEventListener('input', bin.onChangeDumpFlag);
+
+  $el('#key').addEventListener('input', bin.onInputKey);
+  $el('#key').addEventListener('change', bin.onInputKey);
 
   $el('#bsb64-n').addEventListener('change', bin.onChangeBsb64);
 
@@ -817,7 +858,7 @@ bin.buildTextFileInfo = function(ftype) {
       var cpRange = bin.buildCodeRangeString(codeBlock);
       var tooltip = codeBlock['fullname'] + ' (' + cpRange + ')';
 
-      if (codeBlock['plane']) {
+      if (codeBlock['block_level'] == 1) {
         s += '\n';
       }
 
@@ -827,12 +868,12 @@ bin.buildTextFileInfo = function(ftype) {
       }
 
       s += '<span class="' + clazz + '">';
-      if (!codeBlock['plane']) {
+      if (codeBlock['block_level'] != 1) {
         s += '[';
       }
 
       s += '<span class="data-ind" data-tooltip="' + tooltip + '">' + codeBlock['label'] + '</span>';
-      if (codeBlock['plane']) {
+      if (codeBlock['block_level'] == 1) {
         s += ': ';
       } else {
         s += ']';
@@ -2304,6 +2345,12 @@ bin.updateB64sKey = function() {
   var mode = bin.getMode();
   if ((mode == 'b64s') && (bin.buf)) {
     bin.switchRadix(mode, bin.buf);
+  }
+};
+
+bin.onInputKey = function() {
+  if ($el('#b64-auto-update').checked) {
+    bin.updateB64sKey();
   }
 };
 
