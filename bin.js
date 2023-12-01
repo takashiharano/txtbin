@@ -53,6 +53,7 @@ bin.ENCODING_NAME = {
 
 bin.FILETYPES = {
   'accdb': {'head': '00 01 00 00 53 74 61 6E 64 61 72 64 20 41 43 45 20 44 42', 'mime': 'application/msaccess', 'ext': 'accdb'},
+  'avif': {'head': 'xx xx xx xx 66 74 79 70 61 76 69 66', 'mime': 'image/avif', 'ext': 'avif'},
   'bmp': {'head': '42 4D', 'mime': 'image/bmp', 'ext': 'bmp'},
   'cab': {'head': '4D 53 43 46 00 00 00 00', 'mime': 'application/vnd.ms-cab-compressed', 'ext': 'cab'},
   'class': {'head': 'CA FE BA BE', 'mime': 'application/octet-stream', 'ext': 'class'},
@@ -67,7 +68,7 @@ bin.FILETYPES = {
   'mid': {'head': '4D 54 68 64', 'mime': 'audio/midi', 'ext': 'mid'},
   'mov': {'head': 'xx xx xx xx 6D 6F 6F 76', 'mime': 'video/quicktime', 'ext': 'mov'},
   'mp3': {'head': ['FF FA', 'FF FB', '49 44 33'], 'mime': 'audio/mpeg', 'ext': 'mp3'},
-  'mp4': {'head': 'xx xx xx xx 66 74 79 70', 'mime': 'video/mp4', 'ext': 'mp4'},
+  'mp4': {'head': ['xx xx xx xx 66 74 79 70 6D 70 34', 'xx xx xx xx 66 74 79 70 69 73 6F 6D'], 'mime': 'video/mp4', 'ext': 'mp4'},
   'msg': {'head': 'D0 CF 11 E0 A1 B1 1A E1', 'mime': 'application/octet-stream', 'ext': 'msg'},
   'pdf': {'head': '25 50 44 46 2D', 'mime': 'application/pdf', 'ext': 'pdf'},
   'png': {'head': '89 50 4E 47 0D 0A 1A 0A 00', 'mime': 'image/png', 'ext': 'png'},
