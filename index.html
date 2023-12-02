@@ -80,6 +80,14 @@
 <pre id="preview"></pre>
 </div>
 </div>
+<div style="margin-top:-5px;height:25px;">
+  <input type="range" value="0" min="6" max="64" step="1" id="font-range-preview" style="position:relative;top:6px;" oninput="bin.onFontRangeChanged4Preview(this);" onchange="bin.onFontRangeChanged4Preview(this);"><span id="fontsize-preview"></span>
+  <button class="small-button" onclick="bin.resetFontSize4Preview();">RESET</button>
+  <span style="margin-left:16px;">Font: </sapn><input type="text" id="font-preview" oninput="bin.onFontChanged4Preview(this);" onchange="bin.onFontChanged4Preview(this);">
+  <span class="pseudo-link subfunc" onclick="bin.changeFont4Preview('monospace');">[monospace]</span>
+  <button class="small-button" onclick="bin.changeFont4Preview('');">RESET</button>
+</div>
+
 
 </div>
 </div>

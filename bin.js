@@ -667,6 +667,7 @@ $onReady = function() {
   var fontSize = util.getQuery('fontsize') | 0;
   if (!fontSize) fontSize = bin.DEFAULT_FONT_SIZE;
   bin.setFontSize(fontSize);
+  bin.setFontSize4Preview(fontSize);
 
   bin.storeAreaSize();
   window.addEventListener('mousemove', bin.onMouseMove, true);
@@ -2489,18 +2490,50 @@ bin.resetFontSize = function() {
   bin.setFontSize(bin.DEFAULT_FONT_SIZE);
 };
 
+bin.onFontRangeChanged4Preview = function(el) {
+  var v = el.value;
+  bin.setFontSize4Preview(v);
+};
+bin.setFontSize4Preview = function(v) {
+  var fontSize = v + 'px';
+  $el('#font-range-preview').value = v;
+  $el('#preview').style.fontSize = fontSize;
+  $el('#fontsize-preview').innerHTML = fontSize;
+};
+bin.resetFontSize4Preview = function() {
+  bin.setFontSize4Preview(bin.DEFAULT_FONT_SIZE);
+};
+bin.fontFamily4Preview = '';
+bin.onFontChanged4Preview = function(el) {
+  var v = el.value;
+  bin.fontFamily4Preview = v;
+  bin._setFont4Preview(v);
+};
+bin.setFont4Preview = function(n) {
+  $el('#font-preview').value = n;
+  bin._setFont4Preview(n);
+};
+bin._setFont4Preview = function(v) {
+  $el('#preview').style.fontFamily = v;
+};
+
+bin.changeFont4Preview = function(n) {
+  bin.setFont4Preview(n);
+  bin.fontFamily4Preview = n;
+};
+
 bin.fontFamily = '';
 bin.onFontChanged = function(el) {
   var v = el.value;
   bin.fontFamily = v;
   bin._setFont(v);
 };
-bin._setFont = function(v) {
-  $el('#src').style.fontFamily = v;
-};
 bin.setFont = function(n) {
   $el('#font').value = n;
   bin._setFont(n);
+};
+bin._setFont = function(v) {
+  $el('#src').style.fontFamily = v;
 };
 bin.changeFont = function(n) {
   bin.setFont(n);

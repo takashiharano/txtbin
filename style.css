@@ -235,11 +235,19 @@ select {
   color: #ade;
 }
 
-#font-range{
+#font-range {
   width: 100px;
 }
 
 #font {
+  width: 100px;
+}
+
+#font-range-preview {
+  width: 120px;
+}
+
+#font-preview {
   width: 100px;
 }
 
