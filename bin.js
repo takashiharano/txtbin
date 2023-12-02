@@ -687,6 +687,10 @@ $onReady = function() {
 
   $el('#src').addEventListener('input', bin.onInput);
   $el('#src').addEventListener('change', bin.onInput);
+
+  $el('#show-preview').addEventListener('change', bin.onChangeShowPreview);
+  $el('#show-preview-cc').addEventListener('change', bin.onChangeShowPreview);
+
   bin.clear();
 };
 
@@ -2197,6 +2201,13 @@ bin.onChangeDumpFlag = function() {
   }
 };
 
+bin.onChangeShowPreview = function() {
+  var mode = bin.getMode();
+  if (bin.buf) {
+    bin.switchRadix(mode, bin.buf);
+  }
+};
+
 bin.forceNewline = function(s) {
   var TH = 10240;
   var s = bin.getSrcValue();
@@ -2324,24 +2335,26 @@ bin.showPreview = function(ftype, b64) {
 bin.showTextPreview = function(b64) {
   var s = util.decodeBase64(b64);
   s = util.escHtml(s);
-  s = s.replace(/ /g, bin.SP);
-  s = s.replace(/\r\n/g, bin.CHR_CRLF_S + '\n');
-  s = s.replace(/([^>])\n/g, '$1' + bin.CHR_LF_S + '\n');
-  s = s.replace(/\r/g, bin.CHR_CR_S + '\n');
-  s = s.replace(/\t/g, bin.TAB);
-  s = s.replace(/([\u0300-\u036F])(.)/g, bin.CDM + '$1 $2');
-  s = s.replace(/\u3000/g, bin.FULL_SP);
-  s = s.replace(/\u00A0/g, bin.NBSP);
-  s = s.replace(/\u200B/g, bin.ZWSP);
-  s = s.replace(/\u200E/g, bin.LRM);
-  s = s.replace(/\u200F/g, bin.RLM);
-  s = s.replace(/\u202A/g, bin.LRE);
-  s = s.replace(/\u202B/g, bin.RLE);
-  s = s.replace(/\u202C/g, bin.PDF);
-  s = s.replace(/\u202D/g, bin.LRO);
-  s = s.replace(/\u202E/g, bin.RLO);
-  s = s.replace(/([\uFE00-\uFE0F])(.)/g, bin.VS + '$1$2');
-  s = s + bin.EOF + '\n';
+  if ($el('#show-preview-cc').checked) {
+    s = s.replace(/ /g, bin.SP);
+    s = s.replace(/\r\n/g, bin.CHR_CRLF_S + '\n');
+    s = s.replace(/([^>])\n/g, '$1' + bin.CHR_LF_S + '\n');
+    s = s.replace(/\r/g, bin.CHR_CR_S + '\n');
+    s = s.replace(/\t/g, bin.TAB);
+    s = s.replace(/([\u0300-\u036F])(.)/g, bin.CDM + '$1 $2');
+    s = s.replace(/\u3000/g, bin.FULL_SP);
+    s = s.replace(/\u00A0/g, bin.NBSP);
+    s = s.replace(/\u200B/g, bin.ZWSP);
+    s = s.replace(/\u200E/g, bin.LRM);
+    s = s.replace(/\u200F/g, bin.RLM);
+    s = s.replace(/\u202A/g, bin.LRE);
+    s = s.replace(/\u202B/g, bin.RLE);
+    s = s.replace(/\u202C/g, bin.PDF);
+    s = s.replace(/\u202D/g, bin.LRO);
+    s = s.replace(/\u202E/g, bin.RLO);
+    s = s.replace(/([\uFE00-\uFE0F])(.)/g, bin.VS + '$1$2');
+    s = s + bin.EOF + '\n';
+  }
   bin.drawPreview(s);
 };
 

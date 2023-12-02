@@ -51,7 +51,6 @@
 <span><input type="checkbox" id="dump-flag-show-ascii" checked><label for="dump-flag-show-ascii">ASCII</label></span>
 <span><input type="checkbox" id="dump-flag-uc" checked><label for="dump-flag-uc">UpperCase</label></span>
 <span style="margin-left:16px;"><input type="checkbox" id="dump-multibyte"><label for="dump-multibyte">Multi Byte Char</label></span>
-<span style="margin-left:32px;"><input type="checkbox" id="show-preview" checked><label for="show-preview">Preview</label></span>
 </div>
 
 <div id="input-area">
@@ -76,7 +75,9 @@
 <div id="info-area" class="block">
 <pre id="info"></pre>
 </div>
-<div id="preview-area" class="block">
+<div id="preview-area">
+<input type="checkbox" id="show-preview" checked><label for="show-preview">Preview</label><input type="checkbox" id="show-preview-cc" style="margin-left:16px;" checked><label for="show-preview-cc">Show Control Code</label>
+<div id="preview-wrapper" class="block">
 <pre id="preview"></pre>
 </div>
 </div>
