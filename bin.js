@@ -973,7 +973,9 @@ bin.buildTextFileInfo = function(ftype) {
         s += '[';
       }
 
-      s += '<span class="data-ind" data-tooltip="' + tooltip + ' (count=' + codeblockCount[blockName] + ')">' + codeBlock['label'] + '</span>';
+      var cpS = codeBlock['ranges'][0]['cp_s'];
+      var cpHexS = bin.toHex(cpS, true, '0x', 4);
+      s += '<span class="code-range" data-tooltip="' + tooltip + ' (count=' + codeblockCount[blockName] + ')" onclick="bin.openUnicodeTable(\'' + cpHexS + '\', ' + bin.isSingleCode(codeBlock) + ');">' + codeBlock['label'] + '</span>';
       if (codeBlock['block_level'] == 0) {
         s += ': ';
       } else {
@@ -985,6 +987,11 @@ bin.buildTextFileInfo = function(ftype) {
   }
 
   return s;
+};
+
+bin.openUnicodeTable = function(p, single) {
+  var url = '../unicode.html?' + (single ? 'p' : 'start') + '=' + p;
+  window.open(url, '_new');
 };
 
 bin.buildCodeRangeString = function(codeBlock) {

@@ -283,6 +283,10 @@ select {
   cursor: default;
 }
 
+.code-range {
+  cursor: pointer;
+}
+
 .codeblock-lv-2 {
   font-size: 0.8em;
 }
