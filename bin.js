@@ -636,7 +636,7 @@ bin.CODE_BLOCKS = [
 ];
 
 bin.auto = true;
-bin.buf = null;
+bin.bufCache = null;
 bin.file = null;
 bin.uiStatus = bin.UI_ST_NONE;
 bin.areaSize = {
@@ -689,7 +689,7 @@ $onReady = function() {
   $el('#src').addEventListener('change', bin.onInput);
 
   $el('#show-preview').addEventListener('change', bin.onChangeShowPreview);
-  $el('#show-preview-cc').addEventListener('change', bin.onChangeShowPreview);
+  $el('#show-preview-cc').addEventListener('change', bin.onChangeShowPreviewCc);
 
   bin.clear();
 };
@@ -706,22 +706,23 @@ bin.isB64Mode = function() {
   return false;
 };
 
-bin.switchRadix = function(mode, buf) {
+bin.switchRadix = function(mode, bufCache) {
+  var buf = bufCache.buf;
+  var b64 = bufCache.b64;
+  var ftype = bufCache.ftype;
   var r;
   $el('#key-update-button').disabled = true;
   switch (mode) {
     case 'hex':
     case 'dec':
     case 'bin':
-      var b64 = util.encodeBase64(buf, true);
       r = bin.getHexDump(mode, buf);
       break;
     case 'b64s':
       var key = $el('#key').value;
       b64s = util.encodeBase64s(buf, key);
       r = bin.formatB64(b64s);
-      b64 = util.encodeBase64(buf, true);
-      if (bin.buf) {
+      if (bin.bufCache) {
         $el('#key-update-button').disabled = false;
       }
       break;
@@ -729,20 +730,14 @@ bin.switchRadix = function(mode, buf) {
       var n = $el('#bsb64-n').value | 0;
       var b64s = util.BSB64.encode(buf, n);
       r = bin.formatB64(b64s);
-      b64 = util.encodeBase64(buf, true);
       break;
     case 'txt':
-      b64 = util.encodeBase64(buf, true);
       r = util.decodeBase64(b64);
       break;
     default:
-      b64 = util.encodeBase64(buf, true);
       r = bin.formatB64(b64);
   }
-  var ftype = bin.analyzeBinary(buf);
-  bin.drawBinInfo(ftype, buf, b64);
   bin.setSrcValue(r, false);
-  bin.showPreview(ftype, b64);
 };
 
 bin.setMode = function(mode, onlyMode) {
@@ -752,8 +747,8 @@ bin.setMode = function(mode, onlyMode) {
     $el('#mode').value = mode;
     $el('.mode-ind').removeClass('mode-ind-active');
     $el('#mode-ind-' + mode).addClass('mode-ind-active');
-    if ((prevMode != mode) && bin.buf) {
-      bin.switchRadix(mode, bin.buf);
+    if ((prevMode != mode) && bin.bufCache) {
+      bin.switchRadix(mode, bin.bufCache);
     }
   }
 
@@ -822,7 +817,11 @@ bin.dump = function(s) {
   bin.drawBinInfo(ftype, buf, b64);
   bin.setSrcValue(r, true);
   bin.showPreview(ftype, b64);
-  bin.buf = buf;
+  bin.bufCache = {
+    ftype: ftype,
+    buf: buf,
+    b64: b64
+  };
 };
 
 bin.decodeBase64 = function(s) {
@@ -1029,7 +1028,7 @@ bin.getSHA = function(a, b, f) {
 };
 
 bin.decode = function() {
-  bin.buf = bin.updateInfoAndPreview();
+  bin.bufCache = bin.updateInfoAndPreview();
   var mode = bin.getMode();
   if (mode == 'b64s') {
     $el('#key-update-button').disabled = false;
@@ -1047,7 +1046,13 @@ bin.updateInfoAndPreview = function() {
   var ftype = bin.analyzeBinary(b);
   bin.drawBinInfo(ftype, b, b64);
   bin.showPreview(ftype, b64);
-  return b;
+
+  bufCache = {
+    ftype: ftype,
+    buf: b,
+    b64: b64
+  };
+  return bufCache;
 };
 
 bin.bin2uint8Array = function(s) {
@@ -1855,8 +1860,23 @@ bin.bytecmp = function(buf, pos, bytesPattern) {
   return true;
 };
 
+bin.getMimeClass = function(ftype) {
+  return ftype['mime'].split('/')[0];
+};
+
+bin.isMedia = function(ftype) {
+  var mimeClass = bin.getMimeClass(ftype);
+  switch (mimeClass) {
+    case 'image':
+    case 'audio':
+    case 'video':
+      return true;
+  }
+  return false;
+};
+
 bin.isImage = function(ftype) {
-  return (ftype['mime'].startsWith('image/'));
+  return (bin.getMimeClass(ftype) == 'image');
 };
 
 bin.isZip = function(ftype) {
@@ -2198,7 +2218,7 @@ bin.onInput = function() {
 };
 
 bin.onChangeDumpFlag = function() {
-  if (!bin.buf) {
+  if (!bin.bufCache) {
     return;
   }
   var mode = bin.getMode();
@@ -2206,14 +2226,26 @@ bin.onChangeDumpFlag = function() {
     case 'hex':
     case 'dec':
     case 'bin':
-      bin.switchRadix(mode, bin.buf);
+      bin.switchRadix(mode, bin.bufCache);
   }
 };
 
 bin.onChangeShowPreview = function() {
-  var mode = bin.getMode();
-  if (bin.buf) {
-    bin.switchRadix(mode, bin.buf);
+  if (!bin.bufCache) {
+    return;
+  }
+  var ftype = bin.bufCache.ftype;
+  var b64 = bin.bufCache.b64;
+  bin.showPreview(ftype, b64);
+};
+
+bin.onChangeShowPreviewCc = function() {
+  if (!bin.bufCache) {
+    return;
+  }
+  var ftype = bin.bufCache.ftype;
+  if (!bin.isMedia(ftype)) {
+    bin.onChangeShowPreview();
   }
 };
 
@@ -2275,7 +2307,7 @@ bin.detectCurrentMode = function() {
     m = 'bin';
   } else if (bin.isHexString(v) || bin.isPercentEncoding(v)) {
     m = 'hex';
-  } else if (isB64String(v)) {
+  } else if (isBase64String(v)) {
     m = 'b64';
   }
   bin.activeMode(m);
@@ -2289,8 +2321,8 @@ bin.isHexString = function(s) {
   return ((s.match(/^[0-9A-Fa-f\s\n]+$/)) ? true : false);
 };
 
-isB64String = function(s) {
-  return ((s.trim().match(/^[A-Za-z0-9+/\s\n]+=*$/)) ? true : false);
+isBase64String = function(s) {
+  return ((s.trim().match(/^(data:.+;base64,)?[A-Za-z0-9+/\s\n]+=*$/)) ? true : false);
 };
 
 bin.isPercentEncoding = function(s) {
@@ -2339,12 +2371,12 @@ bin.showPreview = function(ftype, b64) {
     bin.drawPreview('');
     return;
   }
-  var dc = ftype['mime'].split('/')[0];
-  if (dc == 'image') {
+  var mimeClass = bin.getMimeClass(ftype);
+  if (mimeClass == 'image') {
     bin.showImagePreview(b64);
-  } else if (dc == 'video') {
+  } else if (mimeClass == 'video') {
     bin.showVideoPreview(b64);
-  } else if ((dc == 'audio') && (ftype['mime'] != 'audio/midi')) {
+  } else if ((mimeClass == 'audio') && (ftype['mime'] != 'audio/midi')) {
     bin.showAudioPreview(b64);
   } else {
     bin.showTextPreview(b64);
@@ -2403,7 +2435,7 @@ bin.drawPreview = function(s) {
 
 bin.confirmClear = function() {
   var v = bin.getSrcValue();
-  if (v && !bin.buf) {
+  if (v && !bin.bufCache) {
     util.confirm('Clear?', bin.clear);
   } else {
     bin.clear();
@@ -2419,7 +2451,7 @@ bin.clear = function() {
 };
 
 bin.clearBuf = function() {
-  bin.buf = null;
+  bin.bufCache = null;
   bin.file = null;
   $el('#key-update-button').disabled = true;
 };
@@ -2487,8 +2519,8 @@ bin.switchKeyViewHide = function() {
 
 bin.updateB64sKey = function() {
   var mode = bin.getMode();
-  if ((mode == 'b64s') && (bin.buf)) {
-    bin.switchRadix(mode, bin.buf);
+  if ((mode == 'b64s') && (bin.bufCache)) {
+    bin.switchRadix(mode, bin.bufCache);
   }
 };
 
@@ -2500,8 +2532,8 @@ bin.onInputKey = function() {
 
 bin.onChangeBsb64 = function() {
   var mode = bin.getMode();
-  if ((mode == 'bsb64') && (bin.buf)) {
-    bin.switchRadix(mode, bin.buf);
+  if ((mode == 'bsb64') && (bin.bufCache)) {
+    bin.switchRadix(mode, bin.bufCache);
   }
 };
 
