@@ -2030,7 +2030,9 @@ bin.copyObjField = function(src, dest, key) {
 
 bin.getBinDetail = function(ext, b) {
   var r = '';
-  if (ext == 'bmp') {
+  if (ext == 'avif') {
+    r = bin.getAvifInfo(b);
+  } else if (ext == 'bmp') {
     r = bin.getBmpInfo(b);
   } else if (ext == 'class') {
     r = bin.getJavaClassVersion(b);
@@ -2068,6 +2070,20 @@ bin.getExeArch = function(b) {
     arch = 'x86 (32bit)';
   }
   return arch;
+};
+
+bin.getAvifInfo = function(b) {
+  var r = {w: 0, h: 0};
+  if (b.length < 208) {
+    return r;
+  }
+  var posW = 0xC4;
+  var posH = 0xC8;
+  var w = bin.fetchBufAsIntByBE(b, posW, 4);
+  var h = bin.fetchBufAsIntByBE(b, posH, 4);
+  r['w'] = w;
+  r['h'] = h;
+  return r;
 };
 
 bin.getBmpInfo = function(b) {
