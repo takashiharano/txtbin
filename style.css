@@ -249,18 +249,27 @@ select {
   color: #888;
 }
 
-.code-single {
-  font-size: 0.8em;
-}
-
 .caution {
   color: #ff5354;
 }
 
+.cc {
+  cursor: default;
+}
+
 .cc2 {
+  cursor: default;
   font-size: 0.7em;
 }
 
 .data-ind {
   cursor: default;
+}
+
+.codeblock-lv-2 {
+  font-size: 0.8em;
+}
+
+.code-single {
+  font-size: 0.7em;
 }
