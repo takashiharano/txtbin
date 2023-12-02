@@ -15,7 +15,8 @@
 <button id="submit-button" onclick="bin.submit();">SAVE</button>
 <div style="margin-left:16px;display:inline-block;">
 <div class="mode-button-block"><div id="mode-ind-auto" class="mode-ind" style="opacity:0;"></div><button id="mode-button-auto" class="mode-button" onclick="bin.setMode('auto');">AUTO</button></div>
-<div class="mode-button-block"><div id="mode-ind-bin" class="mode-ind"></div><button id="mode-button-bin" class="mode-button" onclick="bin.setMode('bin');">BIN</button>
+<div class="mode-button-block"><div id="mode-ind-txt" class="mode-ind"></div><button id="mode-button-txt" class="mode-button" onclick="bin.setMode('txt');">TEXT</button>
+</div><div class="mode-button-block"><div id="mode-ind-bin" class="mode-ind"></div><button id="mode-button-bin" class="mode-button" onclick="bin.setMode('bin');">BIN</button>
 </div><div class="mode-button-block"><div id="mode-ind-dec" class="mode-ind"></div><button id="mode-button-dec" class="mode-button" onclick="bin.setMode('dec');">DEC</button>
 </div><div class="mode-button-block"><div id="mode-ind-hex" class="mode-ind"></div><button id="mode-button-hex" class="mode-button" onclick="bin.setMode('hex');">HEX</button>
 </div><div class="mode-button-block"><div id="mode-ind-b64" class="mode-ind"></div><button id="mode-button-b64" class="mode-button" onclick="bin.setMode('b64');">BASE64</button>
@@ -33,8 +34,6 @@
 <option value="6">6</option>
 <option value="7">7</option>
 </select>
-<div class="mode-button-block"><div id="mode-ind-txt" class="mode-ind"></div><button id="mode-button-txt" class="mode-button" onclick="bin.setMode('txt');">TEXT</button>
-</div>
 </div>
 
 <div style="position:absolute;right:8px;display:inline-block;height:100%;">

@@ -748,10 +748,11 @@ bin.switchRadix = function(mode, buf) {
 bin.setMode = function(mode, onlyMode) {
   if (mode != 'auto') {
     bin.setDndHandlerMode(mode);
+    var prevMode = $el('#mode').value;
     $el('#mode').value = mode;
     $el('.mode-ind').removeClass('mode-ind-active');
     $el('#mode-ind-' + mode).addClass('mode-ind-active');
-    if (bin.buf) {
+    if ((prevMode != mode) && bin.buf) {
       bin.switchRadix(mode, bin.buf);
     }
   }
@@ -2237,22 +2238,22 @@ bin.forceNewline = function(s) {
 
 bin.onDnd = function(s, f) {
   bin.file = f;
+  var showInfoRequired = true;
   if ((s instanceof ArrayBuffer) || (f && bin.isB64Mode())) {
     bin.dump(s);
+    showInfoRequired = false;
   } else {
     bin.setSrcValue(s, true);
     if (bin.auto) {
       bin.detectCurrentMode();
     }
-    var mode = bin.getMode();
-    if (mode == 'hex') {
-
-    }
   }
   bin.forceNewline();
   mode = bin.getMode();
   bin.setMode(mode);
-  bin.updateInfoAndPreview();
+  if (showInfoRequired) {
+    bin.updateInfoAndPreview();
+  }
 };
 
 bin.getSrcValue = function() {
@@ -2268,18 +2269,28 @@ bin.setSrcValue = function(s, resetPos) {
 };
 
 bin.detectCurrentMode = function() {
-  var m = 'b64';
+  var m = 'txt';
   var v = bin.getSrcValue();
-  if (v.match(/^[01\s\n]+$/)) {
+  if (bin.isBinString(v)) {
     m = 'bin';
   } else if (bin.isHexString(v) || bin.isPercentEncoding(v)) {
     m = 'hex';
+  } else if (isB64String(v)) {
+    m = 'b64';
   }
   bin.activeMode(m);
 };
 
+bin.isBinString = function(s) {
+  return ((s.match(/^[01\s\n]+$/)) ? true : false);
+};
+
 bin.isHexString = function(s) {
   return ((s.match(/^[0-9A-Fa-f\s\n]+$/)) ? true : false);
+};
+
+isB64String = function(s) {
+  return ((s.trim().match(/^[A-Za-z0-9+/\s\n]+=*$/)) ? true : false);
 };
 
 bin.isPercentEncoding = function(s) {
