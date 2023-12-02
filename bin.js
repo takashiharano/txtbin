@@ -653,7 +653,9 @@ $onReady = function() {
   util.clock('#clock');
 
   var opt = {
-    mode: 'blob'
+    mode: 'blob',
+    onloadstart: bin.onDndLoadStart,
+    onprogress: bin.onDndLoadProgress
   };
   bin.dndHandler = util.addDndHandler(document.body, bin.onDnd, opt);
 
@@ -2294,6 +2296,18 @@ bin.onDnd = function(s, f) {
   if (showInfoRequired) {
     bin.updateInfoAndPreview();
   }
+};
+
+bin.onDndLoadStart = function(f) {
+  bin.clearBuf();
+  bin.setSrcValue('Loading...', true);
+  bin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
+  bin.drawPreview('<span style="color:#888;">PREVIEW</span>');
+};
+
+bin.onDndLoadProgress = function(e, loaded, total, pct) {
+  var s = 'Loading... ' + pct + '%';
+  bin.setSrcValue(s, false);
 };
 
 bin.getSrcValue = function() {
