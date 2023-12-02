@@ -933,14 +933,14 @@ bin.buildTextFileInfo = function(ftype) {
     var i, blockName;
     var clz = {};
 
-    var codeblockInd = encInfo['codeblock_ind'];
+    var codeblockCount = encInfo['codeblock_count'];
     for (i = 0; i < bin.CODE_BLOCKS.length; i++) {
       codeBlock = bin.CODE_BLOCKS[i];
       blockName = codeBlock['name'];
 
       var caution = codeBlock['caution'];
       clz[blockName] = 'status-inactive';
-      if (codeblockInd[blockName]) {
+      if (codeblockCount[blockName] > 0) {
         clz[blockName] = 'status-active';
         if ((caution === true) || (caution && caution[type])) {
           clz[blockName] += ' caution';
@@ -972,7 +972,7 @@ bin.buildTextFileInfo = function(ftype) {
         s += '[';
       }
 
-      s += '<span class="data-ind" data-tooltip="' + tooltip + '">' + codeBlock['label'] + '</span>';
+      s += '<span class="data-ind" data-tooltip="' + tooltip + ' (count=' + codeblockCount[blockName] + ')">' + codeBlock['label'] + '</span>';
       if (codeBlock['block_level'] == 0) {
         s += ': ';
       } else {
@@ -1328,7 +1328,7 @@ bin.getEncoding = function(buf) {
       }
     },
     utf8: {
-      codeblock_ind: {}
+      codeblock_count: {}
     },
     utf16be: {
       newline: {
@@ -1336,7 +1336,7 @@ bin.getEncoding = function(buf) {
         cr: 0,
         crlf: 0
       },
-      codeblock_ind: {}
+      codeblock_count: {}
     },
     utf16le: {
       newline: {
@@ -1344,12 +1344,20 @@ bin.getEncoding = function(buf) {
         cr: 0,
         crlf: 0
       },
-      codeblock_ind: {}
+      codeblock_count: {}
     },
     wk: {
       tmpNL: null
     }
   };
+
+  for (i = 0; i < bin.CODE_BLOCKS.length; i++) {
+    codeBlock = bin.CODE_BLOCKS[i];
+    blockName = codeBlock['name'];
+    flags['utf8']['codeblock_count'][blockName] = 0;
+    flags['utf16be']['codeblock_count'][blockName] = 0;
+    flags['utf16le']['codeblock_count'][blockName] = 0;
+  }
 
   var f = false;
   if (bin.isUtf8Bom(buf)) {
@@ -1417,7 +1425,7 @@ bin.getEncoding = function(buf) {
         uri = '%' + c0 + '%' + c1 + '%' + c2 + '%' + c3;
       }
       skip = 3;
-      flags['utf8']['codeblock_ind']['non_bmp'] = true;
+      flags['utf8']['codeblock_count']['non_bmp']++;
     } else if ((code & 0xE0) == 0xE0) {
       var c0 = bin.i2hex(buf[i]);
       var c1 = bin.i2hex(buf[i + 1]);
@@ -1426,7 +1434,7 @@ bin.getEncoding = function(buf) {
         uri = '%' + c0 + '%' + c1 + '%' + c2;
       }
       skip = 2;
-      flags['utf8']['codeblock_ind']['bmp'] = true;
+      flags['utf8']['codeblock_count']['bmp']++;
     } else if ((code & 0xC0) == 0xC0) {
       var c0 = bin.i2hex(buf[i]);
       var c1 = bin.i2hex(buf[i + 1]);
@@ -1434,7 +1442,7 @@ bin.getEncoding = function(buf) {
         uri = '%' + c0 + '%' + c1;
       }
       skip = 1;
-      flags['utf8']['codeblock_ind']['bmp'] = true;
+      flags['utf8']['codeblock_count']['bmp']++;
     } else if (code >= 0x80) {
       typeScore['ascii'] = -1;
       typeScore['utf8'] = -1;
@@ -1470,7 +1478,7 @@ bin.getEncoding = function(buf) {
         typeScore = bin.incrementScore(typeScore, 'utf8');
         var cp = c.charCodeAt(0);
         if (bin.inRange(cp, 0x80, 0xFF)) {
-          flags['utf8']['codeblock_ind']['latin1_suppl'] = true;
+          flags['utf8']['codeblock_count']['latin1_suppl']++;
         }
         cnt++;
       } catch(e) {}
@@ -1519,7 +1527,7 @@ bin.getEncoding = function(buf) {
   var encoding = {
     type: type,
     newline: flags['general']['newline'],
-    codeblock_ind: {}
+    codeblock_count: {}
   };
 
   if (bin.isUnicode(type)) {
@@ -1596,14 +1604,14 @@ bin.checkNewline = function(buf, pos, code, chunk, flags) {
 bin.checkAscii = function(buf, pos, code, chunk, flags) {
   if (pos % 2 == 0) {
     if (bin.inRange(chunk['ptn2U'], 0x0020, 0x007F)) {
-      flags['utf16be']['codeblock_ind']['ascii'] = true;
+      flags['utf16be']['codeblock_count']['ascii']++;
     } else if (bin.inRange(chunk['ptn2Ur'], 0x0020, 0x007F)) {
-      flags['utf16le']['codeblock_ind']['ascii'] = true;
+      flags['utf16le']['codeblock_count']['ascii']++;
     }
   }
 
   if (bin.inRange(code, 0x20, 0x7F)) {
-    flags['utf8']['codeblock_ind']['ascii'] = true;
+    flags['utf8']['codeblock_count']['ascii']++;
   }
 
   return flags;
@@ -1625,9 +1633,9 @@ bin.checkCodeBlock1 = function(buf, pos, code, chunk, flags, blockName, range) {
 
   if (pos % 2 == 0) {
     if ((chunk['ptn2U'] >= utf16S) && (chunk['ptn2U'] <= utf16E)) {
-      flags['utf16be']['codeblock_ind'][blockName] = true;
+      flags['utf16be']['codeblock_count'][blockName]++;
     } else if ((chunk['ptn2Ur'] >= utf16S) && (chunk['ptn2Ur'] <= utf16E)) {
-      flags['utf16le']['codeblock_ind'][blockName] = true;
+      flags['utf16le']['codeblock_count'][blockName]++;
     }
   }
 
@@ -1639,7 +1647,7 @@ bin.checkCodeBlock1 = function(buf, pos, code, chunk, flags, blockName, range) {
   }
 
   if ((utf8B >= utf8S) && (utf8B <= utf8E)) {
-    flags['utf8']['codeblock_ind'][blockName] = true;
+    flags['utf8']['codeblock_count'][blockName]++;
   }
 
   return flags;
@@ -1671,9 +1679,9 @@ bin.checkCodeBlock2 = function(buf, pos, code, chunk, flags, blockName, range) {
     var u4r = (chunk['ptn2Ur'] * (2 ** 16));
     var ptn4r = u4r + chunk['ptn2Lr'];
     if ((chunk['ptn4'] >= utf16S) && (chunk['ptn4'] <= utf16E)) {
-      flags['utf16be']['codeblock_ind'][blockName] = true;
+      flags['utf16be']['codeblock_count'][blockName]++;
     } else if ((ptn4r >= utf16S) && (ptn4r <= utf16E)) {
-      flags['utf16le']['codeblock_ind'][blockName] = true;
+      flags['utf16le']['codeblock_count'][blockName]++;
     }
   }
 
@@ -1682,7 +1690,7 @@ bin.checkCodeBlock2 = function(buf, pos, code, chunk, flags, blockName, range) {
   }
 
   if ((chunk['ptn4'] >= utf8S) && (chunk['ptn4'] <= utf8E)) {
-    flags['utf8']['codeblock_ind'][blockName] = true;
+    flags['utf8']['codeblock_count'][blockName]++;
   }
   return flags;
 };
@@ -1690,13 +1698,13 @@ bin.checkCodeBlock2 = function(buf, pos, code, chunk, flags, blockName, range) {
 bin.checkNonBmp = function(buf, pos, code, chunk, flags) {
   if (pos % 2 == 0) {
     if (bin.isUpperSurrogate(chunk['ptn2U']) && bin.isLowerSurrogate(chunk['ptn2L'])) {
-      flags['utf16be']['codeblock_ind']['non_bmp'] = true;
+      flags['utf16be']['codeblock_count']['non_bmp']++;
     } else if (bin.isUpperSurrogate(chunk['ptn2Ur']) && bin.isLowerSurrogate(chunk['ptn2Lr'])) {
-      flags['utf16le']['codeblock_ind']['non_bmp'] = true;
+      flags['utf16le']['codeblock_count']['non_bmp'] = true;
     } else {
       if (!(bin.isUtf16BomSeq(chunk['ptn2U']) || bin.isUtf16BomSeq(chunk['ptn2Ur']) || bin.isSurrogate(chunk['ptn2U']) || bin.isSurrogate(chunk['ptn2Ur']))) {
-        flags['utf16le']['codeblock_ind']['bmp'] = true;
-        flags['utf16be']['codeblock_ind']['bmp'] = true;
+        flags['utf16le']['codeblock_count']['bmp']++;
+        flags['utf16be']['codeblock_count']['bmp']++;
       }
     }
   }
