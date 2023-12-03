@@ -686,13 +686,14 @@ $onReady = function() {
   $el('#key').addEventListener('input', bin.onInputKey);
   $el('#key').addEventListener('change', bin.onInputKey);
 
-  $el('#bsb64-n').addEventListener('change', bin.onChangeBsb64);
+  $el('#bsb64-n').addEventListener('change', bin.onChangeBsb64N);
 
   $el('#src').addEventListener('input', bin.onInput);
   $el('#src').addEventListener('change', bin.onInput);
 
   $el('#show-preview').addEventListener('change', bin.onChangeShowPreview);
   $el('#show-preview-cc').addEventListener('change', bin.onChangeShowPreviewCc);
+  $el('#preview-mode').addEventListener('change', bin.onChangeShowPreview);
 
   bin.clear();
 };
@@ -719,7 +720,7 @@ bin.switchRadix = function(mode, bufCache) {
     case 'hex':
     case 'dec':
     case 'bin':
-      r = bin.getHexDump(mode, buf);
+      r = bin.getBinDump(mode, buf);
       break;
     case 'b64s':
       var key = $el('#key').value;
@@ -750,8 +751,13 @@ bin.setMode = function(mode, onlyMode) {
     $el('#mode').value = mode;
     $el('.mode-ind').removeClass('mode-ind-active');
     $el('#mode-ind-' + mode).addClass('mode-ind-active');
-    if ((prevMode != mode) && bin.bufCache) {
-      bin.switchRadix(mode, bin.bufCache);
+    if (bin.bufCache) {
+      if (prevMode != mode) {
+        bin.switchRadix(mode, bin.bufCache);
+      }
+      if (bin.isB64Mode()) {
+        bin.showPreview(bin.bufCache);
+      }
     }
   }
 
@@ -789,22 +795,22 @@ bin.dump = function(s) {
     case 'bin':
       var buf = new Uint8Array(s);
       var b64 = util.encodeBase64(buf, true);
-      r = bin.getHexDump(mode, buf);
+      r = bin.getBinDump(mode, buf);
       break;
     case 'b64s':
       var key = $el('#key').value;
       buf = new Uint8Array(s);
+      b64 = util.encodeBase64(buf, true);
       b64s = util.encodeBase64s(buf, key);
       r = bin.formatB64(b64s);
-      b64 = util.encodeBase64(buf, true);
       $el('#key-update-button').disabled = false;
       break;
     case 'bsb64':
       var n = $el('#bsb64-n').value | 0;
-      var buf = new Uint8Array(s);
+      buf = new Uint8Array(s);
+      b64 = util.encodeBase64(buf, true);
       var b64s = util.BSB64.encode(buf, n);
       r = bin.formatB64(b64s);
-      b64 = util.encodeBase64(buf, true);
       break;
     case 'txt':
       var buf = new Uint8Array(s);
@@ -819,12 +825,12 @@ bin.dump = function(s) {
   var ftype = bin.analyzeBinary(buf);
   bin.drawBinInfo(ftype, buf, b64);
   bin.setSrcValue(r, true);
-  bin.showPreview(ftype, b64);
   bin.bufCache = {
     ftype: ftype,
     buf: buf,
     b64: b64
   };
+  bin.showPreview(bin.bufCache);
 };
 
 bin.decodeBase64 = function(s) {
@@ -1055,13 +1061,12 @@ bin.updateInfoAndPreview = function() {
   var b64 = util.encodeBase64(b, true);
   var ftype = bin.analyzeBinary(b);
   bin.drawBinInfo(ftype, b, b64);
-  bin.showPreview(ftype, b64);
-
   bufCache = {
     ftype: ftype,
     buf: b,
     b64: b64
   };
+  bin.showPreview(bufCache);
   return bufCache;
 };
 
@@ -1129,7 +1134,7 @@ bin.checkRadix = function(v) {
   return 0;
 };
 
-bin.getHexDump = function(mode, buf) {
+bin.getBinDump = function(mode, buf) {
   var showAddr = $el('#dump-flag-show-addr').checked;
   var showSp = $el('#dump-flag-show-sp').checked;
   var showAscii = $el('#dump-flag-show-ascii').checked;
@@ -2260,9 +2265,7 @@ bin.onChangeShowPreview = function() {
   if (!bin.bufCache) {
     return;
   }
-  var ftype = bin.bufCache.ftype;
-  var b64 = bin.bufCache.b64;
-  bin.showPreview(ftype, b64);
+  bin.showPreview(bin.bufCache);
 };
 
 bin.onChangeShowPreviewCc = function() {
@@ -2404,11 +2407,56 @@ bin.str2buf = function(mode, s) {
   return b;
 };
 
-bin.showPreview = function(ftype, b64) {
+bin.getBufOfBase64s = function(buf) {
+  var key = $el('#key').value;
+  var b64s = util.encodeBase64s(buf, key);
+  var b = util.decodeBase64(b64s, true);
+  return b;
+};
+
+bin.getBufOfBSB64 = function(buf) {
+  var n = $el('#bsb64-n').value | 0;
+  var b64s = util.BSB64.encode(buf, n);
+  var b = util.decodeBase64(b64s, true);
+  return b;
+};
+
+bin.showPreview = function(bufCache, bufAs) {
   if (!$el('#show-preview').checked) {
     bin.drawPreview('');
     return;
   }
+  var peviewMode = $el('#preview-mode').value;
+  switch (peviewMode) {
+    case 'bin':
+    case 'dec':
+    case 'hex':
+      var buf = bufCache.buf;
+      var mode = bin.getMode();
+      if ((mode == 'b64s') || (bufAs == 'b64s')) {
+        buf = bin.getBufOfBase64s(buf);
+      } else if ((mode == 'bsb64') || (bufAs == 'bsb64')) {
+        buf = bin.getBufOfBSB64(buf);
+      }
+      bin.showPreviewAsBin(peviewMode, buf);
+      break;
+    case 'b64':
+      bin.showPreviewAsB64(bufCache);
+      break;
+    case 'b64s':
+      bin.showPreviewAsB64s(bufCache);
+      break;
+    case 'bsb64':
+      bin.showPreviewAsBSB64(bufCache);
+      break;
+    default:
+      bin.showPreviewAsView(bufCache);
+  }
+};
+
+bin.showPreviewAsView = function(bufCache) {
+  var ftype = bufCache.ftype;
+  var b64 = bufCache.b64;
   var mimeClass = bin.getMimeClass(ftype);
   if (mimeClass == 'image') {
     bin.showImagePreview(b64);
@@ -2419,6 +2467,33 @@ bin.showPreview = function(ftype, b64) {
   } else {
     bin.showTextPreview(b64);
   }
+};
+
+bin.showPreviewAsBin = function(peviewMode, buf) {
+  var r = bin.getBinDump(peviewMode, buf);
+  bin.drawPreview(r);
+};
+
+bin.showPreviewAsB64 = function(bufCache) {
+  var b64 = bufCache.b64;
+  var r = bin.formatB64(b64);
+  bin.drawPreview(r);
+};
+
+bin.showPreviewAsB64s = function(bufCache) {
+  var buf = bufCache.buf;
+  var key = $el('#key').value;
+  var b64s = util.encodeBase64s(buf, key);
+  var r = bin.formatB64(b64s);
+  bin.drawPreview(r);
+};
+
+bin.showPreviewAsBSB64 = function(bufCache) {
+  var buf = bufCache.buf;
+  var n = $el('#bsb64-n').value | 0;
+  var b64s = util.BSB64.encode(buf, n);
+  var r = bin.formatB64(b64s);
+  bin.drawPreview(r);
 };
 
 bin.showTextPreview = function(b64) {
@@ -2589,8 +2664,11 @@ bin.switchKeyViewHide = function() {
 
 bin.updateB64sKey = function() {
   var mode = bin.getMode();
-  if ((mode == 'b64s') && (bin.bufCache)) {
-    bin.switchRadix(mode, bin.bufCache);
+  if (bin.bufCache) {
+    if (mode == 'b64s') {
+      bin.switchRadix(mode, bin.bufCache);
+    }
+    bin.showPreview(bin.bufCache, 'b64s');
   }
 };
 
@@ -2600,10 +2678,13 @@ bin.onInputKey = function() {
   }
 };
 
-bin.onChangeBsb64 = function() {
+bin.onChangeBsb64N = function() {
   var mode = bin.getMode();
-  if ((mode == 'bsb64') && (bin.bufCache)) {
-    bin.switchRadix(mode, bin.bufCache);
+  if (bin.bufCache) {
+    if (mode == 'bsb64') {
+      bin.switchRadix(mode, bin.bufCache);
+    }
+    bin.showPreview(bin.bufCache, 'bsb64');
   }
 };
 
