@@ -38,17 +38,14 @@ bin.UI_ST_NONE = 0;
 bin.UI_ST_AREA_RESIZING = 1;
 
 bin.ENCODING_NAME = {
-  'ascii': 'ASCII',
-  'utf8': 'UTF-8',
-  'utf8_bom': 'UTF-8 BOM',
-  'utf16': 'UTF-16 (?)',
-  'utf16le': 'UTF-16LE',
-  'utf16be': 'UTF-16BE',
-  'utf16be_bom': 'UTF-16BE BOM',
-  'utf16le_bom': 'UTF-16LE BOM',
-  'iso2022jp': 'ISO-2022-JP',
-  'sjis': 'Shift_JIS',
-  'euc_jp': 'EUC-JP'
+  'ascii': {name: 'ASCII', color: '#cff'},
+  'utf8': {name: 'UTF-8', color: '#fb6'},
+  'utf16': {name: 'UTF-16', color: '#bcf'},
+  'utf16le': {name: 'UTF-16LE', color: '#bcf'},
+  'utf16be': {name: 'UTF-16BE', color: '#bcf'},
+  'iso2022jp': {name: 'ISO-2022-JP', color: '#fce'},
+  'sjis': {name: 'Shift_JIS', color: '#8df'},
+  'euc_jp': {name: 'EUC-JP', color: '#cf8'},
 };
 
 bin.FILETYPES = {
@@ -911,7 +908,6 @@ bin.buildImageInfo = function(binDetail) {
 bin.buildTextFileInfo = function(ftype) {
   var encInfo = ftype['encoding'];
   var type = encInfo.type;
-
   var newline = encInfo['newline'];
   var clzCrLf = 'status-inactive';
   var clzLf = 'status-inactive';
@@ -934,7 +930,16 @@ bin.buildTextFileInfo = function(ftype) {
     ttCr = newline['cr'];
   }
 
-  var s = 'Encoding: ' + bin.getEncodingName(type) + '  ';
+  var encodingName = bin.getEncodingName(type);
+
+  var s = 'Encoding: ' + encodingName;
+  if (encInfo['bom']) {
+    if (type == 'utf16') {
+      s += ' ' + encInfo['bom'];
+    }
+    s += ' BOM';
+  }
+  s += '  ';
   s += '<span class="data-ind ' + clzCrLf + '" data-tooltip="count=' + ttCrLf + '">[CRLF]</span>';
   s += '<span class="data-ind ' + clzLf + '" data-tooltip="count=' + ttLf + '">[LF]</span>';
   s += '<span class="data-ind ' + clzCr + '" data-tooltip="count=' + ttCr + '">[CR]</span>\n';
@@ -1033,7 +1038,11 @@ bin.isUnicode = function(type) {
 bin.getEncodingName = function(id) {
   var name = '';
   if (id in bin.ENCODING_NAME) {
-    name = bin.ENCODING_NAME[id];
+    var encoding = bin.ENCODING_NAME[id];
+    name = encoding.name;
+    if (encoding.color) {
+      name = '<span style="color:' + encoding.color + '">' + name + '</span>';
+    }
   };
   return name;
 };
@@ -1350,6 +1359,7 @@ bin.getEncoding = function(buf) {
       }
     },
     utf8: {
+      bom: '',
       codeblock_count: {}
     },
     utf16be: {
@@ -1358,6 +1368,7 @@ bin.getEncoding = function(buf) {
         cr: 0,
         crlf: 0
       },
+      bom: '',
       codeblock_count: {}
     },
     utf16le: {
@@ -1366,6 +1377,7 @@ bin.getEncoding = function(buf) {
         cr: 0,
         crlf: 0
       },
+      bom: '',
       codeblock_count: {}
     },
     wk: {
@@ -1383,16 +1395,19 @@ bin.getEncoding = function(buf) {
 
   var f = false;
   if (bin.isUtf8Bom(buf)) {
-    typeScore = bin.setScore(typeScore, 'utf8_bom');
+    typeScore = bin.setScore(typeScore, 'utf8');
     f = true;
+    flags['utf8']['bom'] = 'UTF-8';
     typeScore['utf16'] = -1;
   } else if (bin.isUtf16LeBom(buf)) {
-    typeScore = bin.setScore(typeScore, 'utf16le_bom');
+    typeScore = bin.setScore(typeScore, 'utf16le');
     f = true;
+    flags['utf16le']['bom'] = 'LE';
     typeScore['utf8'] = -1;
   } else if (bin.isUtf16BeBom(buf)) {
-    typeScore = bin.setScore(typeScore, 'utf16be_bom');
+    typeScore = bin.setScore(typeScore, 'utf16be');
     f = true;
+    flags['utf16be']['bom'] = 'BE';
     typeScore['utf8'] = -1;
   }
 
@@ -1553,11 +1568,13 @@ bin.getEncoding = function(buf) {
   };
 
   if (bin.isUnicode(type)) {
-    var wType = type.replace(/_bom$/, '');
-    var srcFlags = flags[wType];
-    for (var key in encoding) {
-      if (key in srcFlags) {
-        encoding[key] = srcFlags[key];
+    var srcFlags = flags[type];
+    for (var key in srcFlags) {
+      encoding[key] = srcFlags[key];
+    }
+    if (encoding['bom']) {
+      if (type.startsWith('utf16')) {
+        encoding['type'] = 'utf16';
       }
     }
   }
@@ -2027,11 +2044,6 @@ bin.inertNewline = function(s, n) {
   if (n == undefined) n = 76;
   var r = util.insertCh(s, '\n', n);
   return r;
-};
-
-bin.copyObjField = function(src, dest, key) {
-  if (key in src) dest[key] = src[key];
-  return dest;
 };
 
 bin.getBinDetail = function(ext, b) {
