@@ -2478,6 +2478,8 @@ bin.showPreviewAsView = function(bufCache) {
     bin.showVideoPreview(b64);
   } else if ((mimeClass == 'audio') && (ftype['mime'] != 'audio/midi')) {
     bin.showAudioPreview(b64);
+  } else if (ftype['ext'] == 'pdf') {
+    bin.showPdfPreview(b64);
   } else {
     bin.showTextPreview(b64);
   }
@@ -2551,6 +2553,12 @@ bin.showVideoPreview = function(b64) {
 bin.showAudioPreview = function(b64) {
   var d = 'data:audio/wav;base64,' + b64;
   var v = '<audio src="' + d + '" style="max-width:100%;max-height:100%;" controls>';
+  bin.drawPreview(v);
+};
+
+bin.showPdfPreview = function(b64) {
+  var d = 'data:application/pdf;base64,' + b64;
+  var v = '<embed src="' + d + '" style="width:100%;height:calc(100% - 2px);"></embed>';
   bin.drawPreview(v);
 };
 
