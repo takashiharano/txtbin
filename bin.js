@@ -694,6 +694,7 @@ $onReady = function() {
   $el('#show-preview').addEventListener('change', bin.onChangeShowPreview);
   $el('#show-preview-cc').addEventListener('change', bin.onChangeShowPreviewCc);
   $el('#preview-mode').addEventListener('change', bin.onChangeShowPreview);
+  $el('#preview-mode-encryption').addEventListener('change', bin.onChangeShowPreview);
 
   bin.clear();
 };
@@ -2427,15 +2428,16 @@ bin.showPreview = function(bufCache, bufAs) {
     return;
   }
   var peviewMode = $el('#preview-mode').value;
+  var peviewModeEncryption = $el('#preview-mode-encryption').value;
   switch (peviewMode) {
     case 'bin':
     case 'dec':
     case 'hex':
       var buf = bufCache.buf;
       var mode = bin.getMode();
-      if ((mode == 'b64s') || (bufAs == 'b64s')) {
+      if (peviewModeEncryption == 'b64s') {
         buf = bin.getBufOfBase64s(buf);
-      } else if ((mode == 'bsb64') || (bufAs == 'bsb64')) {
+      } else if (peviewModeEncryption == 'bsb64') {
         buf = bin.getBufOfBSB64(buf);
       }
       bin.showPreviewAsBin(peviewMode, buf);
@@ -2664,11 +2666,15 @@ bin.switchKeyViewHide = function() {
 
 bin.updateB64sKey = function() {
   var mode = bin.getMode();
+  var peviewMode = $el('#preview-mode').value;
+  var peviewModeEncryption = $el('#preview-mode-encryption').value;
   if (bin.bufCache) {
     if (mode == 'b64s') {
       bin.switchRadix(mode, bin.bufCache);
     }
-    bin.showPreview(bin.bufCache, 'b64s');
+    if ((peviewMode != 'view') && (peviewModeEncryption == 'b64s')) {
+      bin.showPreview(bin.bufCache);
+    }
   }
 };
 
@@ -2680,11 +2686,15 @@ bin.onInputKey = function() {
 
 bin.onChangeBsb64N = function() {
   var mode = bin.getMode();
+  var peviewMode = $el('#preview-mode').value;
+  var peviewModeEncryption = $el('#preview-mode-encryption').value;
   if (bin.bufCache) {
     if (mode == 'bsb64') {
       bin.switchRadix(mode, bin.bufCache);
     }
-    bin.showPreview(bin.bufCache, 'bsb64');
+    if ((peviewMode != 'view') && (peviewModeEncryption == 'bsb64')) {
+      bin.showPreview(bin.bufCache);
+    }
   }
 };
 
