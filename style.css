@@ -270,6 +270,10 @@ select {
   color: #ff5354;
 }
 
+.char-caution {
+  color: #fab;
+}
+
 .cc {
   cursor: default;
 }
@@ -277,6 +281,10 @@ select {
 .cc2 {
   cursor: default;
   font-size: 0.7em;
+}
+
+.cc-link {
+  cursor: pointer;
 }
 
 .data-ind {

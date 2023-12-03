@@ -16,18 +16,18 @@ bin.CHR_LF_S = '<span style="color:#0f0" class="cc">' + bin.CHR_LF + '</span>';
 bin.CHR_CR_S = '<span style="color:#f00" class="cc">' + bin.CHR_CR + '</span>';
 bin.TAB = '<span style="color:#2c2" class="cc" data-tooltip="Tab">&gt;</span>';
 bin.SP = '<span style="color:#0aa" class="cc">.</span>';
-bin.NBSP = '<span style="color:#ff5354" class="cc" data-tooltip="U+00A0: Non-breaking space">.</span>';
-bin.CDM = '<span style="color:#fe0" class="cc2">[CDM]</span>';
-bin.ZWSP = '<span style="color:#f8f" class="cc2" data-tooltip="U+200B: Zero-width space">[ZWSP]</span>';
-bin.LRM = '<span style="color:#f80" class="cc2" data-tooltip="U+200E: Left-to-Right Mark">[LRM]</span>';
-bin.RLM = '<span style="color:#f80" class="cc2" data-tooltip="U+200F: Right-to-Left Mark">[RLM]</span>';
-bin.LRE = '<span style="color:#f80" class="cc2" data-tooltip="U+202A: Left-to-Right Embedding">[LRE]</span>';
-bin.RLE = '<span style="color:#f80" class="cc2" data-tooltip="U+202B: Right-to-Left Embedding">[RLE]</span>';
-bin.PDF = '<span style="color:#f80" class="cc2" data-tooltip="U+202C: Pop Directional Formatting">[PDF]</span>';
-bin.LRO = '<span style="color:#f80" class="cc2" data-tooltip="U+202D: Left-to-Right Override">[LRO]</span>';
-bin.RLO = '<span style="color:#f80" class="cc2" data-tooltip="U+202E: Right-to-Left Override">[RLO]</span>';
+bin.NBSP = '<span style="color:#ff5354" class="cc cc-link" data-tooltip="U+00A0: Non-breaking space" onclick="bin.openUnicodeTable(\'0x00A0\', true);">.</span>';
+bin.CDM = '<span style="color:#fe0" class="cc2 cc-link" onclick="bin.openUnicodeTable(\'0x0300\');">[CDM]</span>';
+bin.ZWSP = '<span style="color:#f8f" class="cc2 cc-link" data-tooltip="U+200B: Zero-width space" onclick="bin.openUnicodeTable(\'0x200B\', true);">[ZWSP]</span>';
+bin.LRM = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+200E: Left-to-Right Mark" onclick="bin.openUnicodeTable(\'0x200E\', true);">[LRM]</span>';
+bin.RLM = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+200F: Right-to-Left Mark" onclick="bin.openUnicodeTable(\'0x200F\', true);">[RLM]</span>';
+bin.LRE = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202A: Left-to-Right Embedding" onclick="bin.openUnicodeTable(\'0x202A\', true);">[LRE]</span>';
+bin.RLE = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202B: Right-to-Left Embedding" onclick="bin.openUnicodeTable(\'0x202B\', true);">[RLE]</span>';
+bin.PDF = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202C: Pop Directional Formatting" onclick="bin.openUnicodeTable(\'0x202C\', true);">[PDF]</span>';
+bin.LRO = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202D: Left-to-Right Override" onclick="bin.openUnicodeTable(\'0x202D\', true);">[LRO]</span>';
+bin.RLO = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202E: Right-to-Left Override" onclick="bin.openUnicodeTable(\'0x202E\', true);">[RLO]</span>';
 bin.FULL_SP = '<span style="color:#05d" class="cc">．</span>';
-bin.VS = '<span style="color:#fe0" class="cc2" data-tooltip="U+FE00-U+FE0F: Variation Selectors">[VS]</span>';
+bin.VS = '<span style="color:#fe0" class="cc2" data-tooltip="U+FE00-U+FE0F: Variation Selectors" onclick="bin.openUnicodeTable(\'0xFE00\');">[VS]</span>';
 bin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
 
 bin.DEFAULT_FONT_SIZE = 14;
@@ -958,7 +958,7 @@ bin.buildTextFileInfo = function(ftype) {
       if (codeblockCount[blockName] > 0) {
         clz[blockName] = 'status-active';
         if ((caution === true) || (caution && caution[type])) {
-          clz[blockName] += ' caution';
+          clz[blockName] += ' char-caution';
         }
       }
     }
