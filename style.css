@@ -199,7 +199,7 @@ select {
   display: inline-block;
   position: relative;
   width: calc(100% - 10px);
-  height: calc(100% - 30px);
+  height: calc(100% - 32px);
   padding: 2px 4px;
   overflow: auto;
 }
