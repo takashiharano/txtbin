@@ -643,6 +643,7 @@ bin.areaSize = {
   orgDW: 0,
   dW: 0
 };
+bin.imgPreviewRect = null;
 
 bin.onselectstart = document.onselectstart;
 
@@ -2539,9 +2540,14 @@ bin.showTextPreview = function(b64) {
 };
 
 bin.showImagePreview = function(b64) {
+  bin.resetFontSize4Preview();
   var d = 'data:image/png;base64,' + b64;
-  var v = '<img src="' + d + '" style="max-width:100%;max-height:calc(100% - 8px);">';
+  var v = '<img id="img-preview" src="' + d + '" style="max-width:100%;max-height:calc(100% - 8px);">';
   bin.drawPreview(v);
+  setTimeout(bin.postShowImagePreview, 0);
+};
+bin.postShowImagePreview = function() {
+  bin.imgPreviewRect = $el('#img-preview').getRect();
 };
 
 bin.showVideoPreview = function(b64) {
@@ -2563,6 +2569,7 @@ bin.showPdfPreview = function(b64) {
 };
 
 bin.drawPreview = function(s) {
+  bin.imgPreviewRect = null;
   $el('#preview').innerHTML = s;
   $el('#preview-area').scrollToTop();
   $el('#preview-area').scrollToLeft();
@@ -2633,6 +2640,18 @@ bin.setFontSize4Preview = function(v) {
   $el('#font-range-preview').value = v;
   $el('#preview').style.fontSize = fontSize;
   $el('#fontsize-preview').innerHTML = fontSize;
+  if ($el('#img-preview').exists()) {
+    var orgW = bin.imgPreviewRect.width;
+    var orgH = bin.imgPreviewRect.height;
+    var srcV = orgW;
+    var prop = 'width';
+    if (orgW < orgH) {
+      srcV = orgH;
+      prop = 'height';
+    }
+    var p = (v / 14) * srcV;
+    $el('#img-preview').style[prop] = p + 'px';
+  }
 };
 bin.resetFontSize4Preview = function() {
   bin.setFontSize4Preview(bin.DEFAULT_FONT_SIZE);
