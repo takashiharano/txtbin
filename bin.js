@@ -2464,6 +2464,9 @@ bin.showPreview = function(bufCache, bufAs) {
     case 'bsb64':
       bin.showPreviewAsBSB64(bufCache);
       break;
+    case 'txt':
+      bin.showPreviewAsText(bufCache);
+      break;
     default:
       bin.showPreviewAsView(bufCache);
   }
@@ -2484,6 +2487,10 @@ bin.showPreviewAsView = function(bufCache) {
   } else {
     bin.showTextPreview(b64);
   }
+};
+
+bin.showPreviewAsText = function(bufCache) {
+  bin.showTextPreview(bufCache.b64);
 };
 
 bin.showPreviewAsBin = function(peviewMode, buf) {
@@ -2711,7 +2718,7 @@ bin.updateB64sKey = function() {
     if (mode == 'b64s') {
       bin.switchRadix(mode, bin.bufCache);
     }
-    if ((peviewMode != 'view') && (peviewModeEncryption == 'b64s')) {
+    if ((peviewMode != 'view') && (peviewMode != 'txt') && (peviewModeEncryption == 'b64s')) {
       bin.showPreview(bin.bufCache);
     }
   }
@@ -2731,7 +2738,7 @@ bin.onChangeBsb64N = function() {
     if (mode == 'bsb64') {
       bin.switchRadix(mode, bin.bufCache);
     }
-    if ((peviewMode != 'view') && (peviewModeEncryption == 'bsb64')) {
+    if ((peviewMode != 'view') && (peviewMode != 'txt') && (peviewModeEncryption == 'bsb64')) {
       bin.showPreview(bin.bufCache);
     }
   }
