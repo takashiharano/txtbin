@@ -2036,7 +2036,8 @@ bin.formatB64 = function(s) {
     var a = s.split(',');
     s = a[1];
   }
-  var b64 = bin.inertNewline(s);
+  var n = $el('#newline').value | 0;
+  var b64 = bin.inertNewline(s, n);
   var r = (isDataUrl ? (a[0] + ',\n') : '') + b64;
   return r;
 };
@@ -2647,7 +2648,7 @@ bin.setFontSize4Preview = function(v) {
   $el('#font-range-preview').value = v;
   $el('#preview').style.fontSize = fontSize;
   $el('#fontsize-preview').innerHTML = fontSize;
-  if ($el('#img-preview').exists()) {
+  if ($el('#img-preview').exists() && bin.imgPreviewRect) {
     var orgW = bin.imgPreviewRect.width;
     var orgH = bin.imgPreviewRect.height;
     var srcV = orgW;
