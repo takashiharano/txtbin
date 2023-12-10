@@ -2037,6 +2037,7 @@ bin.formatB64 = function(s) {
     s = a[1];
   }
   var n = $el('#newline').value | 0;
+  if (n < 0) n = 0;
   var b64 = bin.inertNewline(s, n);
   var r = (isDataUrl ? (a[0] + ',\n') : '') + b64;
   return r;
