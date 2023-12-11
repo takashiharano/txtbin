@@ -2551,7 +2551,7 @@ bin.showTextPreview = function(b64) {
 bin.showImagePreview = function(b64) {
   bin.resetFontSize4Preview();
   var d = 'data:image/png;base64,' + b64;
-  var v = '<img id="img-preview" src="' + d + '" style="max-width:100%;max-height:calc(100% - 8px);">';
+  var v = '<img id="img-preview" src="' + d + '" style="max-width:100%;max-height:calc(100% - 8px);" onmousedown="return false;">';
   bin.drawPreview(v);
   setTimeout(bin.postShowImagePreview, 0);
 };
