@@ -2660,6 +2660,8 @@ bin.setFontSize4Preview = function(v) {
     }
     var p = (v / 14) * srcV;
     $el('#img-preview').style[prop] = p + 'px';
+    $el('#img-preview').style['max-width'] = '';
+    $el('#img-preview').style['max-height'] = '';
   }
 };
 bin.resetFontSize4Preview = function() {
