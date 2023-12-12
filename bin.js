@@ -941,9 +941,9 @@ bin.buildTextFileInfo = function(ftype) {
     s += ' BOM';
   }
   s += '  ';
-  s += '<span class="data-ind ' + clzCrLf + '" data-tooltip="count=' + ttCrLf + '">[CRLF]</span>';
-  s += '<span class="data-ind ' + clzLf + '" data-tooltip="count=' + ttLf + '">[LF]</span>';
-  s += '<span class="data-ind ' + clzCr + '" data-tooltip="count=' + ttCr + '">[CR]</span>\n';
+  s += '<span class="cc-link ' + clzCrLf + '" data-tooltip="count=' + ttCrLf + '" onclick="bin.openUnicodeTable(\'0x000D\', true);">[CRLF]</span>';
+  s += '<span class="cc-link ' + clzLf + '" data-tooltip="count=' + ttLf + '" onclick="bin.openUnicodeTable(\'0x000A\', true);">[LF]</span>';
+  s += '<span class="cc-link ' + clzCr + '" data-tooltip="count=' + ttCr + '" onclick="bin.openUnicodeTable(\'0x000D\', true);">[CR]</span>\n';
 
   if (bin.isUnicode(type)) {
     var i, blockName;

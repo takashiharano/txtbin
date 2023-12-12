@@ -287,10 +287,6 @@ select {
   cursor: pointer;
 }
 
-.data-ind {
-  cursor: default;
-}
-
 .code-range {
   cursor: pointer;
 }
