@@ -2776,10 +2776,8 @@ bin.onMouseMove = function(e) {
   }
 };
 bin.onMouseUp = function(e) {
-  if (bin.uiStatus == bin.UI_ST_AREA_RESIZING_X) {
-    bin.onAreaResizeEndX(e);
-  } else if (bin.uiStatus == bin.UI_ST_AREA_RESIZING_Y) {
-    bin.onAreaResizeEndY(e);
+  if ((bin.uiStatus == bin.UI_ST_AREA_RESIZING_X) || (bin.uiStatus == bin.UI_ST_AREA_RESIZING_Y)) {
+    bin.onAreaResizeEnd(e);
   }
 };
 
@@ -2819,17 +2817,7 @@ bin.storeAreaSize = function() {
 };
 
 bin.onAreaResizeStartX = function(e) {
-  bin.uiStatus = bin.UI_ST_AREA_RESIZING_X;
-  var x = e.clientX;
-  var y = e.clientY;
-  var sp1 = bin.getSelfSizePos($el('#input-area'));
-  var sp2 = bin.getSelfSizePos($el('#right-area'));
-  bin.areaSize[0].orgX = x;
-  bin.areaSize[0].orgSP1 = sp1;
-  bin.areaSize[0].orgSP2 = sp2;
-  bin.areaSize[0].orgDW = bin.areaSize[0].dW;
-  bin.disableTextSelect();
-  document.body.style.cursor = 'ew-resize';
+  bin.onAreaResizeStart(e, 0, 'X', bin.UI_ST_AREA_RESIZING_X, $el('#input-area'), $el('#right-area'), 'ew-resize');
 };
 bin.onAreaResizeX = function(e) {
   var x = e.clientX;
@@ -2852,29 +2840,17 @@ bin.resetAreaSizeX = function() {
   bin.areaSize[0].dW = 0;
 };
 bin.setAreaSizeX = function(w1, dW) {
-  var adj = 8;
-  $el('#input-area').style.width = w1 + adj + 'px';
-  var w2 = w1 + 28;
-  $el('#right-area').style.width = 'calc(100% - ' + w2 + 'px)';
+  bin._setAreaSizeX($el('#input-area'), $el('#right-area'), w1, dW, 28);
 };
-bin.onAreaResizeEndX = function(e) {
-  bin.enableTextSelect();
-  document.body.style.cursor = 'auto';
-  bin.uiStatus = bin.UI_ST_NONE;
+bin._setAreaSizeX = function(el1, el2, w1, dW, adj2) {
+  var adj = 8;
+  var w2 = w1 + adj2;
+  el1.style.width = w1 + adj + 'px';
+  el2.style.width = 'calc(100% - ' + w2 + 'px)';
 };
 
 bin.onAreaResizeStartY = function(e) {
-  bin.uiStatus = bin.UI_ST_AREA_RESIZING_Y;
-  var x = e.clientX;
-  var y = e.clientY;
-  var sp1 = bin.getSelfSizePos($el('#info-area'));
-  var sp2 = bin.getSelfSizePos($el('#preview-area'));
-  bin.areaSize[1].orgY = y;
-  bin.areaSize[1].orgSP1 = sp1;
-  bin.areaSize[1].orgSP2 = sp2;
-  bin.areaSize[1].orgDH = bin.areaSize[1].dH;
-  bin.disableTextSelect();
-  document.body.style.cursor = 'ns-resize';
+  bin.onAreaResizeStart(e, 1, 'Y', bin.UI_ST_AREA_RESIZING_Y, $el('#info-area'), $el('#preview-area'), 'ns-resize');
 };
 bin.onAreaResizeY = function(e) {
   var x = e.clientX;
@@ -2896,12 +2872,34 @@ bin.resetAreaSizeY = function() {
   bin.areaSize[1].dH = 0;
 };
 bin.setAreaSizeY = function(h1, dH) {
-  var adj = 8;
-  $el('#info-area').style.height = h1 + adj + 'px';
-  var h2 = h1 + 56;
-  $el('#preview-area').style.height = 'calc(100% - ' + h2 + 'px)';
+  bin._setAreaSizeY($el('#info-area'), $el('#preview-area'), h1, dH, 56);
 };
-bin.onAreaResizeEndY = function(e) {
+bin._setAreaSizeY = function(el1, el2, h1, dH, adj2) {
+  var adj = 8;
+  var h2 = h1 + adj2;
+  el1.style.height = h1 + adj + 'px';
+  el2.style.height = 'calc(100% - ' + h2 + 'px)';
+};
+
+bin.onAreaResizeStart = function(e, idx, dir, uiStatus, el1, el2, cursor) {
+  bin.uiStatus = uiStatus;
+  var x = e.clientX;
+  var y = e.clientY;
+  var sp1 = bin.getSelfSizePos(el1);
+  var sp2 = bin.getSelfSizePos(el2);
+  bin.areaSize[idx].orgSP1 = sp1;
+  bin.areaSize[idx].orgSP2 = sp2;
+  bin.disableTextSelect();
+  document.body.style.cursor = cursor;
+  if (dir == 'X') {
+    bin.areaSize[idx].orgX = x;
+    bin.areaSize[idx].orgDW = bin.areaSize[0].dW;
+  } else {
+    bin.areaSize[idx].orgY = y;
+    bin.areaSize[idx].orgDH = bin.areaSize[idx].dH;
+  }
+};
+bin.onAreaResizeEnd = function(e) {
   bin.enableTextSelect();
   document.body.style.cursor = 'auto';
   bin.uiStatus = bin.UI_ST_NONE;
