@@ -659,7 +659,7 @@ bin.areaSize = [
     dH: 0
   }
 ];
-bin.imgPreviewRect = null;
+bin.mediaPreviewRect = null;
 bin.orgW = null;
 bin.orgH = null;
 
@@ -2573,16 +2573,17 @@ bin.showImagePreview = function(b64) {
   var d = 'data:image/png;base64,' + b64;
   var v = '<img id="img-preview" src="' + d + '" style="max-width:100%;max-height:calc(100% - 8px);" onmousedown="return false;">';
   bin.drawPreview(v);
-  setTimeout(bin.postShowImagePreview, 0);
+  setTimeout(bin.postShowMediaPreview, 0, 'img-preview');
 };
-bin.postShowImagePreview = function() {
-  bin.imgPreviewRect = $el('#img-preview').getRect();
+bin.postShowMediaPreview = function(id) {
+  bin.mediaPreviewRect = $el('#' + id).getRect();
 };
 
 bin.showVideoPreview = function(b64) {
   var d = 'data:video/mp4;base64,' + b64;
-  var v = '<video src="' + d + '" style="max-width:100%;max-height:100%;" controls>';
+  var v = '<video id="video-preview" src="' + d + '" style="max-width:100%;max-height:100%;" controls onmousedown="return false;">';
   bin.drawPreview(v);
+  setTimeout(bin.postShowMediaPreview, 0, 'video-preview');
 };
 
 bin.showAudioPreview = function(b64) {
@@ -2598,7 +2599,7 @@ bin.showPdfPreview = function(b64) {
 };
 
 bin.drawPreview = function(s) {
-  bin.imgPreviewRect = null;
+  bin.mediaPreviewRect = null;
   $el('#preview').innerHTML = s;
   $el('#preview-area').scrollToTop();
   $el('#preview-area').scrollToLeft();
@@ -2669,9 +2670,21 @@ bin.setFontSize4Preview = function(v) {
   $el('#font-range-preview').value = v;
   $el('#preview').style.fontSize = fontSize;
   $el('#fontsize-preview').innerHTML = fontSize;
-  if ($el('#img-preview').exists() && bin.imgPreviewRect) {
-    var orgW = bin.imgPreviewRect.width;
-    var orgH = bin.imgPreviewRect.height;
+  if (bin.mediaPreviewRect) {
+    var el = null;
+    if ($el('#img-preview').exists()) {
+      el = $el('#img-preview');
+    } else if ($el('#video-preview').exists()) {
+      el = $el('#video-preview');
+    }
+    if (el) {
+      bin.resizeMediaPreview(el, v);
+    }
+  }
+};
+bin.resizeMediaPreview = function(el, v) {
+    var orgW = bin.mediaPreviewRect.width;
+    var orgH = bin.mediaPreviewRect.height;
     var srcV = orgW;
     var prop = 'width';
     if (orgW < orgH) {
@@ -2679,10 +2692,9 @@ bin.setFontSize4Preview = function(v) {
       prop = 'height';
     }
     var p = (v / 14) * srcV;
-    $el('#img-preview').style[prop] = p + 'px';
-    $el('#img-preview').style['max-width'] = '';
-    $el('#img-preview').style['max-height'] = '';
-  }
+    el.style[prop] = p + 'px';
+    el.style['max-width'] = '';
+    el.style['max-height'] = '';
 };
 bin.resetFontSize4Preview = function() {
   bin.setFontSize4Preview(bin.DEFAULT_FONT_SIZE);
