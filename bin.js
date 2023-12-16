@@ -2309,7 +2309,8 @@ bin.onChangeShowPreviewCc = function() {
     return;
   }
   var ftype = bin.bufCache.ftype;
-  if (!bin.isMedia(ftype)) {
+  var previewMode = $el('#preview-mode').value;
+  if ((previewMode == 'txt') || !bin.isMedia(ftype)) {
     bin.onChangeShowPreview();
   }
 };
@@ -2462,8 +2463,10 @@ bin.showPreview = function(bufCache, bufAs) {
     bin.drawPreview('');
     return;
   }
+  var ftype = bin.bufCache.ftype;
   var peviewMode = $el('#preview-mode').value;
   var peviewModeEncryption = $el('#preview-mode-encryption').value;
+  $el('#copy-button').disabled = false;
   switch (peviewMode) {
     case 'bin':
     case 'dec':
@@ -2491,6 +2494,9 @@ bin.showPreview = function(bufCache, bufAs) {
       break;
     default:
       bin.showPreviewAsView(bufCache);
+      if (bin.isMedia(ftype)) {
+        $el('#copy-button').disabled = true;
+      }
   }
 };
 
@@ -2626,6 +2632,7 @@ bin.clearBuf = function() {
   bin.bufCache = null;
   bin.file = null;
   $el('#key-update-button').disabled = true;
+  $el('#copy-button').disabled = true;
 };
 
 bin.submit = function() {
@@ -2791,6 +2798,25 @@ bin.onMouseUp = function(e) {
   if ((bin.uiStatus == bin.UI_ST_AREA_RESIZING_X) || (bin.uiStatus == bin.UI_ST_AREA_RESIZING_Y)) {
     bin.onAreaResizeEnd(e);
   }
+};
+
+bin.copyPreview = function() {
+  if (!bin.bufCache) return;
+  var previewMode = $el('#preview-mode').value;
+  if ((previewMode == 'view') || (previewMode == 'txt')) {
+    var b64 = bin.bufCache.b64;
+    var s = util.decodeBase64(b64);
+  } else {
+    s = $el('#preview').innerText;
+  }
+  util.copy(s);
+  var o = {
+    pos: 'pointer',
+    style: {
+      'font-size': '18px'
+    }
+  };
+  util.infotip.show('Copied', o);
 };
 
 bin.getSelfSizePos = function(el) {
