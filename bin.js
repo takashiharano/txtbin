@@ -27,7 +27,8 @@ bin.PDF = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202C: Po
 bin.LRO = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202D: Left-to-Right Override" onclick="bin.openUnicodeTable(\'0x202D\', true);">[LRO]</span>';
 bin.RLO = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202E: Right-to-Left Override" onclick="bin.openUnicodeTable(\'0x202E\', true);">[RLO]</span>';
 bin.FULL_SP = '<span style="color:#05d" class="cc">．</span>';
-bin.VS = '<span style="color:#fe0" class="cc2" data-tooltip="U+FE00-U+FE0F: Variation Selectors" onclick="bin.openUnicodeTable(\'0xFE00\');">[VS]</span>';
+bin.VS = '<span style="color:#fe0" class="cc2 cc-link" data-tooltip="U+FE00-U+FE0F: Variation Selectors" onclick="bin.openUnicodeTable(\'0xFE00\');">[VS]</span>';
+bin.BOM = '<span style="color:#fb6" class="cc2 cc-link" data-tooltip="U+FEFF: BOM" onclick="bin.openUnicodeTable(\'0xFEFF\', true);">.</span>';
 bin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
 
 bin.DEFAULT_FONT_SIZE = 14;
@@ -2569,6 +2570,7 @@ bin.showTextPreview = function(b64) {
     s = s.replace(/\u202D/g, bin.LRO);
     s = s.replace(/\u202E/g, bin.RLO);
     s = s.replace(/([\uFE00-\uFE0F])(.)/g, bin.VS + '$1$2');
+    s = s.replace(/\uFEFF/g, bin.BOM);
     s = s + bin.EOF + '\n';
   }
   bin.drawPreview(s);
