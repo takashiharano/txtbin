@@ -39,7 +39,7 @@ bin.UI_ST_NONE = 0;
 bin.UI_ST_AREA_RESIZING_X = 1;
 bin.UI_ST_AREA_RESIZING_Y = 1 << 1;
 
-bin.ENCODING_NAME = {
+bin.CHARACTER_ENCODINGS = {
   'ascii': {name: 'ASCII', color: '#cff'},
   'utf8': {name: 'UTF-8', color: '#fb6'},
   'utf16': {name: 'UTF-16', color: '#bcf'},
@@ -1058,15 +1058,34 @@ bin.isUnicode = function(type) {
 };
 
 bin.getEncodingName = function(id) {
-  var name = '';
-  if (id in bin.ENCODING_NAME) {
-    var encoding = bin.ENCODING_NAME[id];
+  var nameLink = '';
+  if (id in bin.CHARACTER_ENCODINGS) {
+    var encoding = bin.CHARACTER_ENCODINGS[id];
     name = encoding.name;
-    if (encoding.color) {
-      name = '<span style="color:' + encoding.color + '">' + name + '</span>';
+    var color = (encoding.color ? encoding.color : '#fff');
+    var codetable = bin.getCodeTableUrl(id);
+    nameLink = '<span style="color:' + color + ';'
+    if (codetable) {
+      nameLink += 'cursor:pointer;';
     }
+    nameLink += '"';
+    if (codetable) {
+      nameLink += ' onclick="window.open(\'' + codetable + '\', \'_new\');"';
+    }
+    nameLink += '>' + name + '</span>';
   };
-  return name;
+  return nameLink;
+};
+
+bin.getCodeTableUrl = function(encoding) {
+  var path = null;
+  if ((encoding == 'ascii') || (encoding.startsWith('utf'))) {
+    path = 'unicode.html';
+  }
+  if (path) {
+    path = '../' + path;
+  }
+  return path;
 };
 
 bin.getSHA = function(a, b, f) {
@@ -1920,6 +1939,7 @@ bin.getMimeClass = function(ftype) {
 };
 
 bin.isMedia = function(ftype) {
+  if (!ftype) return false;
   var mimeClass = bin.getMimeClass(ftype);
   switch (mimeClass) {
     case 'image':
@@ -2464,7 +2484,7 @@ bin.showPreview = function(bufCache, bufAs) {
     bin.drawPreview('');
     return;
   }
-  var ftype = bin.bufCache.ftype;
+  var ftype = (bin.bufCache ? bin.bufCache.ftype : null);
   var peviewMode = $el('#preview-mode').value;
   var peviewModeEncryption = $el('#preview-mode-encryption').value;
   $el('#copy-button').disabled = false;
