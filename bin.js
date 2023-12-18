@@ -64,10 +64,11 @@ bin.FILETYPES = {
   'html': {'head': '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C', 'mime': 'text/html', 'ext': 'html'},
   'jpg': {'head': 'FF D8', 'mime': 'image/jpeg', 'ext': 'jpg'},
   'lzh': {'head': 'xx xx 2D 6C 68 xx 2D', 'mime': 'application/octet-stream', 'ext': 'lzh'},
-  'mid': {'head': '4D 54 68 64', 'mime': 'audio/midi', 'ext': 'mid'},
+  'mid': {'head': '4D 54 68 64', 'mime': 'audio/midi', 'ext': 'mid', 'nopreview': 1},
   'mov': {'head': 'xx xx xx xx 6D 6F 6F 76', 'mime': 'video/quicktime', 'ext': 'mov'},
   'mp3': {'head': ['FF FA', 'FF FB', '49 44 33'], 'mime': 'audio/mpeg', 'ext': 'mp3'},
   'mp4': {'head': ['xx xx xx xx 66 74 79 70 6D 70 34', 'xx xx xx xx 66 74 79 70 69 73 6F 6D'], 'mime': 'video/mp4', 'ext': 'mp4'},
+  'mpg': {'head': '00 00 01 BA', 'mime': 'video/mpeg', 'ext': 'mpg', 'nopreview': 1},
   'msg': {'head': 'D0 CF 11 E0 A1 B1 1A E1', 'mime': 'application/octet-stream', 'ext': 'msg'},
   'pdf': {'head': '25 50 44 46 2D', 'mime': 'application/pdf', 'ext': 'pdf'},
   'png': {'head': '89 50 4E 47 0D 0A 1A 0A 00', 'mime': 'image/png', 'ext': 'png'},
@@ -2525,16 +2526,20 @@ bin.showPreviewAsView = function(bufCache) {
   var ftype = bufCache.ftype;
   var b64 = bufCache.b64;
   var mimeClass = bin.getMimeClass(ftype);
-  if (mimeClass == 'image') {
-    bin.showImagePreview(b64);
-  } else if (mimeClass == 'video') {
-    bin.showVideoPreview(b64);
-  } else if ((mimeClass == 'audio') && (ftype['mime'] != 'audio/midi')) {
-    bin.showAudioPreview(b64);
-  } else if (ftype['ext'] == 'pdf') {
-    bin.showPdfPreview(b64);
-  } else {
+  if (ftype.nopreview) {
     bin.showTextPreview(b64);
+  } else {
+    if (mimeClass == 'image') {
+      bin.showImagePreview(b64);
+    } else if (mimeClass == 'video') {
+      bin.showVideoPreview(b64);
+    } else if (mimeClass == 'audio') {
+      bin.showAudioPreview(b64);
+    } else if (ftype['ext'] == 'pdf') {
+      bin.showPdfPreview(b64);
+    } else {
+      bin.showTextPreview(b64);
+    }
   }
 };
 
