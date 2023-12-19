@@ -60,7 +60,7 @@
 </form>
 
 <div style="margin-top:10px;height:25px;">
-  <input type="range" value="0" min="6" max="28" step="1" id="font-range" style="position:relative;top:6px;" oninput="bin.onFontRangeChanged(this);" onchange="bin.onFontRangeChanged(this);"><span id="fontsize"></span>
+  <input type="range" value="0" min="6" max="64" step="1" id="font-range" style="position:relative;top:6px;" oninput="bin.onFontRangeChanged(this);" onchange="bin.onFontRangeChanged(this);"><span id="fontsize"></span>
   <button class="small-button" onclick="bin.resetFontSize();">RESET</button>
   <span style="margin-left:16px;">Font: </sapn><input type="text" id="font" oninput="bin.onFontChanged(this);" onchange="bin.onFontChanged(this);">
   <span class="pseudo-link subfunc" onclick="bin.changeFont('monospace');">[monospace]</span>
