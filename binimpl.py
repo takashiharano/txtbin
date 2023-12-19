@@ -62,10 +62,7 @@ def deccode_and_send_file(mode, s):
         b = fn(s)
         ftype = get_file_type(b)
         ext = ftype['ext']
-        encoding = ''
-        if 'encoding' in ftype and ftype['encoding'] is not None:
-            encoding = '-' + ftype['encoding']
-        filename = BASE_FILE_NAME + encoding + '.' + ext
+        filename = BASE_FILE_NAME + '.' + ext
 
     except Exception as e:
         txt = 'ERROR: mode=' + mode + '\n' + str(e)
