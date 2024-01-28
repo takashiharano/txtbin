@@ -91,7 +91,7 @@ def extract_bintext_part(mode, s):
 
   v_start = 11
   v_end = v_start + (unit * 16) + 16
-  s = s.strip();
+  s = s.strip()
   s = util.replace(s, '\\+', ' ')
   if not s.upper().startswith('ADDRESS'):
       return s
@@ -101,7 +101,7 @@ def extract_bintext_part(mode, s):
       l = a[i]
       w = l[v_start:v_end]
       b += w + '\n'
-  b = b.strip();
+  b = b.strip()
   return b
 
 def dec_bin(s):
@@ -166,7 +166,7 @@ def get_file_type(b):
     tp = {
         'mime': 'text/plain',
         'ext': 'txt'
-    };
+    }
     mime = 'text/plain'
     ext = 'txt'
     for k in FILETYPES:
@@ -188,7 +188,7 @@ def get_file_type(b):
 def has_binary_pattern(buf, binptn):
     ptn = binptn.split(' ')
     if len(buf) < len(ptn):
-        return False;
+        return False
 
     for i in range(len(buf)):
         if _has_binary_pattern(buf, i, binptn):
@@ -203,12 +203,12 @@ def _has_binary_pattern(buf, pos, binptn):
                 return True
     else:
         return __has_binary_pattern(buf, pos, binptn)
-    return False;
+    return False
 
 def __has_binary_pattern(buf, pos, binptn):
     ptn = binptn.split(' ')
     if len(buf) < len(ptn):
-        return False;
+        return False
     for i in range(len(ptn)):
         hex = ptn[i]
         if hex == 'xx':
