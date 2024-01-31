@@ -2717,18 +2717,18 @@ bin.setFontSize4Preview = function(v) {
   }
 };
 bin.resizeMediaPreview = function(el, v) {
-    var orgW = bin.mediaPreviewRect.width;
-    var orgH = bin.mediaPreviewRect.height;
-    var srcV = orgW;
-    var prop = 'width';
-    if (orgW < orgH) {
-      srcV = orgH;
-      prop = 'height';
-    }
-    var p = (v / 14) * srcV;
-    el.style[prop] = p + 'px';
-    el.style['max-width'] = '';
-    el.style['max-height'] = '';
+  var orgW = bin.mediaPreviewRect.width;
+  var orgH = bin.mediaPreviewRect.height;
+  var srcV = orgW;
+  var prop = 'width';
+  if (orgW < orgH) {
+    srcV = orgH;
+    prop = 'height';
+  }
+  var p = (v / 14) * srcV;
+  el.style[prop] = p + 'px';
+  el.style['max-width'] = '';
+  el.style['max-height'] = '';
 };
 bin.resetFontSize4Preview = function() {
   bin.setFontSize4Preview(bin.DEFAULT_FONT_SIZE);
