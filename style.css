@@ -18,6 +18,15 @@ body {
   color: #ddd;
 }
 
+a {
+  color: #ade;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 button, input[type="submit"] {
   font-size: 14px;
   font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
