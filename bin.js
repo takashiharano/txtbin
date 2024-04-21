@@ -716,6 +716,7 @@ $onReady = function() {
   $el('#preview-mode').addEventListener('change', bin.onChangeShowPreview);
   $el('#preview-mode-encryption').addEventListener('change', bin.onChangeShowPreview);
 
+  bin.initTxtEditMode();
   bin.clear();
 };
 
@@ -2828,9 +2829,8 @@ bin.onMouseUp = function(e) {
 };
 
 bin.copyPreview = function() {
-  if (!bin.bufCache) return;
   var previewMode = $el('#preview-mode').value;
-  if ((previewMode == 'view') || (previewMode == 'txt')) {
+  if (bin.bufCache && ((previewMode == 'view') || (previewMode == 'txt'))) {
     var b64 = bin.bufCache.b64;
     var s = util.decodeBase64(b64);
   } else {
@@ -2968,6 +2968,110 @@ bin.onAreaResizeEnd = function(e) {
   bin.enableTextSelect();
   document.body.style.cursor = 'auto';
   bin.uiStatus = bin.UI_ST_NONE;
+};
+
+bin.TXT_EDIT_FN = [
+  {lbl: ''},
+  {lbl: 'JSON', opt: [{lbl: 'INDENT', v: '1'}],
+    fn: function(s, o) {
+      try {var j = DebugJS.formatJSON(s, +o[0]);} catch (e) {j = '[ERROR]' + e + '\n' + s;}
+      return j;
+    }
+  },
+  {
+    lbl: 'NEWLINE', opt: [{lbl: 'MODE', optvals: [{t: 'DEL', v: '0'}, {t: 'AGG', v: '1', s: 1}, {t: 'DBL', v: '2'}, {t: 'INS', v: '3'}]}, {lbl: 'POS', v: '76'}],
+    fn: function(s, o) {
+      var f = DebugJS.lflf2lf;
+      if (o[0] == 0) {
+        f = DebugJS.deleteLF;
+      } else if (o[0] == 2) {
+        f = DebugJS.lf2lflf;
+      } else if (o[0] == 3) {
+        return DebugJS.insertCh(s, '\n', o[1] | 0);
+      }
+      return f(s);
+    }
+  },
+  {
+    lbl: 'SORT', opt: [{lbl: '', optvals: [{t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COL'}],
+    fn: function(s, o) {return DebugJS.sort(s, (o[0] == 'D' ? 1 : 0), o[1]);}
+  },
+  {lbl: 'TRIM_BLANK', fn: function(s) {return DebugJS.trimBlank(s);}},
+  {
+    lbl: 'UNIQUE', opt: [{lbl: 'SORT', optvals: [{t: '', v: ''}, {t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COUNT', optvals: [{v: 'N'}, {v: 'Y'}]}],
+    fn: function(s, o) {
+      var opt = {sort: o[0], count: (o[1] == 'Y' ? 1 : 0), blank: 0};
+      return DebugJS.toUnique(s, opt).r;
+    }
+  },
+  {lbl: 'XML', opt: [{lbl: 'INDENT', v: '2'}, {lbl: 'COMMENT', optvals: [{v: 'Y'}, {v: 'N'}]}], fn: function(s, o) {return DebugJS.formatXml(s, o[0], (o[1] == 'Y' ? 0 : 1));}}
+];
+
+bin.txtEdtOptEl = [];
+bin.initTxtEditMode = function() {
+  var o = '';
+  for (var i = 0; i < bin.TXT_EDIT_FN.length; i++) {
+    o += '<option value="' + i + '">' + bin.TXT_EDIT_FN[i].lbl + '</option>';
+  }
+  $el('#txt-edit-mode').innerHTML = o;
+  $el('#txt-edit-mode').addEventListener('change', bin.onTxtEdtMdChg);
+  var basePanel = $el('#txt-edit-opts');
+  for (i = 0; i < 4; i++) {
+    bin.txtEdtOptEl[i] = {
+      lbl: DebugJS.ui.addLabel(basePanel, '', {'margin-left': '4px'}),
+      txt: DebugJS.ui.addTextInput(basePanel, '3em', 'left', '#ccc', '', null),
+      sel: DebugJS.ui.addElement(basePanel, 'select')
+    };
+  }
+  bin.onTxtEdtMdChg();
+};
+
+bin.onTxtEdtMdChg = function() {
+  var v = $el('#txt-edit-mode').value | 0;
+  var d = bin.TXT_EDIT_FN[v];
+  for (var i = 0; i < 4; i++) {
+    var optEl = bin.txtEdtOptEl;
+    DebugJS.hideEl(optEl[i].lbl);
+    DebugJS.hideEl(optEl[i].txt);
+    DebugJS.hideEl(optEl[i].sel);
+    optEl[i].sel.active = false;
+    if (d.opt && d.opt[i]) {
+      var oDef = d.opt[i];
+      optEl[i].lbl.innerText = oDef.lbl + ': ';
+      optEl[i].txt.value = (oDef.v ? oDef.v : '');
+      DebugJS.showEl(optEl[i].lbl);
+      DebugJS.showEl(optEl[i].txt);
+      if (oDef.optvals) {
+        var sel = optEl[i].sel;
+        DebugJS.hideEl(optEl[i].txt);
+        DebugJS.showEl(sel);
+        sel.active = true;
+        var o = '';
+        for (var j = 0; j < oDef.optvals.length; j++) {
+          var ov = oDef.optvals[j];
+          o += '<option value="' + ov.v + '"';
+          if (ov.s) o += ' selected';
+          o += '>' + ((ov.t == undefined) ? ov.v : ov.t) + '</option>';
+        }
+        sel.innerHTML = o;
+      }
+    }
+  }
+};
+bin.execTxtEdit = function() {
+  var idx = $el('#txt-edit-mode').value | 0;
+  var d = bin.TXT_EDIT_FN[idx];
+  if (!d.fn) return;
+  var s = bin.getSrcValue();
+  var o = [];
+  for (var i = 0; i < 4; i++) {
+    var oEls = bin.txtEdtOptEl[i];
+    o[i] = oEls.txt.value;
+    if (oEls.sel.active) o[i] = oEls.sel.value;
+  }
+  var v = d.fn(s, o);
+  v = DebugJS.escHtml(v);
+  bin.drawPreview(v);
 };
 
 bin.UTF8 = {};

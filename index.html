@@ -50,13 +50,14 @@
 <span><input type="checkbox" id="dump-flag-uc" checked><label for="dump-flag-uc">UpperCase</label></span>
 <span style="margin-left:16px;"><input type="checkbox" id="dump-multibyte"><label for="dump-multibyte">Multi Byte Char</label></span>
 <span style="margin-left:16px;">NewLine:<input type="text" id="newline" style="width:40px;" value="76"></span>
+<span style="margin-left:16px;">EDIT:<select id="txt-edit-mode"></select><span id="txt-edit-opts"></span><button id="txt-edit-exec-button" class="small-button" style="margin-left:8px;" onclick="bin.execTxtEdit();">EXEC</button></span>
 </div>
 
 <div id="input-area">
 <form name="f1" id="f1" action="bin.cgi" method="post">
 <input type="hidden" id="mode" name="mode">
 <input type="hidden" id="h-key" name="key">
-<textarea id="src" name="src" spellcheck="false" placeholder="BINARY DATA"></textarea><br>
+<textarea id="src" name="src" spellcheck="false" placeholder="SOURCE DATA"></textarea><br>
 </form>
 
 <div style="margin-top:10px;height:25px;">
