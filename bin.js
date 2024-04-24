@@ -2298,7 +2298,6 @@ bin.extractBinTextPart = function(mode, s) {
 
 bin.onInput = function() {
   bin.clearBuf();
-  bin.forceNewline();
   if (bin.auto) {
     bin.detectCurrentMode();
   }
@@ -2338,25 +2337,6 @@ bin.onChangeShowPreviewCc = function() {
   }
 };
 
-bin.forceNewline = function(s) {
-  var TH = 10240;
-  var s = bin.getSrcValue();
-  if (s.length <= TH) return;
-  var a = util.text2list(s);
-  var r = '';
-  for (var i = 0; i < a.length; i++) {
-    var v = a[i];
-    if (i > 0) r += '\n';
-    if (v.length > TH) {
-      var w = util.insertCh(v, '\n', TH);
-      r += w;
-    } else {
-      r += v;
-    }
-  }
-  bin.setSrcValue(r, false);
-};
-
 bin.onDnd = function(s, f) {
   bin.file = f;
   var showInfoRequired = true;
@@ -2369,8 +2349,7 @@ bin.onDnd = function(s, f) {
       bin.detectCurrentMode();
     }
   }
-  bin.forceNewline();
-  mode = bin.getMode();
+  var mode = bin.getMode();
   bin.setMode(mode);
   if (showInfoRequired) {
     bin.updateInfoAndPreview();
