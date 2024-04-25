@@ -3052,6 +3052,7 @@ bin.execTxtEdit = function() {
   var v = d.fn(s, o);
   v = DebugJS.escHtml(v);
   bin.drawPreview(v);
+  $el('#copy-button').disabled = false;
 };
 
 bin.UTF8 = {};
