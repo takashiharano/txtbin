@@ -2952,6 +2952,13 @@ bin.onAreaResizeEnd = function(e) {
 
 bin.TXT_EDIT_FN = [
   {lbl: ''},
+  {lbl: 'DATE_TIME_SEP', opt: [{lbl: 'SEPARATOR', v: '/'}], fn: function(s, o) {return DebugJS.dateSep(s, o[0]);}},
+  {lbl: 'DELIMIT', opt: [{lbl: 'POS', v: ''}, {lbl: 'ORG', optvals: [{v: '0'}, {v: '1', s: 1}]}, {lbl: 'TRIM', optvals: [{v: 'Y'}, {v: 'N'}]}],
+    fn: function(s, o) {
+      var pos = o[0].replace(/\s{2,}/g, ' ').replace(/,/g, ' ').split(' ');
+      return DebugJS.delimit(s, pos, o[1] | 0, '\t', (o[2] == 'Y'));
+    }
+  },
   {lbl: 'JSON', opt: [{lbl: 'INDENT', v: '1'}],
     fn: function(s, o) {
       try {var j = DebugJS.formatJSON(s, +o[0]);} catch (e) {j = '[ERROR]' + e + '\n' + s;}
@@ -2959,7 +2966,7 @@ bin.TXT_EDIT_FN = [
     }
   },
   {
-    lbl: 'NEWLINE', opt: [{lbl: 'MODE', optvals: [{t: 'DEL', v: '0'}, {t: 'AGG', v: '1', s: 1}, {t: 'DBL', v: '2'}, {t: 'INS', v: '3'}]}, {lbl: 'POS', v: '76'}],
+    lbl: 'NEWLINE', opt: [{lbl: '', optvals: [{t: 'DEL', v: '0'}, {t: 'AGG', v: '1', s: 1}, {t: 'DBL', v: '2'}, {t: 'INS', v: '3'}]}, {lbl: 'POS', v: '76'}],
     fn: function(s, o) {
       var f = DebugJS.lflf2lf;
       if (o[0] == 0) {
@@ -2972,10 +2979,50 @@ bin.TXT_EDIT_FN = [
       return f(s);
     }
   },
+  {lbl: 'NUMBERING', opt: [{lbl: 'ST', v: '1'}, {lbl: 'ED'}, {lbl: 'LEN'}], fn: function(s, o) {return DebugJS.numbering(s, o[0], o[1], o[2]);}},
+  {
+    lbl: 'PADDING', opt: [{lbl: 'TO', optvals: [{t: 'LEFT', v: 'L'}, {t: 'RIGHT', v: 'R'}]}, {lbl: 'CHAR', v: '0'}, {lbl: 'LEN'}],
+    fn: function(s, o) {
+      var f = ((o[0] == 'L') ? DebugJS.lpad : DebugJS.rpad);
+      var a = DebugJS.txt2arr(s);
+      if (a.length == 0) return f('', o[1], o[2]);
+      var r = '';
+      for (var i = 0; i < a.length; i++) {
+        if (i > 0) r += '\n';
+        var b = a[i].split('\t');
+        for (var j = 0; j < b.length; j++) {
+          if (j > 0) r += '\t';
+          r += f(b[j], o[1], o[2]);
+        }
+      }
+      return r;
+    }
+  },
+  {
+    lbl: 'PADDING_SEQ', opt: [{lbl: 'LEN'}, {lbl: 'H/F', optvals: [{t: 'AUTO', v: '0'}, {t: 'HALF', v: '1'}, {t: 'FULL', v: '2'}]}],
+    fn: function(s, o) {
+      var a = DebugJS.txt2arr(s);
+      if (a.length == 0) return DebugJS.padSeq(s, o[0] | 0, o[1] | 0);
+      var r = '';
+      for (var i = 0; i < a.length; i++) {
+        if (i > 0) r += '\n';
+        var b = a[i].split('\t');
+        for (var j = 0; j < b.length; j++) {
+          if (j > 0) r += '\t';
+          r += DebugJS.padSeq(b[j], o[0] | 0, o[1] | 0);
+        }
+      }
+      return r;
+    }
+  },
+  {lbl: 'ROT', opt: [{lbl: 'X', optvals: [{v: '5'}, {v: '13'}, {v: '18', s: 1}, {v: '47'}]}, {lbl: 'SHIFT'}], fn: function(s, o) {return DebugJS.rot(o[0], s, o[1]);}},
   {
     lbl: 'SORT', opt: [{lbl: '', optvals: [{t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COL'}, {lbl: 'ASNUM', optvals: [{v: 'Y'}, {v: 'N'}]}],
     fn: function(s, o) {return DebugJS.sort(s, (o[0] == 'D' ? 1 : 0), o[1] | 0, (o[2] == 'Y' ? 1 : 0));}
   },
+  {lbl: 'SUM', fn: function(s) {return DebugJS.sum(s);}},
+  {lbl: 'TAB_ALIGN', opt: [{lbl: 'SPACE', v: '2'}], fn: function(s, o) {return DebugJS.alignByTab(s, o[0] | 0);}},
+  {lbl: 'TIME_CONV', fn: function(s) {return DebugJS.timecnv(s);}},
   {lbl: 'TRIM_BLANK', fn: function(s) {return DebugJS.trimBlank(s);}},
   {
     lbl: 'UNIQUE', opt: [{lbl: 'SORT', optvals: [{t: '', v: ''}, {t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COUNT', optvals: [{v: 'N'}, {v: 'Y'}]}],
@@ -2984,7 +3031,9 @@ bin.TXT_EDIT_FN = [
       return DebugJS.toUnique(s, opt).r;
     }
   },
-  {lbl: 'XML', opt: [{lbl: 'INDENT', v: '2'}, {lbl: 'COMMENT', optvals: [{v: 'Y'}, {v: 'N'}]}], fn: function(s, o) {return DebugJS.formatXml(s, o[0], (o[1] == 'Y' ? 0 : 1));}}
+  {lbl: 'XML', opt: [{lbl: 'INDENT', v: '2'}, {lbl: 'COMMENT', optvals: [{v: 'Y'}, {v: 'N'}]}], fn: function(s, o) {return DebugJS.formatXml(s, o[0], (o[1] == 'Y' ? 0 : 1));}},
+  {lbl: '%XX', opt: [{lbl: '', optvals: [{t: 'Decode', v: 'D'}, {t: 'Encode', v: 'E'}]}], fn: function(s, o) {var f = o[0] == 'E' ? 'encodeUri' : 'decodeUri';return DebugJS[f](s);}},
+  {lbl: '&#n;', opt: [{lbl: '', optvals: [{t: 'Decode', v: 'D'}, {t: 'Encode', v: 'E'}]}], fn: function(s, o) {var f = o[0] == 'E' ? 'encodeChrEntRefs' : 'decodeChrEntRefs';return DebugJS[f](s);}}
 ];
 
 bin.txtEdtOptEl = [];
