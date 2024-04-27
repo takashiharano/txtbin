@@ -2973,8 +2973,8 @@ bin.TXT_EDIT_FN = [
     }
   },
   {
-    lbl: 'SORT', opt: [{lbl: '', optvals: [{t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COL'}],
-    fn: function(s, o) {return DebugJS.sort(s, (o[0] == 'D' ? 1 : 0), o[1]);}
+    lbl: 'SORT', opt: [{lbl: '', optvals: [{t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COL'}, {lbl: 'ASNUM', optvals: [{v: 'Y'}, {v: 'N'}]}],
+    fn: function(s, o) {return DebugJS.sort(s, (o[0] == 'D' ? 1 : 0), o[1] | 0, (o[2] == 'Y' ? 1 : 0));}
   },
   {lbl: 'TRIM_BLANK', fn: function(s) {return DebugJS.trimBlank(s);}},
   {
