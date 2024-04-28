@@ -72,6 +72,7 @@ bin.FILETYPES = {
   'msg': {'head': 'D0 CF 11 E0 A1 B1 1A E1', 'mime': 'application/octet-stream', 'ext': 'msg'},
   'pdf': {'head': '25 50 44 46 2D', 'mime': 'application/pdf', 'ext': 'pdf'},
   'png': {'head': '89 50 4E 47 0D 0A 1A 0A 00', 'mime': 'image/png', 'ext': 'png'},
+  'svg': {'head': '3C 73 76 67 20', 'mime': 'image/svg+xml', 'ext': 'svg'},
   'txt_utf8_bom': {'head': 'EF BB BF', 'mime': 'text/plain', 'ext': 'txt', 'encoding': 'utf8_bom'},
   'txt_utf16be_bom': {'head': 'FE FF', 'mime': 'text/plain', 'ext': 'txt', 'encoding': 'utf16be_bom'},
   'txt_utf16le_bom': {'head': 'FF FE', 'mime': 'text/plain', 'ext': 'txt', 'encoding': 'utf16le_bom'},
@@ -2511,7 +2512,7 @@ bin.showPreviewAsView = function(bufCache) {
     bin.showTextPreview(b64);
   } else {
     if (mimeClass == 'image') {
-      bin.showImagePreview(b64);
+      bin.showImagePreview(b64, ftype);
     } else if (mimeClass == 'video') {
       bin.showVideoPreview(b64);
     } else if (mimeClass == 'audio') {
@@ -2582,9 +2583,10 @@ bin.showTextPreview = function(b64) {
   bin.drawPreview(s);
 };
 
-bin.showImagePreview = function(b64) {
+bin.showImagePreview = function(b64, ftype) {
   bin.resetFontSize4Preview();
-  var d = 'data:image/png;base64,' + b64;
+  var mime = ftype.mime;
+  var d = 'data:' + mime + ';base64,' + b64;
   var v = '<img id="img-preview" src="' + d + '" style="max-width:100%;max-height:calc(100% - 8px);" onmousedown="return false;">';
   bin.drawPreview(v);
   setTimeout(bin.postShowMediaPreview, 0, 'img-preview');
