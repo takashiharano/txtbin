@@ -3017,6 +3017,20 @@ bin.TXT_EDIT_FN = [
       return r;
     }
   },
+  {
+    lbl: 'REPLACE', opt: [{lbl: 'FM'}, {lbl: 'TO'}, {lbl: 'RE', optvals: [{v: 'N'}, {v: 'Y'}]}, {lbl: 'FLG', v: 'gi'}],
+    fn: function(s, o) {
+      try {
+        var fm = o[0];
+        if (o[2] != 'Y') fm = fm.replace(/([()/[\].+*?^$-])/g, '\\$1');
+        fm = new RegExp(fm, o[3]);
+        s = s.replace(fm, o[1]);
+      } catch (e) {
+        s = '[ERROR]' + e + '\n' + s;
+      }
+      return s;
+    }
+  },
   {lbl: 'ROT', opt: [{lbl: 'X', optvals: [{v: '5'}, {v: '13'}, {v: '18', s: 1}, {v: '47'}]}, {lbl: 'SHIFT'}], fn: function(s, o) {return DebugJS.rot(o[0], s, o[1]);}},
   {
     lbl: 'SORT', opt: [{lbl: '', optvals: [{t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COL'}, {lbl: 'ASNUM', optvals: [{v: 'Y'}, {v: 'N'}]}],
