@@ -713,7 +713,7 @@ $onReady = function() {
   $el('#src').addEventListener('change', bin.onInput);
 
   $el('#show-preview').addEventListener('change', bin.onChangeShowPreview);
-  $el('#show-preview-rt').addEventListener('change', bin.onChangeShowPreviewRt);
+  $el('#show-preview-rt').addEventListener('change', bin.onRealtimePreviewChange);
   $el('#show-preview-cc').addEventListener('change', bin.onChangeShowPreviewCc);
   $el('#preview-mode').addEventListener('change', bin.onChangeShowPreview);
   $el('#preview-mode-encryption').addEventListener('change', bin.onChangeShowPreview);
@@ -2303,6 +2303,12 @@ bin.onInput = function() {
   if (bin.auto) {
     bin.detectCurrentMode();
   }
+  if ($el('#show-preview').checked && $el('#show-preview-rt').checked) {
+    bin.updateInfoAndPreview();
+  }
+};
+
+bin.onRealtimePreviewChange = function() {
   if ($el('#show-preview').checked && $el('#show-preview-rt').checked) {
     bin.updateInfoAndPreview();
   }
