@@ -2967,12 +2967,22 @@ bin.TXT_EDIT_FN = [
       return DebugJS.delimit(s, pos, o[1] | 0, '\t', (o[2] == 'Y'));
     }
   },
+  {
+    lbl: 'HALF/FULL', opt: [{lbl: '', optvals: [{t: 'HALF', v: 'H'}, {t: 'FULL', v: 'F'}]}],
+    fn: function(s, o) {return (o[0] == 'H' ? DebugJS.toHalfWidth(s) : DebugJS.toFullWidth(s));}
+  },
+  {lbl: 'HORIZ_VERT', opt: [{lbl: '', optvals: [{t: 'H2V', v: '0'}, {t: 'V2H', v: '1'}]}], fn: function(s, o) {return (+o[0] ? s.replace(/\n/g, '\t') : s.replace(/\t/g, '\n'));}},
   {lbl: 'JSON', opt: [{lbl: 'INDENT', v: '1'}],
     fn: function(s, o) {
       try {var j = DebugJS.formatJSON(s, +o[0]);} catch (e) {j = '[ERROR]' + e + '\n' + s;}
       return j;
     }
   },
+  {
+    lbl: 'lower/UPPER', opt: [{lbl: '', optvals: [{t: 'lower', v: 'L'}, {t: 'UPPER', v: 'U'}]}],
+    fn: function(s, o) {return (o[0] == 'U' ? s.toUpperCase() : s.toLowerCase());}
+  },
+  {lbl: 'MAX_MIN_LEN', opt: [{lbl: 'THRESHOLD'}], fn: function(s, o) {return dbg.minMaxLen(s, o[0]);}},
   {
     lbl: 'NEWLINE', opt: [{lbl: '', optvals: [{t: 'DEL', v: '0'}, {t: 'AGG', v: '1', s: 1}, {t: 'DBL', v: '2'}, {t: 'INS', v: '3'}]}, {lbl: 'POS', v: '76'}],
     fn: function(s, o) {
