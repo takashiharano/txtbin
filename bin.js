@@ -56,12 +56,14 @@ bin.FILETYPES = {
   'bmp': {'head': '42 4D', 'mime': 'image/bmp', 'ext': 'bmp'},
   'cab': {'head': '4D 53 43 46 00 00 00 00', 'mime': 'application/vnd.ms-cab-compressed', 'ext': 'cab'},
   'class': {'head': 'CA FE BA BE', 'mime': 'application/octet-stream', 'ext': 'class'},
+  'cur': {'head': '00 00 02', 'mime': 'image/vnd.microsoft.icon', 'ext': 'cur'},
   'elf': {'name': 'ELF', 'head': '7F 45 4C 46', 'mime': 'application/octet-stream', 'ext': 'o'},
   'eps': {'head': 'C5 D0 D3 C6', 'mime': 'application/postscript', 'ext': 'eps'},
   'exe': {'head': '4D 5A', 'mime': 'application/x-msdownload', 'ext': 'exe'},
   'gif': {'head': '47 49 46 38', 'mime': 'image/gif', 'ext': 'gif'},
   'gz': {'head': '1F 8B', 'mime': 'application/gzip', 'ext': 'gz'},
   'html': {'head': '3C 21 44 4F 43 54 59 50 45 20 68 74 6D 6C', 'mime': 'text/html', 'ext': 'html'},
+  'ico': {'head': '00 00 01', 'mime': 'image/x-icon', 'ext': 'ico'},
   'jpg': {'head': 'FF D8', 'mime': 'image/jpeg', 'ext': 'jpg'},
   'lzh': {'head': 'xx xx 2D 6C 68 xx 2D', 'mime': 'application/octet-stream', 'ext': 'lzh'},
   'mid': {'head': '4D 54 68 64', 'mime': 'audio/midi', 'ext': 'mid', 'nopreview': 1},
@@ -846,7 +848,7 @@ bin.dump = function(s) {
       r = bin.formatB64(s);
       b64 = bin.extractB64fromDataUrl(s);
   }
-  var ftype = bin.analyzeBinary(buf);
+  var ftype = bin.analyzeBinary(buf, bin.file);
   bin.drawBinInfo(ftype, buf, b64);
   bin.setSrcValue(r, true);
   bin.bufCache = {
@@ -1114,7 +1116,7 @@ bin.updateInfoAndPreview = function() {
   }
   var b = bin.str2buf(mode, s);
   var b64 = util.encodeBase64(b, true);
-  var ftype = bin.analyzeBinary(b);
+  var ftype = bin.analyzeBinary(b, bin.file);
   bin.drawBinInfo(ftype, b, b64);
   bufCache = {
     ftype: ftype,
@@ -1841,12 +1843,12 @@ bin.disableAllScore = function(o) {
   return o;
 };
 
-bin.analyzeBinary = function(b){
-  var tp = bin.getFileType(b);
+bin.analyzeBinary = function(b, f){
+  var tp = bin.getFileType(b, f);
   return tp;
 };
 
-bin.getFileType = function(b) {
+bin.getFileType = function(b, f) {
   var filetypes = bin.FILETYPES;
   var ftype = {
     mime: 'text/plain',
@@ -1862,6 +1864,14 @@ bin.getFileType = function(b) {
       ftype = tp;
       break;
     }
+  }
+
+  if (f) {
+    var fileName = f.name;
+    var ext = bin.getExtension(fileName);
+    var mime = bin.getMimeType(ext);
+    ftype['ext'] = ext;
+    if (mime) ftype['mime'] = mime;
   }
 
   var dc = ftype['mime'].split('/')[0];
@@ -1884,6 +1894,25 @@ bin.getFileType = function(b) {
   }
 
   return ftype;
+};
+
+bin.getExtension = function(fileName) {
+  var ext = '';
+  if (fileName.match(/^.*\.[^.]+?$/)) {
+    ext = fileName.replace(/^.*\.([^.]+?)$/, '$1');
+  }
+  return ext;
+};
+
+bin.getMimeType = function(ext) {
+  var types = bin.FILETYPES;
+  for (var k in types) {
+    var tp = types[k];
+    if (tp['ext'] == ext) {
+      return tp['mime'];
+    }
+  }
+  return null;
 };
 
 bin.hasBinaryPattern = function(buf, bytesPattern) {
@@ -2102,9 +2131,13 @@ bin.getBinDetail = function(ext, b) {
     r = bin.getBmpInfo(b);
   } else if (ext == 'class') {
     r = bin.getJavaClassVersion(b);
+  } else if (ext == 'cur') {
+    r = bin.getIcoInfo(b);
   } else if (ext == 'exe') {
     var a = bin.getExeArch(b);
     r = 'Arch    : ' + a;
+  } else if (ext == 'ico') {
+    r = bin.getIcoInfo(b);
   } else if (ext == 'jpg') {
     r = bin.getJpegInfo(b);
   } else if (ext == 'png') {
@@ -2163,6 +2196,20 @@ bin.getBmpInfo = function(b) {
   var h = bin.fetchBufAsIntByLE(b, posH, 4);
   r['w'] = w;
   r['h'] = h;
+  return r;
+};
+
+bin.getIcoInfo = function(b) {
+  var r = {w: 0, h: 0};
+  if (b.length < 6) {
+    return r;
+  }
+  var posW = 0x6;
+  var posH = 0x7;
+  var w = bin.fetchBufAsIntByLE(b, posW, 1);
+  var h = bin.fetchBufAsIntByLE(b, posH, 1);
+  r['w'] = (w ? w : 256);
+  r['h'] = (h ? h : 256);
   return r;
 };
 
