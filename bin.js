@@ -1884,7 +1884,7 @@ bin.getFileType = function(b, f) {
       ftype['encoding'] = enc;
     }
   } else {
-    var binDetail = bin.getBinDetail(ftype['ext'], b);
+    var binDetail = bin.getBinDetail(b, ftype['mime'], ftype['ext']);
     if (binDetail) ftype['bin_detail'] = binDetail;
   }
 
@@ -2123,7 +2123,7 @@ bin.inertNewline = function(s, n) {
   return r;
 };
 
-bin.getBinDetail = function(ext, b) {
+bin.getBinDetail = function(b, mime, ext) {
   var r = '';
   if (ext == 'avif') {
     r = bin.getAvifInfo(b);
@@ -2133,7 +2133,7 @@ bin.getBinDetail = function(ext, b) {
     r = bin.getJavaClassVersion(b);
   } else if (ext == 'cur') {
     r = bin.getIcoInfo(b);
-  } else if (ext == 'exe') {
+  } else if (mime == 'application/x-msdownload') {
     var a = bin.getExeArch(b);
     r = 'Arch    : ' + a;
   } else if (ext == 'ico') {
