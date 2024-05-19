@@ -8,6 +8,7 @@ var bin = {};
 bin.TXT_CHR_LF = '|';
 bin.TXT_CHR_CR = '_';
 
+bin.NULL = '<span style="color:#048" class="cc">.</span>';
 bin.CHR_CRLF = '&#x21b5;';
 bin.CHR_LF = '&#x2193;';
 bin.CHR_CR = '&#x2190;';
@@ -2659,6 +2660,7 @@ bin.showTextPreview = function(b64) {
     s = s.replace(/\u202E/g, bin.RLO);
     s = s.replace(/([\uFE00-\uFE0F])(.)/g, bin.VS + '$1$2');
     s = s.replace(/\uFEFF/g, bin.BOM);
+    s = s.replace(/\u0000/g, bin.NULL);
     s = s + bin.EOF + '\n';
   }
   bin.drawPreview(s);
