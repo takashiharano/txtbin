@@ -918,9 +918,8 @@ bin.drawBinInfo = function(ftype, buf, b64) {
       s += bin.buildImageInfo(binDetail);
     }
   } else if (bin.isZip(ftype)) {
-    if (binDetail['has_pw']) {
-      s += '<span class="caution">PW LOCKED</span>'
-    }
+    s += 'Encryption: ';
+    s += (binDetail['has_pw'] ? '<span class="caution">Y</span>' : 'N');
   } else if (binDetail && (typeof binDetail == 'string')) {
     s += '' + binDetail;
   }
