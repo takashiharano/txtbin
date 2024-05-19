@@ -71,7 +71,7 @@ bin.FILETYPES = {
   'mp3': {'head': ['FF FA', 'FF FB', '49 44 33'], 'mime': 'audio/mpeg', 'ext': 'mp3'},
   'mp4': {'head': ['xx xx xx xx 66 74 79 70 6D 70 34', 'xx xx xx xx 66 74 79 70 69 73 6F 6D'], 'mime': 'video/mp4', 'ext': 'mp4'},
   'mpg': {'head': '00 00 01 BA', 'mime': 'video/mpeg', 'ext': 'mpg', 'nopreview': 1},
-  'msg': {'head': 'D0 CF 11 E0 A1 B1 1A E1', 'mime': 'application/octet-stream', 'ext': 'msg'},
+  'ole2': {'name': 'OLE2', 'head': 'D0 CF 11 E0 A1 B1 1A E1', 'mime': 'application/octet-stream', 'ext': 'office'},
   'pdf': {'head': '25 50 44 46 2D', 'mime': 'application/pdf', 'ext': 'pdf'},
   'png': {'head': '89 50 4E 47 0D 0A 1A 0A 00', 'mime': 'image/png', 'ext': 'png'},
   'svg': {'head': '3C 73 76 67 20', 'mime': 'image/svg+xml', 'ext': 'svg'},
