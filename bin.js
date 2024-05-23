@@ -8,7 +8,8 @@ var bin = {};
 bin.TXT_CHR_LF = '|';
 bin.TXT_CHR_CR = '_';
 
-bin.NULL = '<span style="color:#048" class="cc">.</span>';
+bin.CHR_NULL = '<span style="color:#048" class="cc" data-tooltip="NULL">.</span>';
+bin.CHR_CTRL = '<span style="color:#888" class="cc" data-tooltip="CTRL">.</span>';
 bin.CHR_CRLF = '&#x21b5;';
 bin.CHR_LF = '&#x2193;';
 bin.CHR_CR = '&#x2190;';
@@ -16,7 +17,9 @@ bin.CHR_CRLF_S = '<span style="color:#0cf" class="cc">' + bin.CHR_CRLF + '</span
 bin.CHR_LF_S = '<span style="color:#80d860" class="cc">' + bin.CHR_LF + '</span>';
 bin.CHR_CR_S = '<span style="color:#f41" class="cc">' + bin.CHR_CR + '</span>';
 bin.TAB = '<span style="color:#cc2" class="cc" data-tooltip="Tab">&gt;</span>';
-bin.SP = '<span style="color:#0aa" class="cc">.</span>';
+bin.CHR_ESC = '<span style="color:#c80" class="cc" data-tooltip="ESC">.</span>';
+bin.SP = '<span style="color:#099" class="cc" data-tooltip="Space">.</span>';
+bin.CHR_DELL = '<span style="color:#800" class="cc" data-tooltip="DELL">.</span>';
 bin.NBSP = '<span style="color:#ff5354" class="cc cc-link" data-tooltip="U+00A0: Non-breaking space" onclick="bin.openUnicodeTable(\'0x00A0\', true);">.</span>';
 bin.CDM = '<span style="color:#fe0" class="cc2 cc-link" onclick="bin.openUnicodeTable(\'0x0300\');">[CDM]</span>';
 bin.ZWSP = '<span style="color:#f8f" class="cc2 cc-link" data-tooltip="U+200B: Zero-width space" onclick="bin.openUnicodeTable(\'0x200B\', true);">[ZWSP]</span>';
@@ -27,7 +30,7 @@ bin.RLE = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202B: Ri
 bin.PDF = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202C: Pop Directional Formatting" onclick="bin.openUnicodeTable(\'0x202C\', true);">[PDF]</span>';
 bin.LRO = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202D: Left-to-Right Override" onclick="bin.openUnicodeTable(\'0x202D\', true);">[LRO]</span>';
 bin.RLO = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202E: Right-to-Left Override" onclick="bin.openUnicodeTable(\'0x202E\', true);">[RLO]</span>';
-bin.FULL_SP = '<span style="color:#05d" class="cc">．</span>';
+bin.FULL_SP = '<span style="color:#05d" class="cc" data-tooltip="IDEOGRAPHIC SPACE">・</span>';
 bin.VS = '<span style="color:#fe0" class="cc2 cc-link" data-tooltip="U+FE00-U+FE0F: Variation Selectors" onclick="bin.openUnicodeTable(\'0xFE00\');">[VS]</span>';
 bin.BOM = '<span style="color:#fb6" class="cc2 cc-link" data-tooltip="U+FEFF: BOM" onclick="bin.openUnicodeTable(\'0xFEFF\', true);">.</span>';
 bin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
@@ -2660,7 +2663,10 @@ bin.showTextPreview = function(b64) {
     s = s.replace(/\u202E/g, bin.RLO);
     s = s.replace(/([\uFE00-\uFE0F])(.)/g, bin.VS + '$1$2');
     s = s.replace(/\uFEFF/g, bin.BOM);
-    s = s.replace(/\u0000/g, bin.NULL);
+    s = s.replace(/\u0000/g, bin.CHR_NULL);
+    s = s.replace(/[\u0001-\u0008]|\u000B|\u000C|[\u000E-\u001A]|[\u001C-\u001F]/g, bin.CHR_CTRL);
+    s = s.replace(/\u001B/g, bin.CHR_ESC);
+    s = s.replace(/\u007F/g, bin.CHR_DELL);
     s = s + bin.EOF + '\n';
   }
   bin.drawPreview(s);
