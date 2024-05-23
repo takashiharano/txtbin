@@ -1918,7 +1918,7 @@ bin.getFileType = function(b, f) {
     }
   } else {
     var binDetail = bin.getBinDetail(b, ftype['mime'], ftype['ext']);
-    if (binDetail) ftype['bin_detail'] = binDetail;
+    ftype['bin_detail'] = binDetail;
   }
 
   if (bin.isZip(ftype)) {
@@ -2157,7 +2157,7 @@ bin.inertNewline = function(s, n) {
 };
 
 bin.getBinDetail = function(b, mime, ext) {
-  var r = '';
+  var r = {};
   if (ext == 'avif') {
     r = bin.getAvifInfo(b);
   } else if (ext == 'bmp') {
