@@ -726,6 +726,8 @@ $onReady = function() {
   $el('#preview-mode').addEventListener('change', bin.onChangeShowPreview);
   $el('#preview-mode-encryption').addEventListener('change', bin.onChangeShowPreview);
 
+  $el('#preview-wrapper').addEventListener('wheel', bin.onImgWheel);
+
   bin.initTxtEditMode();
   bin.clear();
 };
@@ -2691,6 +2693,12 @@ bin.postShowImgPreview = function(id) {
   $el('#' + id).addEventListener('mousedown', bin.startDragImg, {passive: true});
 };
 
+bin.isImageShowing = function() {
+  if (!bin.bufCache) return false;
+  var ftype = bin.bufCache.ftype;
+  return bin.isImage(ftype);
+};
+
 bin.startDragImg = function(e) {
   var x = e.clientX;
   var y = e.clientY;
@@ -2716,6 +2724,17 @@ bin.endDragImg = function(e) {
   bin.orgPos.y = 0;
   bin.orgPrvScrl.x = 0;
   bin.orgPrvScrl.y = 0;
+};
+
+bin.onImgWheel = function(e) {
+  if (!bin.isImageShowing()) return;
+  var dY = e.deltaY;
+  var dS = 2;
+  if (dY == 0) return;
+  if (dY > 0) dS *= (-1);
+  var sz = bin.getFontSize4Preview() + dS;
+  bin.setFontSize4Preview(sz);
+  e.preventDefault();
 };
 
 bin.showVideoPreview = function(b64) {
@@ -2821,6 +2840,9 @@ bin.setFontSize4Preview = function(v) {
       bin.resizeMediaPreview(el, v);
     }
   }
+};
+bin.getFontSize4Preview = function() {
+  return $el('#font-range-preview').value | 0;
 };
 bin.resizeMediaPreview = function(el, v) {
   var orgW = bin.mediaPreviewRect.width;
