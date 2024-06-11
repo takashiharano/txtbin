@@ -42,6 +42,7 @@ bin.DEFAULT_MODE_ACTIVE = 'hex';
 bin.UI_ST_NONE = 0;
 bin.UI_ST_AREA_RESIZING_X = 1;
 bin.UI_ST_AREA_RESIZING_Y = 1 << 1;
+bin.UI_ST_DRAGGING = 1 << 2;
 
 bin.CHARACTER_ENCODINGS = {
   'ascii': {name: 'ASCII', color: '#cff'},
@@ -671,7 +672,8 @@ bin.areaSize = [
 bin.mediaPreviewRect = null;
 bin.orgW = null;
 bin.orgH = null;
-
+bin.orgPos = {x: 0, y: 0};
+bin.orgPrvScrl = {x: 0, y: 0};
 bin.onselectstart = document.onselectstart;
 
 $onReady = function() {
@@ -2678,10 +2680,42 @@ bin.showImagePreview = function(b64, ftype) {
   var d = 'data:' + mime + ';base64,' + b64;
   var v = '<img id="img-preview" src="' + d + '" style="max-width:100%;max-height:calc(100% - 8px);" onmousedown="return false;">';
   bin.drawPreview(v);
-  setTimeout(bin.postShowMediaPreview, 0, 'img-preview');
+  var id = 'img-preview';
+  setTimeout(bin.postShowMediaPreview, 0, id);
+  setTimeout(bin.postShowImgPreview, 0, id);
 };
 bin.postShowMediaPreview = function(id) {
   bin.mediaPreviewRect = $el('#' + id).getRect();
+};
+bin.postShowImgPreview = function(id) {
+  $el('#' + id).addEventListener('mousedown', bin.startDragImg, {passive: true});
+};
+
+bin.startDragImg = function(e) {
+  var x = e.clientX;
+  var y = e.clientY;
+  bin.uiStatus |= bin.UI_ST_DRAGGING;
+  document.body.style.cursor = 'move';
+  bin.disableTextSelect();
+  bin.orgPos.x = x;
+  bin.orgPos.y = y;
+  bin.orgPrvScrl.x = $el('#preview-wrapper').scrollLeft;
+  bin.orgPrvScrl.y = $el('#preview-wrapper').scrollTop;
+};
+bin.dragImg = function(x, y) {
+  dX = x - bin.orgPos.x;
+  dY = y - bin.orgPos.y;
+  $el('#preview-wrapper').scrollLeft = bin.orgPrvScrl.x - dX;
+  $el('#preview-wrapper').scrollTop = bin.orgPrvScrl.y - dY;
+};
+bin.endDragImg = function(e) {
+  bin.uiStatus &= ~bin.UI_ST_DRAGGING;
+  bin.enableTextSelect();
+  document.body.style.cursor = 'auto';
+  bin.orgPos.x = 0;
+  bin.orgPos.y = 0;
+  bin.orgPrvScrl.x = 0;
+  bin.orgPrvScrl.y = 0;
 };
 
 bin.showVideoPreview = function(b64) {
@@ -2887,15 +2921,24 @@ bin.onChangeBsb64N = function() {
 };
 
 bin.onMouseMove = function(e) {
+  var x = e.clientX;
+  var y = e.clientY;
   if (bin.uiStatus == bin.UI_ST_AREA_RESIZING_X) {
-    bin.onAreaResizeX(e);
+    bin.onAreaResizeX(x);
   } else if (bin.uiStatus == bin.UI_ST_AREA_RESIZING_Y) {
-    bin.onAreaResizeY(e);
+    bin.onAreaResizeY(y);
+  } else if (bin.uiStatus & bin.UI_ST_DRAGGING) {
+    bin.dragImg(x, y);
   }
 };
 bin.onMouseUp = function(e) {
-  if ((bin.uiStatus == bin.UI_ST_AREA_RESIZING_X) || (bin.uiStatus == bin.UI_ST_AREA_RESIZING_Y)) {
-    bin.onAreaResizeEnd(e);
+  switch (e.button) {
+    case 0:
+      if ((bin.uiStatus == bin.UI_ST_AREA_RESIZING_X) || (bin.uiStatus == bin.UI_ST_AREA_RESIZING_Y)) {
+        bin.onAreaResizeEnd(e);
+      } else if (bin.uiStatus & bin.UI_ST_DRAGGING) {
+        bin.endDragImg(e);
+      }
   }
 };
 
@@ -2955,8 +2998,7 @@ bin.storeAreaSize = function() {
 bin.onAreaResizeStartX = function(e) {
   bin.onAreaResizeStart(e, 0, 'X', bin.UI_ST_AREA_RESIZING_X, $el('#input-area'), $el('#right-area'), 'ew-resize');
 };
-bin.onAreaResizeX = function(e) {
-  var x = e.clientX;
+bin.onAreaResizeX = function(x) {
   var adj = 8;
   var dX = bin.areaSize[0].orgX - x;
   var w1 = bin.areaSize[0].orgSP1.w - dX - adj;
@@ -2986,8 +3028,7 @@ bin._setAreaSizeX = function(el1, el2, w1, dW, adj2) {
 bin.onAreaResizeStartY = function(e) {
   bin.onAreaResizeStart(e, 1, 'Y', bin.UI_ST_AREA_RESIZING_Y, $el('#info-area'), $el('#preview-area'), 'ns-resize');
 };
-bin.onAreaResizeY = function(e) {
-  var y = e.clientY;
+bin.onAreaResizeY = function(y) {
   var adj = 12;
   var dY = bin.areaSize[1].orgY - y;
   var h1 = bin.areaSize[1].orgSP1.h - dY - adj;
