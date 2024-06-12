@@ -674,6 +674,7 @@ bin.orgW = null;
 bin.orgH = null;
 bin.orgPos = {x: 0, y: 0};
 bin.orgPrvScrl = {x: 0, y: 0};
+bin.prevWin = null;
 bin.onselectstart = document.onselectstart;
 
 $onReady = function() {
@@ -727,6 +728,7 @@ $onReady = function() {
   $el('#preview-mode-encryption').addEventListener('change', bin.onChangeShowPreview);
 
   $el('#preview-wrapper').addEventListener('wheel', bin.onImgWheel);
+  $el('#preview-wrapper').addEventListener('dblclick', bin.onPreviewDblClick);
 
   bin.initTxtEditMode();
   bin.clear();
@@ -1141,6 +1143,7 @@ bin.getSHA = function(a, b, f) {
 };
 
 bin.decode = function() {
+  bin.clearBuf();
   bin.bufCache = bin.updateInfoAndPreview();
   var mode = bin.getMode();
   if (mode == 'b64s') {
@@ -2711,8 +2714,8 @@ bin.startDragImg = function(e) {
   bin.orgPrvScrl.y = $el('#preview-wrapper').scrollTop;
 };
 bin.dragImg = function(x, y) {
-  dX = x - bin.orgPos.x;
-  dY = y - bin.orgPos.y;
+  var dX = x - bin.orgPos.x;
+  var dY = y - bin.orgPos.y;
   $el('#preview-wrapper').scrollLeft = bin.orgPrvScrl.x - dX;
   $el('#preview-wrapper').scrollTop = bin.orgPrvScrl.y - dY;
 };
@@ -2735,6 +2738,43 @@ bin.onImgWheel = function(e) {
   var sz = bin.getFontSize4Preview() + dS;
   bin.setFontSize4Preview(sz);
   e.preventDefault();
+};
+
+bin.onPreviewDblClick = function() {
+  if (!bin.prevWin && bin.isImageShowing()) bin.openPreviewWin();
+};
+bin.openPreviewWin = function() {
+  var opt = {
+    name: 'win1',
+    draggable: true,
+    resizable: true,
+    maximize: true,
+    pos: 'c',
+    closeButton: true,
+    width: 900,
+    height: 600,
+    scale: 1,
+    title: {
+      text: 'Preview'
+    },
+    body: {
+      style: {
+        background: '#111'
+      }
+    },
+    oncreate: bin.onPrevWinCreate,
+    onshow: bin.onPrevWinShow,
+    onclose: bin.onPrevWinClose
+  };
+
+  bin.prevWin = util.newWindow(opt);
+  bin.prevWin.max();
+  bin.prevWin.body.appendChild($el('#preview-wrapper'));
+};
+bin.onPrevWinClose = function() {
+  $el('#preview-wrapper0').appendChild($el('#preview-wrapper'));
+  bin.prevWin = null;
+  if (bin.isImageShowing()) bin.resetFontSize4Preview();
 };
 
 bin.showVideoPreview = function(b64) {
