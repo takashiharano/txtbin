@@ -2699,7 +2699,8 @@ bin.postShowImgPreview = function(id) {
 bin.isImageShowing = function() {
   if (!bin.bufCache) return false;
   var ftype = bin.bufCache.ftype;
-  return bin.isImage(ftype);
+  var peviewMode = $el('#preview-mode').value;
+  return (bin.isImage(ftype) && (peviewMode == 'view'));
 };
 
 bin.startDragImg = function(e) {
