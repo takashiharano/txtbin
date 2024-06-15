@@ -670,10 +670,10 @@ bin.areaSize = [
   }
 ];
 bin.mediaPreviewRect = null;
-bin.orgW = null;
+bin.orgSize = null;
 bin.orgH = null;
 bin.orgPos = {x: 0, y: 0};
-bin.orgPrvScrl = {x: 0, y: 0};
+bin.orgPrvScrl = null;
 bin.prevWin = null;
 bin.onselectstart = document.onselectstart;
 
@@ -2711,14 +2711,14 @@ bin.startDragImg = function(e) {
   bin.disableTextSelect();
   bin.orgPos.x = x;
   bin.orgPos.y = y;
-  bin.orgPrvScrl.x = $el('#preview-wrapper').scrollLeft;
-  bin.orgPrvScrl.y = $el('#preview-wrapper').scrollTop;
+  bin.orgPrvScrl = bin.getPreviewScrollInfo();
 };
 bin.dragImg = function(x, y) {
   var dX = x - bin.orgPos.x;
   var dY = y - bin.orgPos.y;
-  $el('#preview-wrapper').scrollLeft = bin.orgPrvScrl.x - dX;
-  $el('#preview-wrapper').scrollTop = bin.orgPrvScrl.y - dY;
+  var l = bin.orgPrvScrl.l - dX;
+  var t = bin.orgPrvScrl.t - dY;
+  bin.setPreviewScroll(l, t);
 };
 bin.endDragImg = function(e) {
   bin.uiStatus &= ~bin.UI_ST_DRAGGING;
@@ -2726,8 +2726,7 @@ bin.endDragImg = function(e) {
   document.body.style.cursor = 'auto';
   bin.orgPos.x = 0;
   bin.orgPos.y = 0;
-  bin.orgPrvScrl.x = 0;
-  bin.orgPrvScrl.y = 0;
+  bin.orgPrvScrl = null;
 };
 
 bin.onImgWheel = function(e) {
@@ -2737,8 +2736,28 @@ bin.onImgWheel = function(e) {
   if (dY == 0) return;
   if (dY > 0) dS *= (-1);
   var sz = bin.getFontSize4Preview() + dS;
+  var sc0 = bin.getPreviewScrollInfo();
   bin.setFontSize4Preview(sz);
+  var sc1 = bin.getPreviewScrollInfo();
+  var dW = (sc1.w - sc0.w) / 2;
+  var dH = (sc1.h - sc0.h) / 2;
+  var l = sc1.l + dW;
+  var t = sc1.t + dH;
+  bin.setPreviewScroll(l, t);
   e.preventDefault();
+};
+bin.getPreviewScrollInfo = function() {
+  var o = {
+    w: $el('#preview-wrapper').scrollWidth,
+    h: $el('#preview-wrapper').scrollHeight,
+    l: $el('#preview-wrapper').scrollLeft,
+    t: $el('#preview-wrapper').scrollTop
+  };
+  return o;
+};
+bin.setPreviewScroll = function(l, t) {
+  $el('#preview-wrapper').scrollLeft = l;
+  $el('#preview-wrapper').scrollTop = t;
 };
 
 bin.onPreviewDblClick = function() {
@@ -3050,12 +3069,15 @@ bin.storeAreaSize = function() {
   var sp1 = bin.getSelfSizePos($el('#input-area'));
   var adj = 8;
   var w1 = sp1.w + adj;
-  bin.orgW = {w1: w1};
 
   sp1 = bin.getSelfSizePos($el('#info-area'));
   adj = 8;
   var h1 = sp1.h + adj;
-  bin.orgH = {h1: h1};
+
+  bin.orgSize = {
+    a1: {w: w1},
+    a2: {h: h1}
+  };
 };
 
 bin.onAreaResizeStartX = function(e) {
@@ -3074,7 +3096,7 @@ bin.onAreaResizeX = function(x) {
   bin.setAreaSizeX(w1, dW);
 };
 bin.resetAreaSizeX = function() {
-  bin.setAreaSizeX(bin.orgW.w1, 0);
+  bin.setAreaSizeX(bin.orgSize.a1.w, 0);
   bin.areaSize[0].orgDW = 0;
   bin.areaSize[0].dW = 0;
 };
@@ -3104,7 +3126,7 @@ bin.onAreaResizeY = function(y) {
   bin.setAreaSizeY(h1, dH);
 };
 bin.resetAreaSizeY = function() {
-  bin.setAreaSizeY(bin.orgH.h1, 0);
+  bin.setAreaSizeY(bin.orgSize.a2.h, 0);
   bin.areaSize[1].orgDH = 0;
   bin.areaSize[1].dH = 0;
 };
