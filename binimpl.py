@@ -82,7 +82,7 @@ def deccode_and_send_file(mode, s):
     timestamp = str(now).split('.')
     etag = timestamp[0] + '.' + (timestamp[1] + '00000')[:6]
 
-    util.send_binary(b, filename=filename, etag=etag)
+    util.send_as_file(b, filename=filename, etag=etag)
 
 def extract_bintext_part(mode, s):
   if mode == 'bin':
