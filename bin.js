@@ -3277,7 +3277,7 @@ bin.TXT_EDIT_FN = [
   {lbl: 'SUM', fn: function(s) {return DebugJS.sum(s);}},
   {lbl: 'TAB_ALIGN', opt: [{lbl: 'SPACE', v: '2'}], fn: function(s, o) {return DebugJS.alignByTab(s, o[0] | 0);}},
   {lbl: 'TIME_CONV', fn: function(s) {return DebugJS.timecnv(s);}},
-  {lbl: 'TRIM_BLANK', fn: function(s) {return DebugJS.trimBlank(s);}},
+  {lbl: 'TRIM_TEXT', fn: function(s) {return DebugJS.trimText(s);}},
   {
     lbl: 'UNIQUE', opt: [{lbl: 'SORT', optvals: [{t: '', v: ''}, {t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COUNT', optvals: [{v: 'N'}, {v: 'Y'}]}],
     fn: function(s, o) {
@@ -3356,6 +3356,7 @@ bin.execTxtEdit = function() {
   v = DebugJS.escHtml(v);
   bin.drawPreview(v);
   $el('#copy-button').disabled = false;
+  bin.bufCache = null;
 };
 
 bin.UTF8 = {};
