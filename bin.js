@@ -3182,7 +3182,7 @@ bin.onAreaResizeEnd = function(e) {
 
 bin.TXT_EDIT_FN = [
   {lbl: ''},
-  {lbl: 'CLEANSE_TEXT', fn: function(s) {return DebugJS.cleanseText(s);}},
+  {lbl: 'CLEANSE_TEXT', opt: [{lbl: 'NBSP', optvals: [{v: 'Y'}, {v: 'N'}]}, {lbl: 'ZWSP', optvals: [{v: 'Y'}, {v: 'N'}]}], fn: function(s, o) {return DebugJS.cleanseText(s, (o[0] == 'Y'), (o[1] == 'Y'));}},
   {lbl: 'DATE_TIME_SEP', opt: [{lbl: 'SEPARATOR', v: '/'}], fn: function(s, o) {return DebugJS.dateSep(s, o[0]);}},
   {lbl: 'DELIMIT', opt: [{lbl: 'POS', v: ''}, {lbl: 'ORG', optvals: [{v: '0'}, {v: '1', s: 1}]}, {lbl: 'TRIM', optvals: [{v: 'Y'}, {v: 'N'}]}],
     fn: function(s, o) {
