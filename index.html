@@ -12,17 +12,17 @@
 <body>
 <div id="main">
 <div style="position:relative;height:32px;vertical-align:bottom;">
-<button id="submit-button" onclick="bin.submit();">SAVE</button>
+<button id="submit-button" onclick="txtbin.submit();">SAVE</button>
 <div style="margin-left:16px;display:inline-block;">
-<div class="mode-button-block"><div id="mode-ind-auto" class="mode-ind" style="opacity:0;"></div><button id="mode-button-auto" class="mode-button" onclick="bin.setMode('auto');">AUTO</button></div>
-<div class="mode-button-block"><div id="mode-ind-txt" class="mode-ind"></div><button id="mode-button-txt" class="mode-button" onclick="bin.setMode('txt');">TEXT</button>
-</div><div class="mode-button-block"><div id="mode-ind-bin" class="mode-ind"></div><button id="mode-button-bin" class="mode-button" onclick="bin.setMode('bin');">BIN</button>
-</div><div class="mode-button-block"><div id="mode-ind-dec" class="mode-ind"></div><button id="mode-button-dec" class="mode-button" onclick="bin.setMode('dec');">DEC</button>
-</div><div class="mode-button-block"><div id="mode-ind-hex" class="mode-ind"></div><button id="mode-button-hex" class="mode-button" onclick="bin.setMode('hex');">HEX</button>
-</div><div class="mode-button-block"><div id="mode-ind-b64" class="mode-ind"></div><button id="mode-button-b64" class="mode-button" onclick="bin.setMode('b64');">BASE64</button>
-</div><div class="mode-button-block"><div id="mode-ind-b64s" class="mode-ind"></div><button id="mode-button-b64s" class="mode-button" onclick="bin.setMode('b64s');">B64S</button>
-</div><span id="key-label" style="margin-left:4px;">KEY:</span><input type="text" id="key" name="key" spellcheck="false"><button id="key-hide-button" class="small-button button-inactive" style="margin-left:4px;" onclick="bin.switchKeyViewHide();">HIDE</button><button id="key-update-button" class="small-button" style="margin-left:4px;" onclick="bin.updateB64sKey();" disabled>ENCODE</button><input type="checkbox" id="b64-auto-update" checked><label for="b64-auto-update">Auto</label>
-<div class="mode-button-block"><div id="mode-ind-bsb64" class="mode-ind"></div><button id="mode-button-bsb64" class="mode-button" onclick="bin.setMode('bsb64');">BSB64</button>
+<div class="mode-button-block"><div id="mode-ind-auto" class="mode-ind" style="opacity:0;"></div><button id="mode-button-auto" class="mode-button" onclick="txtbin.setMode('auto');">AUTO</button></div>
+<div class="mode-button-block"><div id="mode-ind-txt" class="mode-ind"></div><button id="mode-button-txt" class="mode-button" onclick="txtbin.setMode('txt');">TEXT</button>
+</div><div class="mode-button-block"><div id="mode-ind-bin" class="mode-ind"></div><button id="mode-button-bin" class="mode-button" onclick="txtbin.setMode('bin');">BIN</button>
+</div><div class="mode-button-block"><div id="mode-ind-dec" class="mode-ind"></div><button id="mode-button-dec" class="mode-button" onclick="txtbin.setMode('dec');">DEC</button>
+</div><div class="mode-button-block"><div id="mode-ind-hex" class="mode-ind"></div><button id="mode-button-hex" class="mode-button" onclick="txtbin.setMode('hex');">HEX</button>
+</div><div class="mode-button-block"><div id="mode-ind-b64" class="mode-ind"></div><button id="mode-button-b64" class="mode-button" onclick="txtbin.setMode('b64');">BASE64</button>
+</div><div class="mode-button-block"><div id="mode-ind-b64s" class="mode-ind"></div><button id="mode-button-b64s" class="mode-button" onclick="txtbin.setMode('b64s');">B64S</button>
+</div><span id="key-label" style="margin-left:4px;">KEY:</span><input type="text" id="key" name="key" spellcheck="false"><button id="key-hide-button" class="small-button button-inactive" style="margin-left:4px;" onclick="txtbin.switchKeyViewHide();">HIDE</button><button id="key-update-button" class="small-button" style="margin-left:4px;" onclick="txtbin.updateB64sKey();" disabled>ENCODE</button><input type="checkbox" id="b64-auto-update" checked><label for="b64-auto-update">Auto</label>
+<div class="mode-button-block"><div id="mode-ind-bsb64" class="mode-ind"></div><button id="mode-button-bsb64" class="mode-button" onclick="txtbin.setMode('bsb64');">BSB64</button>
 </div><span id="n-label" style="margin-left:4px;">N:</span><select id="bsb64-n">
 <option value="0">0</option>
 <option value="1" selected>1</option>
@@ -37,8 +37,8 @@
 
 <div style="position:absolute;right:8px;display:inline-block;height:100%;">
 <span id="clock" style="margin-right:16px;"></span>
-<button style="position:relative;" onclick="bin.decode();">DECODE</button>
-<button style="position:relative;" onclick="bin.confirmClear();">CLEAR</button>
+<button style="position:relative;" onclick="txtbin.decode();">DECODE</button>
+<button style="position:relative;" onclick="txtbin.confirmClear();">CLEAR</button>
 </div>
 </div>
 
@@ -50,7 +50,7 @@
 <span><input type="checkbox" id="dump-flag-uc" checked><label for="dump-flag-uc">UpperCase</label></span>
 <span style="margin-left:16px;"><input type="checkbox" id="dump-multibyte"><label for="dump-multibyte">Multi Byte Char</label></span>
 <span style="margin-left:16px;">NewLine:<input type="text" id="newline" style="width:40px;" value="76"></span>
-<span style="margin-left:16px;">EDIT:<select id="txt-edit-mode"></select><span id="txt-edit-opts"></span><button id="txt-edit-exec-button" class="small-button" style="margin-left:8px;" onclick="bin.execTxtEdit();">EXEC</button></span>
+<span style="margin-left:16px;">EDIT:<select id="txt-edit-mode"></select><span id="txt-edit-opts"></span><button id="txt-edit-exec-button" class="small-button" style="margin-left:8px;" onclick="txtbin.execTxtEdit();">EXEC</button></span>
 </div>
 
 <div id="input-area">
@@ -61,11 +61,11 @@
 </form>
 
 <div style="margin-top:10px;height:25px;">
-  <input type="range" value="0" min="6" max="64" step="1" id="font-range" style="position:relative;top:6px;" oninput="bin.onFontRangeChanged(this);" onchange="bin.onFontRangeChanged(this);"><span id="fontsize"></span>
-  <button class="small-button" onclick="bin.resetFontSize();">RESET</button>
-  <span style="margin-left:16px;">Font: </sapn><input type="text" id="font" oninput="bin.onFontChanged(this);" onchange="bin.onFontChanged(this);">
-  <span class="pseudo-link subfunc" onclick="bin.changeFont('monospace');">[monospace]</span>
-  <button class="small-button" onclick="bin.changeFont('');">RESET</button>
+  <input type="range" value="0" min="6" max="64" step="1" id="font-range" style="position:relative;top:6px;" oninput="txtbin.onFontRangeChanged(this);" onchange="txtbin.onFontRangeChanged(this);"><span id="fontsize"></span>
+  <button class="small-button" onclick="txtbin.resetFontSize();">RESET</button>
+  <span style="margin-left:16px;">Font: </sapn><input type="text" id="font" oninput="txtbin.onFontChanged(this);" onchange="txtbin.onFontChanged(this);">
+  <span class="pseudo-link subfunc" onclick="txtbin.changeFont('monospace');">[monospace]</span>
+  <button class="small-button" onclick="txtbin.changeFont('');">RESET</button>
 </div>
 
 </div>
@@ -93,9 +93,9 @@
 <option value="b64s">Base64s</option>
 <option value="bsb64">BSB64</option>
 </select></span>
-<button id="open-button" class="small-button" style="margin-left:10px;" onclick="bin.openPreviewWin();">POPUP</button>
+<button id="open-button" class="small-button" style="margin-left:10px;" onclick="txtbin.openPreviewWin();">POPUP</button>
 <span style="position:absolute;right:3px;">
-<button id="copy-button" class="small-button" onclick="bin.copyPreview();" disabled>COPY</button>
+<button id="copy-button" class="small-button" onclick="txtbin.copyPreview();" disabled>COPY</button>
 </span>
 <div id="preview-wrapper0" class="block">
 <div id="preview-wrapper">
@@ -104,11 +104,11 @@
 </div>
 </div>
 <div style="margin-top:-5px;height:25px;">
-  <input type="range" value="0" min="6" max="64" step="1" id="font-range-preview" style="position:relative;top:6px;" oninput="bin.onFontRangeChanged4Preview(this);" onchange="bin.onFontRangeChanged4Preview(this);"><span id="fontsize-preview"></span>
-  <button class="small-button" onclick="bin.resetFontSize4Preview();">RESET</button>
-  <span style="margin-left:16px;">Font: </sapn><input type="text" id="font-preview" oninput="bin.onFontChanged4Preview(this);" onchange="bin.onFontChanged4Preview(this);">
-  <span class="pseudo-link subfunc" onclick="bin.changeFont4Preview('monospace');">[monospace]</span>
-  <button class="small-button" onclick="bin.changeFont4Preview('');">RESET</button>
+  <input type="range" value="0" min="6" max="64" step="1" id="font-range-preview" style="position:relative;top:6px;" oninput="txtbin.onFontRangeChanged4Preview(this);" onchange="txtbin.onFontRangeChanged4Preview(this);"><span id="fontsize-preview"></span>
+  <button class="small-button" onclick="txtbin.resetFontSize4Preview();">RESET</button>
+  <span style="margin-left:16px;">Font: </sapn><input type="text" id="font-preview" oninput="txtbin.onFontChanged4Preview(this);" onchange="txtbin.onFontChanged4Preview(this);">
+  <span class="pseudo-link subfunc" onclick="txtbin.changeFont4Preview('monospace');">[monospace]</span>
+  <button class="small-button" onclick="txtbin.changeFont4Preview('');">RESET</button>
   <span style="position:absolute;right:4px;margin-top:6px;"><a href="../unicode.html" target="_blank">CodeTable</a></span>
 </div>
 </div>

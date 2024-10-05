@@ -2,49 +2,49 @@
  * Text/Binary Editor
  * Copyright 2023 Takashi Harano
  * Released under the MIT license
- * https://github.com/takashiharano/binarydecoder
+ * https://github.com/takashiharano/text-binary-editor
  */
-var bin = {};
-bin.TXT_CHR_LF = '|';
-bin.TXT_CHR_CR = '_';
+var txtbin = {};
+txtbin.TXT_CHR_LF = '|';
+txtbin.TXT_CHR_CR = '_';
 
-bin.CHR_NULL = '<span style="color:#048" class="cc" data-tooltip="NULL">.</span>';
-bin.CHR_CTRL = '<span style="color:#888" class="cc" data-tooltip="CTRL">.</span>';
-bin.CHR_CRLF = '&#x21b5;';
-bin.CHR_LF = '&#x2193;';
-bin.CHR_CR = '&#x2190;';
-bin.CHR_CRLF_S = '<span style="color:#0cf" class="cc">' + bin.CHR_CRLF + '</span>';
-bin.CHR_LF_S = '<span style="color:#80d860" class="cc">' + bin.CHR_LF + '</span>';
-bin.CHR_CR_S = '<span style="color:#f41" class="cc">' + bin.CHR_CR + '</span>';
-bin.TAB = '<span style="color:#cc2" class="cc" data-tooltip="Tab">&gt;</span>';
-bin.CHR_ESC = '<span style="color:#c80" class="cc" data-tooltip="ESC">.</span>';
-bin.SP = '<span style="color:#099" class="cc" data-tooltip="Space">.</span>';
-bin.CHR_DELL = '<span style="color:#800" class="cc" data-tooltip="DELL">.</span>';
-bin.NBSP = '<span style="color:#ff5354" class="cc cc-link" data-tooltip="U+00A0: Non-breaking space" onclick="bin.openUnicodeTable(\'0x00A0\', true);">.</span>';
-bin.CDM = '<span style="color:#fe0" class="cc2 cc-link" onclick="bin.openUnicodeTable(\'0x0300\');">[CDM]</span>';
-bin.ZWSP = '<span style="color:#f8f" class="cc2 cc-link" data-tooltip="U+200B: Zero-width space" onclick="bin.openUnicodeTable(\'0x200B\', true);">[ZWSP]</span>';
-bin.LRM = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+200E: Left-to-Right Mark" onclick="bin.openUnicodeTable(\'0x200E\', true);">[LRM]</span>';
-bin.RLM = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+200F: Right-to-Left Mark" onclick="bin.openUnicodeTable(\'0x200F\', true);">[RLM]</span>';
-bin.LRE = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202A: Left-to-Right Embedding" onclick="bin.openUnicodeTable(\'0x202A\', true);">[LRE]</span>';
-bin.RLE = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202B: Right-to-Left Embedding" onclick="bin.openUnicodeTable(\'0x202B\', true);">[RLE]</span>';
-bin.PDF = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202C: Pop Directional Formatting" onclick="bin.openUnicodeTable(\'0x202C\', true);">[PDF]</span>';
-bin.LRO = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202D: Left-to-Right Override" onclick="bin.openUnicodeTable(\'0x202D\', true);">[LRO]</span>';
-bin.RLO = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202E: Right-to-Left Override" onclick="bin.openUnicodeTable(\'0x202E\', true);">[RLO]</span>';
-bin.FULL_SP = '<span style="color:#05d" class="cc" data-tooltip="IDEOGRAPHIC SPACE">・</span>';
-bin.VS = '<span style="color:#fe0" class="cc2 cc-link" data-tooltip="U+FE00-U+FE0F: Variation Selectors" onclick="bin.openUnicodeTable(\'0xFE00\');">[VS]</span>';
-bin.BOM = '<span style="color:#fb6" class="cc2 cc-link" data-tooltip="U+FEFF: BOM" onclick="bin.openUnicodeTable(\'0xFEFF\', true);">.</span>';
-bin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
+txtbin.CHR_NULL = '<span style="color:#048" class="cc" data-tooltip="NULL">.</span>';
+txtbin.CHR_CTRL = '<span style="color:#888" class="cc" data-tooltip="CTRL">.</span>';
+txtbin.CHR_CRLF = '&#x21b5;';
+txtbin.CHR_LF = '&#x2193;';
+txtbin.CHR_CR = '&#x2190;';
+txtbin.CHR_CRLF_S = '<span style="color:#0cf" class="cc">' + txtbin.CHR_CRLF + '</span>';
+txtbin.CHR_LF_S = '<span style="color:#80d860" class="cc">' + txtbin.CHR_LF + '</span>';
+txtbin.CHR_CR_S = '<span style="color:#f41" class="cc">' + txtbin.CHR_CR + '</span>';
+txtbin.TAB = '<span style="color:#cc2" class="cc" data-tooltip="Tab">&gt;</span>';
+txtbin.CHR_ESC = '<span style="color:#c80" class="cc" data-tooltip="ESC">.</span>';
+txtbin.SP = '<span style="color:#099" class="cc" data-tooltip="Space">.</span>';
+txtbin.CHR_DELL = '<span style="color:#800" class="cc" data-tooltip="DELL">.</span>';
+txtbin.NBSP = '<span style="color:#ff5354" class="cc cc-link" data-tooltip="U+00A0: Non-breaking space" onclick="txtbin.openUnicodeTable(\'0x00A0\', true);">.</span>';
+txtbin.CDM = '<span style="color:#fe0" class="cc2 cc-link" onclick="txtbin.openUnicodeTable(\'0x0300\');">[CDM]</span>';
+txtbin.ZWSP = '<span style="color:#f8f" class="cc2 cc-link" data-tooltip="U+200B: Zero-width space" onclick="txtbin.openUnicodeTable(\'0x200B\', true);">[ZWSP]</span>';
+txtbin.LRM = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+200E: Left-to-Right Mark" onclick="txtbin.openUnicodeTable(\'0x200E\', true);">[LRM]</span>';
+txtbin.RLM = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+200F: Right-to-Left Mark" onclick="txtbin.openUnicodeTable(\'0x200F\', true);">[RLM]</span>';
+txtbin.LRE = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202A: Left-to-Right Embedding" onclick="txtbin.openUnicodeTable(\'0x202A\', true);">[LRE]</span>';
+txtbin.RLE = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202B: Right-to-Left Embedding" onclick="txtbin.openUnicodeTable(\'0x202B\', true);">[RLE]</span>';
+txtbin.PDF = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202C: Pop Directional Formatting" onclick="txtbin.openUnicodeTable(\'0x202C\', true);">[PDF]</span>';
+txtbin.LRO = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202D: Left-to-Right Override" onclick="txtbin.openUnicodeTable(\'0x202D\', true);">[LRO]</span>';
+txtbin.RLO = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202E: Right-to-Left Override" onclick="txtbin.openUnicodeTable(\'0x202E\', true);">[RLO]</span>';
+txtbin.FULL_SP = '<span style="color:#05d" class="cc" data-tooltip="IDEOGRAPHIC SPACE">・</span>';
+txtbin.VS = '<span style="color:#fe0" class="cc2 cc-link" data-tooltip="U+FE00-U+FE0F: Variation Selectors" onclick="txtbin.openUnicodeTable(\'0xFE00\');">[VS]</span>';
+txtbin.BOM = '<span style="color:#fb6" class="cc2 cc-link" data-tooltip="U+FEFF: BOM" onclick="txtbin.openUnicodeTable(\'0xFEFF\', true);">.</span>';
+txtbin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
 
-bin.DEFAULT_FONT_SIZE = 14;
-bin.DEFAULT_MODE = 'auto';
-bin.DEFAULT_MODE_ACTIVE = 'hex';
+txtbin.DEFAULT_FONT_SIZE = 14;
+txtbin.DEFAULT_MODE = 'auto';
+txtbin.DEFAULT_MODE_ACTIVE = 'hex';
 
-bin.UI_ST_NONE = 0;
-bin.UI_ST_AREA_RESIZING_X = 1;
-bin.UI_ST_AREA_RESIZING_Y = 1 << 1;
-bin.UI_ST_DRAGGING = 1 << 2;
+txtbin.UI_ST_NONE = 0;
+txtbin.UI_ST_AREA_RESIZING_X = 1;
+txtbin.UI_ST_AREA_RESIZING_Y = 1 << 1;
+txtbin.UI_ST_DRAGGING = 1 << 2;
 
-bin.CHARACTER_ENCODINGS = {
+txtbin.CHARACTER_ENCODINGS = {
   'ascii': {name: 'ASCII', color: '#cff'},
   'utf8': {name: 'UTF-8', color: '#fb6'},
   'utf16': {name: 'UTF-16', color: '#bcf'},
@@ -55,7 +55,7 @@ bin.CHARACTER_ENCODINGS = {
   'euc_jp': {name: 'EUC-JP', color: '#cf8'},
 };
 
-bin.FILETYPES = {
+txtbin.FILETYPES = {
   'accdb': {'head': '00 01 00 00 53 74 61 6E 64 61 72 64 20 41 43 45 20 44 42', 'mime': 'application/msaccess', 'ext': 'accdb'},
   'avif': {'head': 'xx xx xx xx 66 74 79 70 61 76 69 66', 'mime': 'image/avif', 'ext': 'avif'},
   'bmp': {'head': '42 4D', 'mime': 'image/bmp', 'ext': 'bmp'},
@@ -94,7 +94,7 @@ bin.FILETYPES = {
   'jar': {'hexptn': '4D 45 54 41 2D 49 4E 46 2F', 'mime': 'application/java-archive', 'ext': 'jar', 'supertype': 'zip'}
 };
 
-bin.CODE_BLOCKS = [
+txtbin.CODE_BLOCKS = [
   {
     name: 'bmp',
     fullname: 'Basic Multilingual Plane',
@@ -643,11 +643,11 @@ bin.CODE_BLOCKS = [
   }
 ];
 
-bin.auto = true;
-bin.bufCache = null;
-bin.file = null;
-bin.uiStatus = bin.UI_ST_NONE;
-bin.areaSize = [
+txtbin.auto = true;
+txtbin.bufCache = null;
+txtbin.file = null;
+txtbin.uiStatus = txtbin.UI_ST_NONE;
+txtbin.areaSize = [
   {
     orgX: 0,
     orgY: 0,
@@ -669,85 +669,85 @@ bin.areaSize = [
     dH: 0
   }
 ];
-bin.mediaPreviewRect = null;
-bin.orgSize = null;
-bin.orgH = null;
-bin.orgPos = {x: 0, y: 0};
-bin.orgPrvScrl = null;
-bin.prevWin = null;
-bin.onselectstart = document.onselectstart;
+txtbin.mediaPreviewRect = null;
+txtbin.orgSize = null;
+txtbin.orgH = null;
+txtbin.orgPos = {x: 0, y: 0};
+txtbin.orgPrvScrl = null;
+txtbin.prevWin = null;
+txtbin.onselectstart = document.onselectstart;
 
 $onReady = function() {
   util.clock('#clock');
 
   var opt = {
     mode: 'blob',
-    onloadstart: bin.onDndLoadStart,
-    onprogress: bin.onDndLoadProgress
+    onloadstart: txtbin.onDndLoadStart,
+    onprogress: txtbin.onDndLoadProgress
   };
-  bin.dndHandler = util.addDndHandler(document.body, bin.onDnd, opt);
+  txtbin.dndHandler = util.addDndHandler(document.body, txtbin.onDnd, opt);
 
   var mode = util.getQuery('mode');
-  if (!mode) mode = bin.DEFAULT_MODE;
-  bin.setMode(mode);
+  if (!mode) mode = txtbin.DEFAULT_MODE;
+  txtbin.setMode(mode);
   if (mode == 'auto') {
-    bin.activeMode(bin.DEFAULT_MODE_ACTIVE);
+    txtbin.activeMode(txtbin.DEFAULT_MODE_ACTIVE);
   }
 
   var fontSize = util.getQuery('fontsize') | 0;
-  if (!fontSize) fontSize = bin.DEFAULT_FONT_SIZE;
-  bin.setFontSize(fontSize);
-  bin.setFontSize4Preview(fontSize);
+  if (!fontSize) fontSize = txtbin.DEFAULT_FONT_SIZE;
+  txtbin.setFontSize(fontSize);
+  txtbin.setFontSize4Preview(fontSize);
 
-  bin.storeAreaSize();
-  window.addEventListener('mousemove', bin.onMouseMove, true);
-  window.addEventListener('mouseup', bin.onMouseUp, true);
-  $el('#adjuster-x').addEventListener('mousedown', bin.onAreaResizeStartX);
-  $el('#adjuster-x').addEventListener('dblclick', bin.resetAreaSizeX);
-  $el('#adjuster-y').addEventListener('mousedown', bin.onAreaResizeStartY);
-  $el('#adjuster-y').addEventListener('dblclick', bin.resetAreaSizeY);
+  txtbin.storeAreaSize();
+  window.addEventListener('mousemove', txtbin.onMouseMove, true);
+  window.addEventListener('mouseup', txtbin.onMouseUp, true);
+  $el('#adjuster-x').addEventListener('mousedown', txtbin.onAreaResizeStartX);
+  $el('#adjuster-x').addEventListener('dblclick', txtbin.resetAreaSizeX);
+  $el('#adjuster-y').addEventListener('mousedown', txtbin.onAreaResizeStartY);
+  $el('#adjuster-y').addEventListener('dblclick', txtbin.resetAreaSizeY);
 
-  $el('#dump-flag-show-addr').addEventListener('input', bin.onChangeDumpFlag);
-  $el('#dump-flag-show-sp').addEventListener('input', bin.onChangeDumpFlag);
-  $el('#dump-flag-show-ascii').addEventListener('input', bin.onChangeDumpFlag);
-  $el('#dump-flag-uc').addEventListener('input', bin.onChangeDumpFlag);
-  $el('#dump-multibyte').addEventListener('input', bin.onChangeDumpFlag);
+  $el('#dump-flag-show-addr').addEventListener('input', txtbin.onChangeDumpFlag);
+  $el('#dump-flag-show-sp').addEventListener('input', txtbin.onChangeDumpFlag);
+  $el('#dump-flag-show-ascii').addEventListener('input', txtbin.onChangeDumpFlag);
+  $el('#dump-flag-uc').addEventListener('input', txtbin.onChangeDumpFlag);
+  $el('#dump-multibyte').addEventListener('input', txtbin.onChangeDumpFlag);
 
-  $el('#key').addEventListener('input', bin.onInputKey);
-  $el('#key').addEventListener('change', bin.onInputKey);
+  $el('#key').addEventListener('input', txtbin.onInputKey);
+  $el('#key').addEventListener('change', txtbin.onInputKey);
 
-  $el('#bsb64-n').addEventListener('change', bin.onChangeBsb64N);
+  $el('#bsb64-n').addEventListener('change', txtbin.onChangeBsb64N);
 
-  $el('#src').addEventListener('input', bin.onInput);
-  $el('#src').addEventListener('change', bin.onInput);
+  $el('#src').addEventListener('input', txtbin.onInput);
+  $el('#src').addEventListener('change', txtbin.onInput);
 
-  $el('#show-preview').addEventListener('change', bin.onChangeShowPreview);
-  $el('#show-preview-rt').addEventListener('change', bin.onRealtimePreviewChange);
-  $el('#show-preview-cc').addEventListener('change', bin.onChangeShowPreviewCc);
-  $el('#no-line-break').addEventListener('change', bin.onChangeForceLineBreak);
-  $el('#preview-mode').addEventListener('change', bin.onChangeShowPreview);
-  $el('#preview-mode-encryption').addEventListener('change', bin.onChangeShowPreview);
+  $el('#show-preview').addEventListener('change', txtbin.onChangeShowPreview);
+  $el('#show-preview-rt').addEventListener('change', txtbin.onRealtimePreviewChange);
+  $el('#show-preview-cc').addEventListener('change', txtbin.onChangeShowPreviewCc);
+  $el('#no-line-break').addEventListener('change', txtbin.onChangeForceLineBreak);
+  $el('#preview-mode').addEventListener('change', txtbin.onChangeShowPreview);
+  $el('#preview-mode-encryption').addEventListener('change', txtbin.onChangeShowPreview);
 
-  $el('#preview-wrapper').addEventListener('wheel', bin.onImgWheel);
-  $el('#preview-wrapper').addEventListener('dblclick', bin.onPreviewDblClick);
+  $el('#preview-wrapper').addEventListener('wheel', txtbin.onImgWheel);
+  $el('#preview-wrapper').addEventListener('dblclick', txtbin.onPreviewDblClick);
 
-  bin.initTxtEditMode();
-  bin.clear();
+  txtbin.initTxtEditMode();
+  txtbin.clear();
 };
 
-bin.getMode = function() {
+txtbin.getMode = function() {
   return $el('#mode').value;
 };
 
-bin.isB64Mode = function() {
-  var mode = bin.getMode();
+txtbin.isB64Mode = function() {
+  var mode = txtbin.getMode();
   if ((mode == 'b64') || (mode == 'b64s') || (mode == 'bsb64')) {
     return true;
   }
   return false;
 };
 
-bin.switchRadix = function(mode, bufCache) {
+txtbin.switchRadix = function(mode, bufCache) {
   var buf = bufCache.buf;
   var b64 = bufCache.b64;
   var r;
@@ -756,43 +756,43 @@ bin.switchRadix = function(mode, bufCache) {
     case 'hex':
     case 'dec':
     case 'bin':
-      r = bin.getBinDump(mode, buf);
+      r = txtbin.getBinDump(mode, buf);
       break;
     case 'b64s':
       var key = $el('#key').value;
       b64s = util.encodeBase64s(buf, key);
-      r = bin.formatB64(b64s);
-      if (bin.bufCache) {
+      r = txtbin.formatB64(b64s);
+      if (txtbin.bufCache) {
         $el('#key-update-button').disabled = false;
       }
       break;
     case 'bsb64':
       var n = $el('#bsb64-n').value | 0;
       var b64s = util.BSB64.encode(buf, n);
-      r = bin.formatB64(b64s);
+      r = txtbin.formatB64(b64s);
       break;
     case 'txt':
       r = util.decodeBase64(b64);
       break;
     default:
-      r = bin.formatB64(b64);
+      r = txtbin.formatB64(b64);
   }
-  bin.setSrcValue(r, false);
+  txtbin.setSrcValue(r, false);
 };
 
-bin.setMode = function(mode, onlyMode) {
+txtbin.setMode = function(mode, onlyMode) {
   if (mode != 'auto') {
-    bin.setDndHandlerMode(mode);
+    txtbin.setDndHandlerMode(mode);
     var prevMode = $el('#mode').value;
     $el('#mode').value = mode;
     $el('.mode-ind').removeClass('mode-ind-active');
     $el('#mode-ind-' + mode).addClass('mode-ind-active');
-    if (bin.bufCache) {
+    if (txtbin.bufCache) {
       if (prevMode != mode) {
-        bin.switchRadix(mode, bin.bufCache);
+        txtbin.switchRadix(mode, txtbin.bufCache);
       }
-      if (bin.isB64Mode()) {
-        bin.showPreview(bin.bufCache);
+      if (txtbin.isB64Mode()) {
+        txtbin.showPreview(txtbin.bufCache);
       }
     }
   }
@@ -800,30 +800,30 @@ bin.setMode = function(mode, onlyMode) {
   if (onlyMode) return;
   $el('.mode-button').removeClass('mode-active');
   $el('#mode-button-' + mode).addClass('mode-active');
-  bin.auto = (mode == 'auto');
+  txtbin.auto = (mode == 'auto');
   if (mode == 'auto') {
-    bin.onAutoMode();
+    txtbin.onAutoMode();
   }
 };
 
-bin.onAutoMode = function() {
-  bin.detectCurrentMode();
+txtbin.onAutoMode = function() {
+  txtbin.detectCurrentMode();
 };
 
-bin.activeMode = function(mode) {
-  bin.setMode(mode, true);
+txtbin.activeMode = function(mode) {
+  txtbin.setMode(mode, true);
 };
 
-bin.setDndHandlerMode = function(mode) {
+txtbin.setDndHandlerMode = function(mode) {
   if (mode == 'b64') {
-    bin.dndHandler.setMode('data');
+    txtbin.dndHandler.setMode('data');
   } else {
-    bin.dndHandler.setMode('blob');
+    txtbin.dndHandler.setMode('blob');
   }
 };
 
-bin.dump = function(s) {
-  var mode = bin.getMode();
+txtbin.dump = function(s) {
+  var mode = txtbin.getMode();
   var r;
   var buf;
   var b64;
@@ -833,14 +833,14 @@ bin.dump = function(s) {
     case 'bin':
       buf = new Uint8Array(s);
       b64 = util.encodeBase64(buf, true);
-      r = bin.getBinDump(mode, buf);
+      r = txtbin.getBinDump(mode, buf);
       break;
     case 'b64s':
       var key = $el('#key').value;
       buf = new Uint8Array(s);
       b64 = util.encodeBase64(buf, true);
       b64s = util.encodeBase64s(buf, key);
-      r = bin.formatB64(b64s);
+      r = txtbin.formatB64(b64s);
       $el('#key-update-button').disabled = false;
       break;
     case 'bsb64':
@@ -848,7 +848,7 @@ bin.dump = function(s) {
       buf = new Uint8Array(s);
       b64 = util.encodeBase64(buf, true);
       var b64s = util.BSB64.encode(buf, n);
-      r = bin.formatB64(b64s);
+      r = txtbin.formatB64(b64s);
       break;
     case 'txt':
       buf = new Uint8Array(s);
@@ -856,27 +856,27 @@ bin.dump = function(s) {
       r = util.decodeBase64(b64);
       break;
     default:
-      buf = bin.decodeBase64(s);
-      r = bin.formatB64(s);
-      b64 = bin.extractB64fromDataUrl(s);
+      buf = txtbin.decodeBase64(s);
+      r = txtbin.formatB64(s);
+      b64 = txtbin.extractB64fromDataUrl(s);
   }
-  var ftype = bin.analyzeBinary(buf, bin.file);
-  bin.drawBinInfo(ftype, buf, b64);
-  bin.setSrcValue(r, true);
-  bin.bufCache = {
+  var ftype = txtbin.analyzeBinary(buf, txtbin.file);
+  txtbin.drawBinInfo(ftype, buf, b64);
+  txtbin.setSrcValue(r, true);
+  txtbin.bufCache = {
     ftype: ftype,
     buf: buf,
     b64: b64
   };
-  bin.showPreview(bin.bufCache);
+  txtbin.showPreview(txtbin.bufCache);
 };
 
-bin.decodeBase64 = function(s) {
-  s = bin.extractB64fromDataUrl(s);
+txtbin.decodeBase64 = function(s) {
+  s = txtbin.extractB64fromDataUrl(s);
   return util.decodeBase64(s, true);
 };
 
-bin.extractB64fromDataUrl = function(s) {
+txtbin.extractB64fromDataUrl = function(s) {
   s = s.trim().replace(/\n/g, '');
   if (s.startsWith('data:')) {
     var a = s.split(',');
@@ -885,7 +885,7 @@ bin.extractB64fromDataUrl = function(s) {
   return s;
 };
 
-bin.drawBinInfo = function(ftype, buf, b64) {
+txtbin.drawBinInfo = function(ftype, buf, b64) {
   var bLen = buf.length;
   var b64Len = b64.length;
   var x = ((bLen == 0) ?  0 : util.round(b64Len / bLen, 2));
@@ -894,9 +894,9 @@ bin.drawBinInfo = function(ftype, buf, b64) {
 
   var fileName = '-';
   var lastMod = '-';
-  if (bin.file) {
-    fileName = bin.file.name;
-    lastMod = util.getDateTimeString(bin.file.lastModified);
+  if (txtbin.file) {
+    fileName = txtbin.file.name;
+    lastMod = util.getDateTimeString(txtbin.file.lastModified);
   }
 
   var sizeInfo = bSize + ' bytes';
@@ -915,36 +915,36 @@ bin.drawBinInfo = function(ftype, buf, b64) {
   s += 'FileName: ' + fileName + '\n';
   s += 'LastMod : ' + lastMod + '\n';
   s += 'Size    : ' + sizeInfo + '\n';
-  s += 'SHA-1   : ' + bin.getSHA('SHA-1', buf, 1) + '\n';
-  s += 'SHA-256 : ' + bin.getSHA('SHA-256', buf, 1) + '\n';
+  s += 'SHA-1   : ' + txtbin.getSHA('SHA-1', buf, 1) + '\n';
+  s += 'SHA-256 : ' + txtbin.getSHA('SHA-256', buf, 1) + '\n';
   s += 'Type    : ' + fileType + '\n';
 
   if (ftype['encoding']) {
-    s += '\n' + bin.buildTextFileInfo(ftype);
+    s += '\n' + txtbin.buildTextFileInfo(ftype);
   }
 
   var binDetail = ftype['bin_detail'];
 
-  if (bin.isImage(ftype)) {
+  if (txtbin.isImage(ftype)) {
     if (binDetail) {
-      s += bin.buildImageInfo(binDetail);
+      s += txtbin.buildImageInfo(binDetail);
     }
-  } else if (bin.isZip(ftype)) {
+  } else if (txtbin.isZip(ftype)) {
     s += 'Encryption: ';
     s += (binDetail['has_pw'] ? '<span class="caution">Y</span>' : 'N');
   } else if (binDetail && (typeof binDetail == 'string')) {
     s += '' + binDetail;
   }
 
-  bin.drawInfo(s);
+  txtbin.drawInfo(s);
 };
 
-bin.buildImageInfo = function(binDetail) {
+txtbin.buildImageInfo = function(binDetail) {
   var s = 'ImgSize : W ' + binDetail['w'] + ' x ' + 'H '  + binDetail['h'];
   return s;
 };
 
-bin.buildTextFileInfo = function(ftype) {
+txtbin.buildTextFileInfo = function(ftype) {
   var encInfo = ftype['encoding'];
   var type = encInfo.type;
   var newline = encInfo['newline'];
@@ -955,7 +955,7 @@ bin.buildTextFileInfo = function(ftype) {
   var ttCrLf = '0';
   var ttLf = '0';
   var ttCr = '0';
-  var isUnicode = bin.isUnicode(type);
+  var isUnicode = txtbin.isUnicode(type);
 
   if (newline['crlf']) {
     clzCrLf = 'status-active';
@@ -970,7 +970,7 @@ bin.buildTextFileInfo = function(ftype) {
     ttCr = newline['cr'];
   }
 
-  var encodingName = bin.getEncodingName(type);
+  var encodingName = txtbin.getEncodingName(type);
 
   var s = 'Encoding: ' + encodingName;
 
@@ -986,24 +986,24 @@ bin.buildTextFileInfo = function(ftype) {
   }
 
   s += '  ';
-  s += '<span class="cc-link ' + clzCrLf + '" data-tooltip="count=' + ttCrLf + '" onclick="bin.openUnicodeTable(\'0x000D\', true);">[CRLF]</span>';
-  s += '<span class="cc-link ' + clzLf + '" data-tooltip="count=' + ttLf + '" onclick="bin.openUnicodeTable(\'0x000A\', true);">[LF]</span>';
-  s += '<span class="cc-link ' + clzCr + '" data-tooltip="count=' + ttCr + '" onclick="bin.openUnicodeTable(\'0x000D\', true);">[CR]</span>\n';
+  s += '<span class="cc-link ' + clzCrLf + '" data-tooltip="count=' + ttCrLf + '" onclick="txtbin.openUnicodeTable(\'0x000D\', true);">[CRLF]</span>';
+  s += '<span class="cc-link ' + clzLf + '" data-tooltip="count=' + ttLf + '" onclick="txtbin.openUnicodeTable(\'0x000A\', true);">[LF]</span>';
+  s += '<span class="cc-link ' + clzCr + '" data-tooltip="count=' + ttCr + '" onclick="txtbin.openUnicodeTable(\'0x000D\', true);">[CR]</span>\n';
 
   if (isUnicode) {
-    s += bin.buildUnicodeInfo(encInfo, type);
+    s += txtbin.buildUnicodeInfo(encInfo, type);
   }
 
   return s;
 };
 
-bin.buildUnicodeInfo = function(encInfo, type) {
+txtbin.buildUnicodeInfo = function(encInfo, type) {
   var i, codeBlock, blockName;
   var clz = {};
 
   var codeblockCount = encInfo['codeblock_count'];
-  for (i = 0; i < bin.CODE_BLOCKS.length; i++) {
-    codeBlock = bin.CODE_BLOCKS[i];
+  for (i = 0; i < txtbin.CODE_BLOCKS.length; i++) {
+    codeBlock = txtbin.CODE_BLOCKS[i];
     blockName = codeBlock['name'];
 
     var caution = codeBlock['caution'];
@@ -1018,11 +1018,11 @@ bin.buildUnicodeInfo = function(encInfo, type) {
 
   var s = '';
   var blkCnt = 0;
-  for (i = 0; i < bin.CODE_BLOCKS.length; i++) {
-    codeBlock = bin.CODE_BLOCKS[i];
+  for (i = 0; i < txtbin.CODE_BLOCKS.length; i++) {
+    codeBlock = txtbin.CODE_BLOCKS[i];
     var codeBlockLv = codeBlock['block_level'];
 
-    s += bin.buildCodeBlockInfo(codeBlock, codeBlockLv, clz, codeblockCount, blkCnt);
+    s += txtbin.buildCodeBlockInfo(codeBlock, codeBlockLv, clz, codeblockCount, blkCnt);
 
     if (codeBlockLv == 0) {
       blkCnt = 0;
@@ -1033,7 +1033,7 @@ bin.buildUnicodeInfo = function(encInfo, type) {
   return s;
 };
 
-bin.buildCodeBlockInfo = function(codeBlock, codeBlockLv, clz, codeblockCount, blkCnt) {
+txtbin.buildCodeBlockInfo = function(codeBlock, codeBlockLv, clz, codeblockCount, blkCnt) {
   var blockName = codeBlock['name'];
 
   var s = '';
@@ -1042,7 +1042,7 @@ bin.buildCodeBlockInfo = function(codeBlock, codeBlockLv, clz, codeblockCount, b
   }
 
   var clazz = clz[blockName];
-  var isSingleCd = bin.isSingleCode(codeBlock);
+  var isSingleCd = txtbin.isSingleCode(codeBlock);
   if (isSingleCd) {
     clazz += ' code-single';
   } else {
@@ -1056,11 +1056,11 @@ bin.buildCodeBlockInfo = function(codeBlock, codeBlockLv, clz, codeblockCount, b
   }
 
   var cpS = codeBlock['ranges'][0]['cp_s'];
-  var cpHexS = bin.toHex(cpS, true, '0x', 4);
-  var cpRange = bin.buildCodeRangeString(codeBlock);
+  var cpHexS = txtbin.toHex(cpS, true, '0x', 4);
+  var cpRange = txtbin.buildCodeRangeString(codeBlock);
   var tooltip = cpRange + ': ' + codeBlock['fullname'];
   s += '<span class="code-range" data-tooltip="' + tooltip + ' (count=' + codeblockCount[blockName] + ')" ';
-  s += 'onclick="bin.openUnicodeTable(\'' + cpHexS + '\', ' + isSingleCd + ');">';
+  s += 'onclick="txtbin.openUnicodeTable(\'' + cpHexS + '\', ' + isSingleCd + ');">';
   s += codeBlock['label'];
   s += '</span>';
 
@@ -1074,12 +1074,12 @@ bin.buildCodeBlockInfo = function(codeBlock, codeBlockLv, clz, codeblockCount, b
   return s;
 };
 
-bin.openUnicodeTable = function(p, single) {
+txtbin.openUnicodeTable = function(p, single) {
   var url = '../unicode.html?' + (single ? 'p' : 'start') + '=' + p;
   window.open(url, '_new');
 };
 
-bin.buildCodeRangeString = function(codeBlock) {
+txtbin.buildCodeRangeString = function(codeBlock) {
   var s = '';
   var codeBlockRangeList = codeBlock['ranges'];
   for (var i = 0; i < codeBlockRangeList.length; i++) {
@@ -1089,30 +1089,30 @@ bin.buildCodeRangeString = function(codeBlock) {
     if (i > 0) {
       s += ',';
     }
-    s += 'U+' + bin.toHex(cp_s, true, '', 4);
+    s += 'U+' + txtbin.toHex(cp_s, true, '', 4);
     if (cp_e) {
-      s += '-U+' + bin.toHex(cp_e, true, '', 4);
+      s += '-U+' + txtbin.toHex(cp_e, true, '', 4);
     }
   }
   return s;
 };
 
-bin.isSingleCode = function(codeBlock) {
+txtbin.isSingleCode = function(codeBlock) {
   return (codeBlock['ranges'][0]['cp_e'] == undefined);
 };
 
-bin.isUnicode = function(type) {
+txtbin.isUnicode = function(type) {
   var pFix = type.substr(0, 3);
   return (pFix == 'utf');
 };
 
-bin.getEncodingName = function(id) {
+txtbin.getEncodingName = function(id) {
   var nameLink = '';
-  if (id in bin.CHARACTER_ENCODINGS) {
-    var encoding = bin.CHARACTER_ENCODINGS[id];
+  if (id in txtbin.CHARACTER_ENCODINGS) {
+    var encoding = txtbin.CHARACTER_ENCODINGS[id];
     var name = encoding.name;
     var color = (encoding.color ? encoding.color : '#fff');
-    var codetable = bin.getCodeTableUrl(id);
+    var codetable = txtbin.getCodeTableUrl(id);
     nameLink = '<span style="color:' + color + ';'
     if (codetable) {
       nameLink += 'cursor:pointer;';
@@ -1126,7 +1126,7 @@ bin.getEncodingName = function(id) {
   return nameLink;
 };
 
-bin.getCodeTableUrl = function(encoding) {
+txtbin.getCodeTableUrl = function(encoding) {
   var path = null;
   if ((encoding == 'ascii') || (encoding.startsWith('utf'))) {
     path = 'unicode.html';
@@ -1137,46 +1137,46 @@ bin.getCodeTableUrl = function(encoding) {
   return path;
 };
 
-bin.getSHA = function(a, b, f) {
+txtbin.getSHA = function(a, b, f) {
   var s = new window.jsSHA(a, (f ? 'UINT8ARRAY' : 'TEXT'));
   s.update(b);
   return s.getHash('HEX');
 };
 
-bin.decode = function() {
-  bin.clearBuf();
-  bin.bufCache = bin.updateInfoAndPreview();
-  var mode = bin.getMode();
+txtbin.decode = function() {
+  txtbin.clearBuf();
+  txtbin.bufCache = txtbin.updateInfoAndPreview();
+  var mode = txtbin.getMode();
   if (mode == 'b64s') {
     $el('#key-update-button').disabled = false;
   }
 };
 
-bin.updateInfoAndPreview = function() {
-  var mode = bin.getMode();
-  var s = bin.getSrcValue();
-  if ((mode == 'hex') && (bin.isPercentEncoding(s))) {
+txtbin.updateInfoAndPreview = function() {
+  var mode = txtbin.getMode();
+  var s = txtbin.getSrcValue();
+  if ((mode == 'hex') && (txtbin.isPercentEncoding(s))) {
     s = s.replace(/%/g, '');
   }
-  var b = bin.str2buf(mode, s);
+  var b = txtbin.str2buf(mode, s);
   var b64 = util.encodeBase64(b, true);
-  var ftype = bin.analyzeBinary(b, bin.file);
-  bin.drawBinInfo(ftype, b, b64);
+  var ftype = txtbin.analyzeBinary(b, txtbin.file);
+  txtbin.drawBinInfo(ftype, b, b64);
   var bufCache = {
     ftype: ftype,
     buf: b,
     b64: b64
   };
-  bin.showPreview(bufCache);
+  txtbin.showPreview(bufCache);
   return bufCache;
 };
 
-bin.bin2uint8Array = function(s) {
+txtbin.bin2uint8Array = function(s) {
   s = s.replace(/\s/g, '');
-  return bin.str2binArr(s, 8, '0b');
+  return txtbin.str2binArr(s, 8, '0b');
 };
 
-bin.dec2uint8Array = function(s) {
+txtbin.dec2uint8Array = function(s) {
   s = s.replace(/\n/g, ' ');
   s = s.replace(/\s{2,}/g, ' ');
   var w = s.split(' ');
@@ -1187,33 +1187,33 @@ bin.dec2uint8Array = function(s) {
   return a;
 };
 
-bin.hex2uint8Array = function(s) {
+txtbin.hex2uint8Array = function(s) {
   s = s.replace(/\s/g, '');
-  return bin.str2binArr(s, 2, '0x');
+  return txtbin.str2binArr(s, 2, '0x');
 };
 
-bin.b642uint8Array = function(s) {
+txtbin.b642uint8Array = function(s) {
   try {
-    var a = bin.decodeBase64(s);
+    var a = txtbin.decodeBase64(s);
   } catch(e) {
     a = [];
   }
   return a;
 };
 
-bin.str2binArr = function(str, blkSize, pFix) {
+txtbin.str2binArr = function(str, blkSize, pFix) {
   var a = [];
   for (var i = 0; i < str.length; i += blkSize) {
     var v = str.substr(i, blkSize);
     if (v.length == blkSize) {
-      a.push(bin.parseInt(pFix + v));
+      a.push(txtbin.parseInt(pFix + v));
     }
   }
   return a;
 };
 
-bin.parseInt = function(v) {
-  var rdx = bin.checkRadix(v);
+txtbin.parseInt = function(v) {
+  var rdx = txtbin.checkRadix(v);
   if (rdx == 0) {
     return 0;
   } else if (rdx == 2) {
@@ -1222,7 +1222,7 @@ bin.parseInt = function(v) {
   return parseInt(v, rdx);
 };
 
-bin.checkRadix = function(v) {
+txtbin.checkRadix = function(v) {
   if (v.match(/^-{0,1}0x[0-9A-Fa-f\s]+$/i)) {
     return 16;
   } else if (v.match(/^-{0,1}0[0-7\s]+$/i)) {
@@ -1235,7 +1235,7 @@ bin.checkRadix = function(v) {
   return 0;
 };
 
-bin.getBinDump = function(mode, buf) {
+txtbin.getBinDump = function(mode, buf) {
   var showAddr = $el('#dump-flag-show-addr').checked;
   var showSp = $el('#dump-flag-show-sp').checked;
   var showAscii = $el('#dump-flag-show-ascii').checked;
@@ -1282,12 +1282,12 @@ bin.getBinDump = function(mode, buf) {
     dmp += hd;
   }
   if (showAddr) {
-    dmp += bin.dumpAddr(0, uc);
+    dmp += txtbin.dumpAddr(0, uc);
   }
 
   for (var i = 0; i < len; i++) {
     if (i < buf.length || showAscii) {
-      dmp += bin.getDump(mode, i, buf, len, showSp, showAddr, showAscii, uc);
+      dmp += txtbin.getDump(mode, i, buf, len, showSp, showAddr, showAscii, uc);
     }
   }
 
@@ -1308,11 +1308,11 @@ bin.getBinDump = function(mode, buf) {
       var ed = bLen + (rem == 0 ? 0 : (0x10 - rem));
       dmp += '\n';
       if (showAddr) {
-        dmp += bin.dumpAddr(st, uc);
+        dmp += txtbin.dumpAddr(st, uc);
       }
       for (i = st; i < ed; i++) {
         if (i < buf.length || showAscii) {
-          dmp += bin.getDump(mode, i, buf, ed, showSp, showAddr, showAscii, uc);
+          dmp += txtbin.getDump(mode, i, buf, ed, showSp, showAddr, showAscii, uc);
         }
       }
     }
@@ -1322,22 +1322,22 @@ bin.getBinDump = function(mode, buf) {
   return dmp;
 };
 
-bin.getDump = function(mode, i, buf, len, showSp, showAddr, showAscii, uc) {
+txtbin.getDump = function(mode, i, buf, len, showSp, showAddr, showAscii, uc) {
   var b;
   if (mode == 'bin') {
-    b = bin.dumpBin(i, buf);
+    b = txtbin.dumpBin(i, buf);
   } else if (mode == 'dec') {
-    b = bin.dumpDec(i, buf);
+    b = txtbin.dumpDec(i, buf);
   } else {
-    b = bin.dumpHex(i, buf, uc);
+    b = txtbin.dumpHex(i, buf, uc);
   }
   if ((i + 1) % 0x10 == 0) {
     if (showAscii) {
-      b += '  ' + bin.dumpAscii(((i + 1) - 0x10), buf);
+      b += '  ' + txtbin.dumpAscii(((i + 1) - 0x10), buf);
     }
     if ((i + 1) < len) {
       b += '\n';
-      if (showAddr) b += bin.dumpAddr(i + 1, uc);
+      if (showAddr) b += txtbin.dumpAddr(i + 1, uc);
     }
   } else if (showSp) {
     b += (((i + 1) % 8 == 0) ? '  ' : ' ');
@@ -1345,26 +1345,26 @@ bin.getDump = function(mode, i, buf, len, showSp, showAddr, showAscii, uc) {
   return b;
 },
 
-bin.dumpAddr = function(i, uc) {
+txtbin.dumpAddr = function(i, uc) {
   var r = ('0000000' + i.toString(16)).slice(-8) + ' : ';
   return (uc ? r.toUpperCase() : r);
 };
-bin.dumpBin = function(i, buf) {
-  return ((buf[i] == undefined) ? '        ' : bin.toBin(buf[i]));
+txtbin.dumpBin = function(i, buf) {
+  return ((buf[i] == undefined) ? '        ' : txtbin.toBin(buf[i]));
 };
-bin.dumpDec = function(i, buf) {
+txtbin.dumpDec = function(i, buf) {
   return ((buf[i] == undefined) ? '   ' : ('  ' + buf[i].toString()).slice(-3));
 };
-bin.dumpHex = function(i, buf, uc) {
+txtbin.dumpHex = function(i, buf, uc) {
   var r = ((buf[i] == undefined) ? '  ' : ('0' + buf[i].toString(16)).slice(-2));
   return (uc ? r.toUpperCase() : r);
 };
 
-bin.i2hex = function(i) {
+txtbin.i2hex = function(i) {
   return ((i == undefined) ? '' : ('0' + i.toString(16)).slice(-2).toUpperCase());
 };
 
-bin.dumpAscii = function(pos, buf) {
+txtbin.dumpAscii = function(pos, buf) {
   var dumpMB = $el('#dump-multibyte').checked;
   var b = '';
   var end = pos + 0x10;
@@ -1378,27 +1378,27 @@ bin.dumpAscii = function(pos, buf) {
       var pd = '';
       var skip = 0;
       if ((code & 0xF0) == 0xF0) {
-        c0 = bin.i2hex(buf[i]);
-        c1 = bin.i2hex(buf[i + 1]);
-        c2 = bin.i2hex(buf[i + 2]);
-        c3 = bin.i2hex(buf[i + 3]);
+        c0 = txtbin.i2hex(buf[i]);
+        c1 = txtbin.i2hex(buf[i + 1]);
+        c2 = txtbin.i2hex(buf[i + 2]);
+        c3 = txtbin.i2hex(buf[i + 3]);
         if ((c1 != '') && (c2 != '') && (c3 != '')) {
           uri = '%' + c0 + '%' + c1 + '%' + c2 + '%' + c3;
         }
         skip = 3;
         pd = '  ';
       } else if ((code & 0xE0) == 0xE0) {
-        c0 = bin.i2hex(buf[i]);
-        c1 = bin.i2hex(buf[i + 1]);
-        c2 = bin.i2hex(buf[i + 2]);
+        c0 = txtbin.i2hex(buf[i]);
+        c1 = txtbin.i2hex(buf[i + 1]);
+        c2 = txtbin.i2hex(buf[i + 2]);
         if ((c1 != '') && (c2 != '')) {
           uri = '%' + c0 + '%' + c1 + '%' + c2;
         }
         skip = 2;
         pd = ' ';
       } else if ((code & 0xC0) == 0xC0) {
-        c0 = bin.i2hex(buf[i]);
-        c1 = bin.i2hex(buf[i + 1]);
+        c0 = txtbin.i2hex(buf[i]);
+        c1 = txtbin.i2hex(buf[i + 1]);
         if ((c1 != '') && (c2 != '')) {
           uri = '%' + c0 + '%' + c1;
         }
@@ -1417,10 +1417,10 @@ bin.dumpAscii = function(pos, buf) {
 
     switch (code) {
       case 0x0A:
-        b += bin.TXT_CHR_LF;
+        b += txtbin.TXT_CHR_LF;
         break;
       case 0x0D:
-        b += bin.TXT_CHR_CR;
+        b += txtbin.TXT_CHR_CR;
         break;
       default:
         if ((code >= 0x20) && (code <= 0x7E)) {
@@ -1433,7 +1433,7 @@ bin.dumpAscii = function(pos, buf) {
   return b;
 };
 
-bin.getEncoding = function(buf) {
+txtbin.getEncoding = function(buf) {
   var typeScore = {
     ascii: 1,
     utf8: 0,
@@ -1479,8 +1479,8 @@ bin.getEncoding = function(buf) {
     }
   };
 
-  for (i = 0; i < bin.CODE_BLOCKS.length; i++) {
-    codeBlock = bin.CODE_BLOCKS[i];
+  for (i = 0; i < txtbin.CODE_BLOCKS.length; i++) {
+    codeBlock = txtbin.CODE_BLOCKS[i];
     var blockName = codeBlock['name'];
     flags['utf8']['codeblock_count'][blockName] = 0;
     flags['utf16be']['codeblock_count'][blockName] = 0;
@@ -1488,18 +1488,18 @@ bin.getEncoding = function(buf) {
   }
 
   var f = false;
-  if (bin.isUtf8Bom(buf)) {
-    typeScore = bin.setScore(typeScore, 'utf8');
+  if (txtbin.isUtf8Bom(buf)) {
+    typeScore = txtbin.setScore(typeScore, 'utf8');
     f = true;
     flags['utf8']['bom'] = 'UTF-8';
     typeScore['utf16'] = -1;
-  } else if (bin.isUtf16LeBom(buf)) {
-    typeScore = bin.setScore(typeScore, 'utf16le');
+  } else if (txtbin.isUtf16LeBom(buf)) {
+    typeScore = txtbin.setScore(typeScore, 'utf16le');
     f = true;
     flags['utf16le']['bom'] = 'LE';
     typeScore['utf8'] = -1;
-  } else if (bin.isUtf16BeBom(buf)) {
-    typeScore = bin.setScore(typeScore, 'utf16be');
+  } else if (txtbin.isUtf16BeBom(buf)) {
+    typeScore = txtbin.setScore(typeScore, 'utf16be');
     f = true;
     flags['utf16be']['bom'] = 'BE';
     typeScore['utf8'] = -1;
@@ -1516,14 +1516,14 @@ bin.getEncoding = function(buf) {
     var code = buf[i];
     var leftLen = buf.length - i;
 
-    var ptn4 = bin.fetchBufAsIntByBE(buf, i, 4);
-    var ptn3 = bin.fetchBufAsIntByBE(buf, i, 3);
-    var ptn2 = bin.fetchBufAsIntByBE(buf, i, 2);
+    var ptn4 = txtbin.fetchBufAsIntByBE(buf, i, 4);
+    var ptn3 = txtbin.fetchBufAsIntByBE(buf, i, 3);
+    var ptn2 = txtbin.fetchBufAsIntByBE(buf, i, 2);
 
     var ptn2U = ptn2;
     var ptn2L = (ptn4 & 0xFFFF);
-    var ptn2Ur = bin.switchEndian(ptn2U);
-    var ptn2Lr = bin.switchEndian(ptn2L);
+    var ptn2Ur = txtbin.switchEndian(ptn2U);
+    var ptn2Lr = txtbin.switchEndian(ptn2L);
 
     var chunk = {
       leftLen: leftLen,
@@ -1536,39 +1536,39 @@ bin.getEncoding = function(buf) {
       ptn3: ptn3
     };
 
-    bin.checkNewline(buf, i, code, chunk, flags);
-    bin.checkNonBmp(buf, i, code, chunk, flags);
+    txtbin.checkNewline(buf, i, code, chunk, flags);
+    txtbin.checkNonBmp(buf, i, code, chunk, flags);
 
-    for (var j = 0; j < bin.CODE_BLOCKS.length; j++) {
-      var codeBlock = bin.CODE_BLOCKS[j];
-      bin.checkCodeBlock(buf, i, code, chunk, flags, codeBlock);
+    for (var j = 0; j < txtbin.CODE_BLOCKS.length; j++) {
+      var codeBlock = txtbin.CODE_BLOCKS[j];
+      txtbin.checkCodeBlock(buf, i, code, chunk, flags, codeBlock);
     }
 
     var uri = null;
     var skip = 0;
     var c0, c1, c2, c3;
     if ((code & 0xF0) == 0xF0) {
-      c0 = bin.i2hex(buf[i]);
-      c1 = bin.i2hex(buf[i + 1]);
-      c2 = bin.i2hex(buf[i + 2]);
-      c3 = bin.i2hex(buf[i + 3]);
+      c0 = txtbin.i2hex(buf[i]);
+      c1 = txtbin.i2hex(buf[i + 1]);
+      c2 = txtbin.i2hex(buf[i + 2]);
+      c3 = txtbin.i2hex(buf[i + 3]);
       if ((c1 != '') && (c2 != '') && (c3 != '')) {
         uri = '%' + c0 + '%' + c1 + '%' + c2 + '%' + c3;
       }
       skip = 3;
       flags['utf8']['codeblock_count']['non_bmp']++;
     } else if ((code & 0xE0) == 0xE0) {
-      c0 = bin.i2hex(buf[i]);
-      c1 = bin.i2hex(buf[i + 1]);
-      c2 = bin.i2hex(buf[i + 2]);
+      c0 = txtbin.i2hex(buf[i]);
+      c1 = txtbin.i2hex(buf[i + 1]);
+      c2 = txtbin.i2hex(buf[i + 2]);
       if ((c1 != '') && (c2 != '')) {
         uri = '%' + c0 + '%' + c1 + '%' + c2;
       }
       skip = 2;
       flags['utf8']['codeblock_count']['bmp']++;
     } else if ((code & 0xC0) == 0xC0) {
-      c0 = bin.i2hex(buf[i]);
-      c1 = bin.i2hex(buf[i + 1]);
+      c0 = txtbin.i2hex(buf[i]);
+      c1 = txtbin.i2hex(buf[i + 1]);
       if ((c1 != '') && (c2 != '')) {
         uri = '%' + c0 + '%' + c1;
       }
@@ -1578,7 +1578,7 @@ bin.getEncoding = function(buf) {
       typeScore['ascii'] = -1;
       typeScore['utf8'] = -1;
       if (evn) {
-        typeScore = bin.incrementScore(typeScore, 'utf16');
+        typeScore = txtbin.incrementScore(typeScore, 'utf16');
       } else {
         if (typeScore['bin'] != -1) {
           typeScore['bin'] = 1;
@@ -1592,7 +1592,7 @@ bin.getEncoding = function(buf) {
       typeScore['euc_jp'] = -1;
 
       if (evn) {
-        typeScore = bin.incrementScore(typeScore, 'utf16');
+        typeScore = txtbin.incrementScore(typeScore, 'utf16');
       } else {
         if (typeScore['bin'] != -1) {
           typeScore['bin'] = 1;
@@ -1604,31 +1604,31 @@ bin.getEncoding = function(buf) {
       try {
         var c = decodeURI(uri);
         i += skip;
-        typeScore = bin.incrementScore(typeScore, 'utf8');
+        typeScore = txtbin.incrementScore(typeScore, 'utf8');
         var cp = c.charCodeAt(0);
-        if (bin.inRange(cp, 0x80, 0xFF)) {
+        if (txtbin.inRange(cp, 0x80, 0xFF)) {
           flags['utf8']['codeblock_count']['latin1_suppl']++;
         }
       } catch(e) {}
     }
 
     if (typeScore['sjis'] >= 0) {
-      if (bin.isSjis(buf, i, true)) {
-        typeScore = bin.incrementScore(typeScore, 'sjis');
+      if (txtbin.isSjis(buf, i, true)) {
+        typeScore = txtbin.incrementScore(typeScore, 'sjis');
         typeScore['utf16'] = -1;
       }
     }
 
     if (typeScore['iso2022jp'] >= 0) {
-      if (bin.isIso2022jp(buf, i)) {
-        typeScore = bin.incrementScore(typeScore, 'iso2022jp');
+      if (txtbin.isIso2022jp(buf, i)) {
+        typeScore = txtbin.incrementScore(typeScore, 'iso2022jp');
         typeScore['utf16'] = -1;
       }
     }
 
     if (typeScore['euc_jp'] >= 0) {
-      if (bin.isEuc(buf, i, true)) {
-        typeScore = bin.incrementScore(typeScore, 'euc_jp');
+      if (txtbin.isEuc(buf, i, true)) {
+        typeScore = txtbin.incrementScore(typeScore, 'euc_jp');
         typeScore['utf16'] = -1;
       }
     }
@@ -1640,9 +1640,9 @@ bin.getEncoding = function(buf) {
   }
 
   if (type == 'utf16') {
-    if (bin.isUtf16Le(buf)) {
+    if (txtbin.isUtf16Le(buf)) {
       type = 'utf16le';
-    } else if (bin.isUtf16Be(buf)) {
+    } else if (txtbin.isUtf16Be(buf)) {
       type = 'utf16be';
     } else {
       type = 'bin';
@@ -1655,7 +1655,7 @@ bin.getEncoding = function(buf) {
     codeblock_count: {}
   };
 
-  if (bin.isUnicode(type)) {
+  if (txtbin.isUnicode(type)) {
     var srcFlags = flags[type];
     for (var key in srcFlags) {
       encoding[key] = srcFlags[key];
@@ -1670,7 +1670,7 @@ bin.getEncoding = function(buf) {
   return encoding;
 };
 
-bin.checkCodeBlock = function(buf, pos, code, chunk, flags, codeBlock) {
+txtbin.checkCodeBlock = function(buf, pos, code, chunk, flags, codeBlock) {
   if (codeBlock['skip_check']) {
     return;
   }
@@ -1680,14 +1680,14 @@ bin.checkCodeBlock = function(buf, pos, code, chunk, flags, codeBlock) {
   for (var i = 0; i < codeBlockRangeList.length; i++) {
     var range = codeBlockRangeList[i];
     if (range['cp_s'] >= 0x10000) {
-      bin.checkCodeBlock2(buf, pos, code, chunk, flags, blockName, range);
+      txtbin.checkCodeBlock2(buf, pos, code, chunk, flags, blockName, range);
     } else {
-      bin.checkCodeBlock1(buf, pos, code, chunk, flags, blockName, range);
+      txtbin.checkCodeBlock1(buf, pos, code, chunk, flags, blockName, range);
     }
   }
 };
 
-bin.checkNewline = function(buf, pos, code, chunk, flags) {
+txtbin.checkNewline = function(buf, pos, code, chunk, flags) {
   if (pos % 2 == 0) {
     if (chunk['ptn4'] == 0x000D000A) {
       flags['utf16be']['newline']['crlf']++;
@@ -1728,23 +1728,23 @@ bin.checkNewline = function(buf, pos, code, chunk, flags) {
   return flags;
 };
 
-bin.checkAscii = function(buf, pos, code, chunk, flags) {
+txtbin.checkAscii = function(buf, pos, code, chunk, flags) {
   if (pos % 2 == 0) {
-    if (bin.inRange(chunk['ptn2U'], 0x0020, 0x007F)) {
+    if (txtbin.inRange(chunk['ptn2U'], 0x0020, 0x007F)) {
       flags['utf16be']['codeblock_count']['ascii']++;
-    } else if (bin.inRange(chunk['ptn2Ur'], 0x0020, 0x007F)) {
+    } else if (txtbin.inRange(chunk['ptn2Ur'], 0x0020, 0x007F)) {
       flags['utf16le']['codeblock_count']['ascii']++;
     }
   }
 
-  if (bin.inRange(code, 0x20, 0x7F)) {
+  if (txtbin.inRange(code, 0x20, 0x7F)) {
     flags['utf8']['codeblock_count']['ascii']++;
   }
 
   return flags;
 };
 
-bin.checkCodeBlock1 = function(buf, pos, code, chunk, flags, blockName, range) {
+txtbin.checkCodeBlock1 = function(buf, pos, code, chunk, flags, blockName, range) {
   var utf16S = range['utf16_s'];
   var utf16E = range['utf16_e'];
   var utf8S = range['utf8_s'];
@@ -1767,9 +1767,9 @@ bin.checkCodeBlock1 = function(buf, pos, code, chunk, flags, blockName, range) {
   }
 
   var utf8B = chunk['ptn3'];
-  if (bin.inRange(utf8S, 0xC280, 0xDFBF)) {
+  if (txtbin.inRange(utf8S, 0xC280, 0xDFBF)) {
     utf8B = chunk['ptn2'];
-  } else if (bin.inRange(utf8S, 0x00, 0x7F)) {
+  } else if (txtbin.inRange(utf8S, 0x00, 0x7F)) {
     utf8B = code;
   }
 
@@ -1780,7 +1780,7 @@ bin.checkCodeBlock1 = function(buf, pos, code, chunk, flags, blockName, range) {
   return flags;
 };
 
-bin.checkCodeBlock2 = function(buf, pos, code, chunk, flags, blockName, range) {
+txtbin.checkCodeBlock2 = function(buf, pos, code, chunk, flags, blockName, range) {
   if (chunk['leftLen'] < 4) {
     return flags;
   }
@@ -1822,14 +1822,14 @@ bin.checkCodeBlock2 = function(buf, pos, code, chunk, flags, blockName, range) {
   return flags;
 };
 
-bin.checkNonBmp = function(buf, pos, code, chunk, flags) {
+txtbin.checkNonBmp = function(buf, pos, code, chunk, flags) {
   if (pos % 2 == 0) {
-    if (bin.isUpperSurrogate(chunk['ptn2U']) && bin.isLowerSurrogate(chunk['ptn2L'])) {
+    if (txtbin.isUpperSurrogate(chunk['ptn2U']) && txtbin.isLowerSurrogate(chunk['ptn2L'])) {
       flags['utf16be']['codeblock_count']['non_bmp']++;
-    } else if (bin.isUpperSurrogate(chunk['ptn2Ur']) && bin.isLowerSurrogate(chunk['ptn2Lr'])) {
+    } else if (txtbin.isUpperSurrogate(chunk['ptn2Ur']) && txtbin.isLowerSurrogate(chunk['ptn2Lr'])) {
       flags['utf16le']['codeblock_count']['non_bmp'] = true;
     } else {
-      if (!(bin.isUtf16BomSeq(chunk['ptn2U']) || bin.isUtf16BomSeq(chunk['ptn2Ur']) || bin.isSurrogate(chunk['ptn2U']) || bin.isSurrogate(chunk['ptn2Ur']))) {
+      if (!(txtbin.isUtf16BomSeq(chunk['ptn2U']) || txtbin.isUtf16BomSeq(chunk['ptn2Ur']) || txtbin.isSurrogate(chunk['ptn2U']) || txtbin.isSurrogate(chunk['ptn2Ur']))) {
         flags['utf16le']['codeblock_count']['bmp']++;
         flags['utf16be']['codeblock_count']['bmp']++;
       }
@@ -1838,59 +1838,59 @@ bin.checkNonBmp = function(buf, pos, code, chunk, flags) {
   return flags;
 };
 
-bin.inRange = function(c, s, e) {
+txtbin.inRange = function(c, s, e) {
   return ((c >= s) && (c <= e));
 };
 
-bin.isSurrogate = function(v) {
-  return (bin.isUpperSurrogate(v) || bin.isLowerSurrogate(v));
+txtbin.isSurrogate = function(v) {
+  return (txtbin.isUpperSurrogate(v) || txtbin.isLowerSurrogate(v));
 };
 
-bin.isUpperSurrogate = function(v) {
-  return bin.inRange(v, 0xD800, 0xDBFF);
+txtbin.isUpperSurrogate = function(v) {
+  return txtbin.inRange(v, 0xD800, 0xDBFF);
 };
 
-bin.isLowerSurrogate = function(v) {
-  return bin.inRange(v, 0xDC00, 0xDFFF);
+txtbin.isLowerSurrogate = function(v) {
+  return txtbin.inRange(v, 0xDC00, 0xDFFF);
 };
 
-bin.isUtf16BomSeq = function(v) {
+txtbin.isUtf16BomSeq = function(v) {
   return ((v == 0xFFFE) || (v == 0xFEFF));
 };
 
-bin.switchEndian = function(u16) {
+txtbin.switchEndian = function(u16) {
   var vU = (u16 >> 8) & 0xFF;
   var vL = u16 & 0xFF;
   var r = ((vL << 8) + vU) & 0xFFFF;
   return r;
 };
 
-bin.setScore = function(o, k) {
-  o = bin.disableAllScore(o);
+txtbin.setScore = function(o, k) {
+  o = txtbin.disableAllScore(o);
   o[k] = 1;
   return o;
 };
 
-bin.incrementScore = function(o, k) {
+txtbin.incrementScore = function(o, k) {
   if (o[k] >= 0) o[k]++;
   o['ascii'] = -1;
   return o;
 };
 
-bin.disableAllScore = function(o) {
+txtbin.disableAllScore = function(o) {
   for (var k in o) {
     o[k] = -1;
   }
   return o;
 };
 
-bin.analyzeBinary = function(b, f){
-  var tp = bin.getFileType(b, f);
+txtbin.analyzeBinary = function(b, f){
+  var tp = txtbin.getFileType(b, f);
   return tp;
 };
 
-bin.getFileType = function(b, f) {
-  var filetypes = bin.FILETYPES;
+txtbin.getFileType = function(b, f) {
+  var filetypes = txtbin.FILETYPES;
   var ftype = {
     mime: 'text/plain',
     ext: 'txt',
@@ -1901,7 +1901,7 @@ bin.getFileType = function(b, f) {
   for (var k in filetypes) {
     var tp = filetypes[k]
     if (!tp['head']) continue;
-    if (bin._hasBinaryPattern(b, 0, tp['head'])) {
+    if (txtbin._hasBinaryPattern(b, 0, tp['head'])) {
       ftype = tp;
       break;
     }
@@ -1909,15 +1909,15 @@ bin.getFileType = function(b, f) {
 
   if (f) {
     var fileName = f.name;
-    var ext = bin.getExtension(fileName);
-    var mime = bin.getMimeType(ext);
+    var ext = txtbin.getExtension(fileName);
+    var mime = txtbin.getMimeType(ext);
     ftype['ext'] = ext;
     if (mime) ftype['mime'] = mime;
   }
 
   var dc = ftype['mime'].split('/')[0];
   if (dc == 'text') {
-    var enc = bin.getEncoding(b);
+    var enc = txtbin.getEncoding(b);
     if (enc['type'] == 'bin') {
       ftype['mime'] = 'application/octet-stream';
       ftype['ext'] = '???';
@@ -1925,19 +1925,19 @@ bin.getFileType = function(b, f) {
       ftype['encoding'] = enc;
     }
   } else {
-    var binDetail = bin.getBinDetail(b, ftype['mime'], ftype['ext']);
+    var binDetail = txtbin.getBinDetail(b, ftype['mime'], ftype['ext']);
     ftype['bin_detail'] = binDetail;
   }
 
-  if (bin.isZip(ftype)) {
-    var w = bin.getZipContentType(b);
+  if (txtbin.isZip(ftype)) {
+    var w = txtbin.getZipContentType(b);
     if (w) ftype = w;
   }
 
   return ftype;
 };
 
-bin.getExtension = function(fileName) {
+txtbin.getExtension = function(fileName) {
   var ext = '';
   if (fileName.match(/^.*\.[^.]+?$/)) {
     ext = fileName.replace(/^.*\.([^.]+?)$/, '$1');
@@ -1945,8 +1945,8 @@ bin.getExtension = function(fileName) {
   return ext;
 };
 
-bin.getMimeType = function(ext) {
-  var types = bin.FILETYPES;
+txtbin.getMimeType = function(ext) {
+  var types = txtbin.FILETYPES;
   for (var k in types) {
     var tp = types[k];
     if (tp['ext'] == ext) {
@@ -1956,27 +1956,27 @@ bin.getMimeType = function(ext) {
   return null;
 };
 
-bin.hasBinaryPattern = function(buf, bytesPattern) {
+txtbin.hasBinaryPattern = function(buf, bytesPattern) {
   var ptn = bytesPattern.split(' ');
   if (buf.length < ptn.length) return false;
   for (var i = 0; i < buf.length; i++) {
-    if (bin._hasBinaryPattern(buf, i, bytesPattern)) return true;
+    if (txtbin._hasBinaryPattern(buf, i, bytesPattern)) return true;
   }
   return false;
 };
 
-bin._hasBinaryPattern = function(buf, pos, bytesPattern) {
+txtbin._hasBinaryPattern = function(buf, pos, bytesPattern) {
   if (bytesPattern instanceof Array) {
     for (var i = 0; i < bytesPattern.length; i++) {
-      if (bin.bytecmp(buf, pos, bytesPattern[i])) return true;
+      if (txtbin.bytecmp(buf, pos, bytesPattern[i])) return true;
     }
   } else {
-    return bin.bytecmp(buf, pos, bytesPattern);
+    return txtbin.bytecmp(buf, pos, bytesPattern);
   }
   return false;
 };
 
-bin.bytecmp = function(buf, pos, bytesPattern) {
+txtbin.bytecmp = function(buf, pos, bytesPattern) {
   var ptn = bytesPattern.split(' ');
   if (buf.length < ptn.length) {
     return false;
@@ -2008,13 +2008,13 @@ bin.bytecmp = function(buf, pos, bytesPattern) {
   return true;
 };
 
-bin.getMimeClass = function(ftype) {
+txtbin.getMimeClass = function(ftype) {
   return ftype['mime'].split('/')[0];
 };
 
-bin.isMedia = function(ftype) {
+txtbin.isMedia = function(ftype) {
   if (!ftype) return false;
-  var mimeClass = bin.getMimeClass(ftype);
+  var mimeClass = txtbin.getMimeClass(ftype);
   switch (mimeClass) {
     case 'image':
     case 'audio':
@@ -2024,31 +2024,31 @@ bin.isMedia = function(ftype) {
   return false;
 };
 
-bin.isImage = function(ftype) {
-  return (bin.getMimeClass(ftype) == 'image');
+txtbin.isImage = function(ftype) {
+  return (txtbin.getMimeClass(ftype) == 'image');
 };
 
-bin.isZip = function(ftype) {
+txtbin.isZip = function(ftype) {
   return (ftype['mime'] == 'application/x-zip-compressed');
 };
 
-bin.isAscii = function(b) {
+txtbin.isAscii = function(b) {
   return ((b >= 0) && (b <= 0x7F));
 };
 
-bin.isUtf8Bom = function(buf) {
-  return bin._hasBinaryPattern(buf, 0, 'EF BB BF');
+txtbin.isUtf8Bom = function(buf) {
+  return txtbin._hasBinaryPattern(buf, 0, 'EF BB BF');
 };
 
-bin.isUtf16BeBom = function(buf) {
-  return bin._hasBinaryPattern(buf, 0, 'FE FF');
+txtbin.isUtf16BeBom = function(buf) {
+  return txtbin._hasBinaryPattern(buf, 0, 'FE FF');
 };
 
-bin.isUtf16LeBom = function(buf) {
-  return bin._hasBinaryPattern(buf, 0, 'FF FE');
+txtbin.isUtf16LeBom = function(buf) {
+  return txtbin._hasBinaryPattern(buf, 0, 'FF FE');
 };
 
-bin.isUtf16Le = function(buf) {
+txtbin.isUtf16Le = function(buf) {
   if (buf.length % 2 != 0) return false;
   if (buf.length < 2) return false;
   var f = false;
@@ -2064,7 +2064,7 @@ bin.isUtf16Le = function(buf) {
   return f;
 };
 
-bin.isUtf16Be = function(buf) {
+txtbin.isUtf16Be = function(buf) {
   if (buf.length % 2 != 0) return false;
   if (buf.length < 2) return false;
   var f = false;
@@ -2082,70 +2082,70 @@ bin.isUtf16Be = function(buf) {
   return f;
 };
 
-bin.isIso2022jp = function(buf, pos) {
+txtbin.isIso2022jp = function(buf, pos) {
   var ESCSEQ_ASCII = '1B 28 42';
   var ESCSEQ_LATIN = '1B 28 4A';
   var ESCSEQ_JA = '1B 24 42';
-  if (bin._hasBinaryPattern(buf, pos, ESCSEQ_ASCII)) return true;
-  if (bin._hasBinaryPattern(buf, pos, ESCSEQ_LATIN)) return true;
-  if (bin._hasBinaryPattern(buf, pos, ESCSEQ_JA)) return true;
+  if (txtbin._hasBinaryPattern(buf, pos, ESCSEQ_ASCII)) return true;
+  if (txtbin._hasBinaryPattern(buf, pos, ESCSEQ_LATIN)) return true;
+  if (txtbin._hasBinaryPattern(buf, pos, ESCSEQ_JA)) return true;
   return false;
 };
 
-bin.isSjis = function(buf, pos, exclAscii) {
+txtbin.isSjis = function(buf, pos, exclAscii) {
   var b1 = buf[pos];
   var b2 = buf[pos + 1];
   if ((b1 == undefined) || (b2 == undefined)) return false;
   if (exclAscii) {
-    if (bin.isAscii(b1) && bin.isAscii(b2)) return false;
+    if (txtbin.isAscii(b1) && txtbin.isAscii(b2)) return false;
   }
-  return (bin.isSjisMultiByte1(b1) && bin.isSjisMultiByte2(b2));
+  return (txtbin.isSjisMultiByte1(b1) && txtbin.isSjisMultiByte2(b2));
 };
-bin.isSjisMultiByte1 = function(b) {
+txtbin.isSjisMultiByte1 = function(b) {
   return (((b >= 0x81) && (b <= 0x9F)) || ((b >= 0xE0) && (b <= 0xFC)));
 };
-bin.isSjisMultiByte2 = function(b) {
+txtbin.isSjisMultiByte2 = function(b) {
   return (((b >= 0x40) && (b <= 0xFC)) && (b != 0x7F));
 };
 
-bin.isEuc = function(buf, pos, exclAscii) {
+txtbin.isEuc = function(buf, pos, exclAscii) {
   var b1 = buf[pos];
   var b2 = buf[pos + 1];
   if ((b1 == undefined) || (b2 == undefined)) return false;
   if (exclAscii) {
-    if (bin.isAscii(b1) && bin.isAscii(b2)) return false;
+    if (txtbin.isAscii(b1) && txtbin.isAscii(b2)) return false;
   }
-  return (bin.isEucMultiByte1(b1) && bin.isEucMultiByte2(b2));
+  return (txtbin.isEucMultiByte1(b1) && txtbin.isEucMultiByte2(b2));
 };
-bin.isEucMultiByte1 = function(b) {
+txtbin.isEucMultiByte1 = function(b) {
   if ((b == 0x8E) || (b == 0x8F) || ((b >= 0xA1) && (b <= 0xFE))) {
     return true;
   }
   return false;
 };
-bin.isEucMultiByte2 = function(b) {
+txtbin.isEucMultiByte2 = function(b) {
   if ((b >= 0xA1) && (b <= 0xFE)) {
     return true;
   }
   return false;
 };
 
-bin.getZipContentType = function(buf) {
-  for (var k in bin.FILETYPES) {
-    var ftype = bin.FILETYPES[k];
+txtbin.getZipContentType = function(buf) {
+  for (var k in txtbin.FILETYPES) {
+    var ftype = txtbin.FILETYPES[k];
     var hexptn = ftype['hexptn'];
     if (ftype['supertype'] == 'zip') {
-      if (bin.hasBinaryPattern(buf, hexptn)) return ftype;
+      if (txtbin.hasBinaryPattern(buf, hexptn)) return ftype;
     }
   }
   return null;
 };
 
-bin.toBin = function(v) {
+txtbin.toBin = function(v) {
   return ('0000000' + v.toString(2)).slice(-8);
 };
 
-bin.formatB64 = function(s) {
+txtbin.formatB64 = function(s) {
   var isDataUrl = (s.match(/,/) ? true : false);
   if (isDataUrl) {
     var a = s.split(',');
@@ -2153,55 +2153,55 @@ bin.formatB64 = function(s) {
   }
   var n = $el('#newline').value | 0;
   if (n < 0) n = 0;
-  var b64 = bin.inertNewline(s, n);
+  var b64 = txtbin.inertNewline(s, n);
   var r = (isDataUrl ? (a[0] + ',\n') : '') + b64;
   return r;
 };
 
-bin.inertNewline = function(s, n) {
+txtbin.inertNewline = function(s, n) {
   if (n == undefined) n = 76;
   var r = util.insertCh(s, '\n', n);
   return r;
 };
 
-bin.getBinDetail = function(b, mime, ext) {
+txtbin.getBinDetail = function(b, mime, ext) {
   var r = {};
   if (ext == 'avif') {
-    r = bin.getAvifInfo(b);
+    r = txtbin.getAvifInfo(b);
   } else if (ext == 'bmp') {
-    r = bin.getBmpInfo(b);
+    r = txtbin.getBmpInfo(b);
   } else if (ext == 'class') {
-    r = bin.getJavaClassVersion(b);
+    r = txtbin.getJavaClassVersion(b);
   } else if (ext == 'cur') {
-    r = bin.getIcoInfo(b);
+    r = txtbin.getIcoInfo(b);
   } else if (mime == 'application/x-msdownload') {
-    var a = bin.getExeArch(b);
+    var a = txtbin.getExeArch(b);
     r = 'Arch    : ' + a;
   } else if (ext == 'ico') {
-    r = bin.getIcoInfo(b);
+    r = txtbin.getIcoInfo(b);
   } else if (ext == 'jpg') {
-    r = bin.getJpegInfo(b);
+    r = txtbin.getJpegInfo(b);
   } else if (ext == 'png') {
-    r = bin.getPngInfo(b);
+    r = txtbin.getPngInfo(b);
   } else if (ext == 'zip') {
-    r = bin.getZipInfo(b);
+    r = txtbin.getZipInfo(b);
   }
   return r;
 };
 
-bin.getExeArch = function(b) {
+txtbin.getExeArch = function(b) {
   var pe = -1;
   var len = 512;
   for (var i = 0; i < len; i++) {
     if (i + 3 >= len) break;
-    var ptn = bin.fetchBufAsIntByBE(b, i, 4);
+    var ptn = txtbin.fetchBufAsIntByBE(b, i, 4);
     if (ptn == 0x50450000) {
       pe = i;break;
     }
   }
   var v = 0;
   if ((pe >= 0) && (pe + 5 < len)) {
-    v = bin.fetchBufAsIntByBE(b, pe + 4, 2);
+    v = txtbin.fetchBufAsIntByBE(b, pe + 4, 2);
   }
   var arch = '';
   if (v == 0x6486) {
@@ -2212,52 +2212,52 @@ bin.getExeArch = function(b) {
   return arch;
 };
 
-bin.getAvifInfo = function(b) {
+txtbin.getAvifInfo = function(b) {
   var r = {w: 0, h: 0};
   if (b.length < 208) {
     return r;
   }
   var posW = 0xC4;
   var posH = 0xC8;
-  var w = bin.fetchBufAsIntByBE(b, posW, 4);
-  var h = bin.fetchBufAsIntByBE(b, posH, 4);
+  var w = txtbin.fetchBufAsIntByBE(b, posW, 4);
+  var h = txtbin.fetchBufAsIntByBE(b, posH, 4);
   r['w'] = w;
   r['h'] = h;
   return r;
 };
 
-bin.getBmpInfo = function(b) {
+txtbin.getBmpInfo = function(b) {
   var r = {w: 0, h: 0};
   if (b.length < 26) {
     return r;
   }
   var posW = 0x12;
   var posH = 0x16;
-  var w = bin.fetchBufAsIntByLE(b, posW, 4);
-  var h = bin.fetchBufAsIntByLE(b, posH, 4);
+  var w = txtbin.fetchBufAsIntByLE(b, posW, 4);
+  var h = txtbin.fetchBufAsIntByLE(b, posH, 4);
   r['w'] = w;
   r['h'] = h;
   return r;
 };
 
-bin.getIcoInfo = function(b) {
+txtbin.getIcoInfo = function(b) {
   var r = {w: 0, h: 0};
   if (b.length < 6) {
     return r;
   }
   var posW = 0x6;
   var posH = 0x7;
-  var w = bin.fetchBufAsIntByLE(b, posW, 1);
-  var h = bin.fetchBufAsIntByLE(b, posH, 1);
+  var w = txtbin.fetchBufAsIntByLE(b, posW, 1);
+  var h = txtbin.fetchBufAsIntByLE(b, posH, 1);
   r['w'] = (w ? w : 256);
   r['h'] = (h ? h : 256);
   return r;
 };
 
-bin.getJpegInfo = function(b) {
+txtbin.getJpegInfo = function(b) {
   var r = {w: 0, h: 0};
   var SOF = 'FF C0|C2';
-  var p = bin.scanBuf(b, SOF);
+  var p = txtbin.scanBuf(b, SOF);
   if (p == -1) {
     return r;
   }
@@ -2265,14 +2265,14 @@ bin.getJpegInfo = function(b) {
   var offsetW = 7;
   var posH = p + offsetH;
   var posW = p + offsetW;
-  var h = bin.fetchBufAsIntByBE(b, posH, 2);
-  var w = bin.fetchBufAsIntByBE(b, posW, 2);
+  var h = txtbin.fetchBufAsIntByBE(b, posH, 2);
+  var w = txtbin.fetchBufAsIntByBE(b, posW, 2);
   r['w'] = w;
   r['h'] = h;
   return r;
 };
 
-bin.getPngInfo = function(b) {
+txtbin.getPngInfo = function(b) {
   var r = {w: 0, h: 0};
   if (b.length < 26) {
     return r;
@@ -2280,14 +2280,14 @@ bin.getPngInfo = function(b) {
   var posIHDR = 0x08;
   var posW = posIHDR + 0x08;
   var posH = posIHDR + 0x0C;
-  var w = bin.fetchBufAsIntByBE(b, posW, 4);
-  var h = bin.fetchBufAsIntByBE(b, posH, 4);
+  var w = txtbin.fetchBufAsIntByBE(b, posW, 4);
+  var h = txtbin.fetchBufAsIntByBE(b, posH, 4);
   r['w'] = w;
   r['h'] = h;
   return r;
 };
 
-bin.getZipInfo = function(b) {
+txtbin.getZipInfo = function(b) {
   var hasPw = b[6] & 1;
   var r = {
     has_pw: hasPw
@@ -2295,7 +2295,7 @@ bin.getZipInfo = function(b) {
   return r;
 };
 
-bin.getJavaClassVersion = function(b) {
+txtbin.getJavaClassVersion = function(b) {
   var v = b[7];
   var j;
   if (v <= 48) {
@@ -2303,11 +2303,11 @@ bin.getJavaClassVersion = function(b) {
   } else {
     j = v - 44;
   }
-  var s = 'Java    : Java SE ' + j + ' : version = ' + v + ' (' + bin.toHex(v, true, '0x', 2) + ')';
+  var s = 'Java    : Java SE ' + j + ' : version = ' + v + ' (' + txtbin.toHex(v, true, '0x', 2) + ')';
   return s;
 };
 
-bin.fetchBufAsIntByLE = function(b, pos, size) {
+txtbin.fetchBufAsIntByLE = function(b, pos, size) {
   if (pos == undefined) {
     pos = 0;
   }
@@ -2321,7 +2321,7 @@ bin.fetchBufAsIntByLE = function(b, pos, size) {
   return r;
 };
 
-bin.fetchBufAsIntByBE = function(b, pos, size) {
+txtbin.fetchBufAsIntByBE = function(b, pos, size) {
   if (pos == undefined) {
     pos = 0;
   }
@@ -2335,7 +2335,7 @@ bin.fetchBufAsIntByBE = function(b, pos, size) {
   return r;
 };
 
-bin.scanBuf = function(buf, bytesPattern, pos) {
+txtbin.scanBuf = function(buf, bytesPattern, pos) {
   if (pos == undefined) {
     pos = 0;
   }
@@ -2344,19 +2344,19 @@ bin.scanBuf = function(buf, bytesPattern, pos) {
     return -1;
   }
   for (var i = pos; i < buf.length; i++) {
-    if (bin.bytecmp(buf, i, bytesPattern)) {
+    if (txtbin.bytecmp(buf, i, bytesPattern)) {
       return i;
     }
   }
   return -1;
 };
 
-bin.toHex = function(v, uc, pFix, d) {
+txtbin.toHex = function(v, uc, pFix, d) {
   var hex = parseInt(v).toString(16);
-  return bin.formatHex(hex, uc, pFix, d);
+  return txtbin.formatHex(hex, uc, pFix, d);
 };
 
-bin.formatHex = function(hex, uc, pFix, d) {
+txtbin.formatHex = function(hex, uc, pFix, d) {
   if (uc) hex = hex.toUpperCase();
   if ((d) && (hex.length < d)) {
     hex = (util.repeatCh('0', d) + hex).slice(d * (-1));
@@ -2365,7 +2365,7 @@ bin.formatHex = function(hex, uc, pFix, d) {
   return hex;
 };
 
-bin.extractBinTextPart = function(mode, s) {
+txtbin.extractBinTextPart = function(mode, s) {
   var unit = 2;
   if (mode == 'bin') {
     unit = 8;
@@ -2386,60 +2386,60 @@ bin.extractBinTextPart = function(mode, s) {
   return b;
 };
 
-bin.onInput = function() {
-  bin.clearBuf();
-  if (bin.auto) {
-    bin.detectCurrentMode();
+txtbin.onInput = function() {
+  txtbin.clearBuf();
+  if (txtbin.auto) {
+    txtbin.detectCurrentMode();
   }
   if ($el('#show-preview').checked && $el('#show-preview-rt').checked) {
-    bin.updateInfoAndPreview();
+    txtbin.updateInfoAndPreview();
   }
 };
 
-bin.onRealtimePreviewChange = function() {
+txtbin.onRealtimePreviewChange = function() {
   if ($el('#show-preview').checked && $el('#show-preview-rt').checked) {
-    bin.updateInfoAndPreview();
+    txtbin.updateInfoAndPreview();
   }
 };
 
-bin.onChangeDumpFlag = function() {
-  if (!bin.bufCache) {
+txtbin.onChangeDumpFlag = function() {
+  if (!txtbin.bufCache) {
     return;
   }
-  var mode = bin.getMode();
+  var mode = txtbin.getMode();
   switch (mode) {
     case 'hex':
     case 'dec':
     case 'bin':
-      bin.switchRadix(mode, bin.bufCache);
+      txtbin.switchRadix(mode, txtbin.bufCache);
   }
 };
 
-bin.onChangeShowPreview = function() {
-  if (!bin.bufCache) {
+txtbin.onChangeShowPreview = function() {
+  if (!txtbin.bufCache) {
     return;
   }
-  bin.showPreview(bin.bufCache);
+  txtbin.showPreview(txtbin.bufCache);
 };
 
-bin.onChangeShowPreviewCc = function() {
-  if (!bin.bufCache) {
+txtbin.onChangeShowPreviewCc = function() {
+  if (!txtbin.bufCache) {
     return;
   }
-  var ftype = bin.bufCache.ftype;
+  var ftype = txtbin.bufCache.ftype;
   var previewMode = $el('#preview-mode').value;
-  if ((previewMode == 'txt') || !bin.isMedia(ftype)) {
-    bin.onChangeShowPreview();
+  if ((previewMode == 'txt') || !txtbin.isMedia(ftype)) {
+    txtbin.onChangeShowPreview();
   }
 };
 
-bin.onChangeForceLineBreak = function() {
-  if (!bin.bufCache) {
+txtbin.onChangeForceLineBreak = function() {
+  if (!txtbin.bufCache) {
     return;
   }
-  var ftype = bin.bufCache.ftype;
+  var ftype = txtbin.bufCache.ftype;
   var previewMode = $el('#preview-mode').value;
-  if ((previewMode == 'txt') || !bin.isMedia(ftype)) {
+  if ((previewMode == 'txt') || !txtbin.isMedia(ftype)) {
     if ($el('#no-line-break').checked) {
       $el('#preview').removeClass('force-line-break');
       $el('#preview').addClass('no-line-break');
@@ -2450,42 +2450,42 @@ bin.onChangeForceLineBreak = function() {
   }
 };
 
-bin.onDnd = function(s, f) {
-  bin.file = f;
+txtbin.onDnd = function(s, f) {
+  txtbin.file = f;
   var showInfoRequired = true;
-  if ((s instanceof ArrayBuffer) || (f && bin.isB64Mode())) {
-    bin.dump(s);
+  if ((s instanceof ArrayBuffer) || (f && txtbin.isB64Mode())) {
+    txtbin.dump(s);
     showInfoRequired = false;
   } else {
-    bin.setSrcValue(s, true);
-    if (bin.auto) {
-      bin.detectCurrentMode();
+    txtbin.setSrcValue(s, true);
+    if (txtbin.auto) {
+      txtbin.detectCurrentMode();
     }
   }
-  var mode = bin.getMode();
-  bin.setMode(mode);
+  var mode = txtbin.getMode();
+  txtbin.setMode(mode);
   if (showInfoRequired) {
-    bin.updateInfoAndPreview();
+    txtbin.updateInfoAndPreview();
   }
 };
 
-bin.onDndLoadStart = function(f) {
-  bin.clearBuf();
-  bin.setSrcValue('Loading...', true);
-  bin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
-  bin.drawPreview('<span style="color:#888;">PREVIEW</span>');
+txtbin.onDndLoadStart = function(f) {
+  txtbin.clearBuf();
+  txtbin.setSrcValue('Loading...', true);
+  txtbin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
+  txtbin.drawPreview('<span style="color:#888;">PREVIEW</span>');
 };
 
-bin.onDndLoadProgress = function(e, loaded, total, pct) {
+txtbin.onDndLoadProgress = function(e, loaded, total, pct) {
   var s = 'Loading... ' + pct + '%';
-  bin.setSrcValue(s, false);
+  txtbin.setSrcValue(s, false);
 };
 
-bin.getSrcValue = function() {
+txtbin.getSrcValue = function() {
   return $el('#src').value;
 };
 
-bin.setSrcValue = function(s, resetPos) {
+txtbin.setSrcValue = function(s, resetPos) {
   $el('#src').value = s;
   if (resetPos) {
     $el('#src').scrollToTop();
@@ -2493,53 +2493,53 @@ bin.setSrcValue = function(s, resetPos) {
   }
 };
 
-bin.detectCurrentMode = function() {
+txtbin.detectCurrentMode = function() {
   var m = 'txt';
-  var v = bin.getSrcValue();
-  if (bin.isBinString(v)) {
+  var v = txtbin.getSrcValue();
+  if (txtbin.isBinString(v)) {
     m = 'bin';
-  } else if (bin.isHexString(v) || bin.isPercentEncoding(v)) {
+  } else if (txtbin.isHexString(v) || txtbin.isPercentEncoding(v)) {
     m = 'hex';
-  } else if (bin.isBase64String(v)) {
+  } else if (txtbin.isBase64String(v)) {
     m = 'b64';
   }
-  bin.activeMode(m);
+  txtbin.activeMode(m);
 };
 
-bin.isBinString = function(s) {
+txtbin.isBinString = function(s) {
   return ((s.match(/^[01\s\n]+$/)) ? true : false);
 };
 
-bin.isHexString = function(s) {
+txtbin.isHexString = function(s) {
   return ((s.match(/^[0-9A-Fa-f\s\n]+$/)) ? true : false);
 };
 
-bin.isBase64String = function(s) {
+txtbin.isBase64String = function(s) {
   return ((s.trim().match(/^(data:.+;base64,)?[A-Za-z0-9+/\s\n]+=*$/)) ? true : false);
 };
 
-bin.isPercentEncoding = function(s) {
+txtbin.isPercentEncoding = function(s) {
   return ((s.match(/^\s*((%[0-9A-Fa-f]{2})\s*)+$/)) ? true : false);
 };
 
-bin.drawInfo = function(s) {
+txtbin.drawInfo = function(s) {
   $el('#info').innerHTML = s;
 };
 
-bin.str2buf = function(mode, s) {
+txtbin.str2buf = function(mode, s) {
   if ((mode == 'bin') || (mode == 'dec') || (mode == 'hex')) {
-    s = bin.extractBinTextPart(mode, s);
+    s = txtbin.extractBinTextPart(mode, s);
   }
   var b;
   switch (mode) {
     case 'hex':
-      b = bin.hex2uint8Array(s);
+      b = txtbin.hex2uint8Array(s);
       break;
     case 'dec':
-      b = bin.dec2uint8Array(s);
+      b = txtbin.dec2uint8Array(s);
       break;
     case 'bin':
-      b = bin.bin2uint8Array(s);
+      b = txtbin.bin2uint8Array(s);
       break;
     case 'b64s':
       var k = $el('#key').value;
@@ -2551,34 +2551,34 @@ bin.str2buf = function(mode, s) {
       break;
     case 'txt':
       var b64 = util.encodeBase64(s);
-      b = bin.b642uint8Array(b64);
+      b = txtbin.b642uint8Array(b64);
       break;
     default:
-      b = bin.b642uint8Array(s);
+      b = txtbin.b642uint8Array(s);
   }
   return b;
 };
 
-bin.getBufOfBase64s = function(buf) {
+txtbin.getBufOfBase64s = function(buf) {
   var key = $el('#key').value;
   var b64s = util.encodeBase64s(buf, key);
   var b = util.decodeBase64(b64s, true);
   return b;
 };
 
-bin.getBufOfBSB64 = function(buf) {
+txtbin.getBufOfBSB64 = function(buf) {
   var n = $el('#bsb64-n').value | 0;
   var b64s = util.BSB64.encode(buf, n);
   var b = util.decodeBase64(b64s, true);
   return b;
 };
 
-bin.showPreview = function(bufCache) {
+txtbin.showPreview = function(bufCache) {
   if (!$el('#show-preview').checked) {
-    bin.drawPreview('');
+    txtbin.drawPreview('');
     return;
   }
-  var ftype = (bin.bufCache ? bin.bufCache.ftype : null);
+  var ftype = (txtbin.bufCache ? txtbin.bufCache.ftype : null);
   var peviewMode = $el('#preview-mode').value;
   var peviewModeEncryption = $el('#preview-mode-encryption').value;
   $el('#copy-button').disabled = false;
@@ -2588,183 +2588,183 @@ bin.showPreview = function(bufCache) {
     case 'hex':
       var buf = bufCache.buf;
       if (peviewModeEncryption == 'b64s') {
-        buf = bin.getBufOfBase64s(buf);
+        buf = txtbin.getBufOfBase64s(buf);
       } else if (peviewModeEncryption == 'bsb64') {
-        buf = bin.getBufOfBSB64(buf);
+        buf = txtbin.getBufOfBSB64(buf);
       }
-      bin.showPreviewAsBin(peviewMode, buf);
+      txtbin.showPreviewAsBin(peviewMode, buf);
       break;
     case 'b64':
-      bin.showPreviewAsB64(bufCache);
+      txtbin.showPreviewAsB64(bufCache);
       break;
     case 'b64s':
-      bin.showPreviewAsB64s(bufCache);
+      txtbin.showPreviewAsB64s(bufCache);
       break;
     case 'bsb64':
-      bin.showPreviewAsBSB64(bufCache);
+      txtbin.showPreviewAsBSB64(bufCache);
       break;
     case 'txt':
-      bin.showPreviewAsText(bufCache);
+      txtbin.showPreviewAsText(bufCache);
       break;
     default:
-      bin.showPreviewAsView(bufCache);
-      if (bin.isMedia(ftype)) {
+      txtbin.showPreviewAsView(bufCache);
+      if (txtbin.isMedia(ftype)) {
         $el('#copy-button').disabled = true;
       }
   }
 };
 
-bin.showPreviewAsView = function(bufCache) {
+txtbin.showPreviewAsView = function(bufCache) {
   var ftype = bufCache.ftype;
   var b64 = bufCache.b64;
-  var mimeClass = bin.getMimeClass(ftype);
+  var mimeClass = txtbin.getMimeClass(ftype);
   if (ftype.nopreview) {
-    bin.showTextPreview(b64);
+    txtbin.showTextPreview(b64);
   } else {
     if (mimeClass == 'image') {
-      bin.showImagePreview(b64, ftype);
+      txtbin.showImagePreview(b64, ftype);
     } else if (mimeClass == 'video') {
-      bin.showVideoPreview(b64);
+      txtbin.showVideoPreview(b64);
     } else if (mimeClass == 'audio') {
-      bin.showAudioPreview(b64);
+      txtbin.showAudioPreview(b64);
     } else if (ftype['ext'] == 'pdf') {
-      bin.showPdfPreview(b64);
+      txtbin.showPdfPreview(b64);
     } else {
-      bin.showTextPreview(b64);
+      txtbin.showTextPreview(b64);
     }
   }
 };
 
-bin.showPreviewAsText = function(bufCache) {
-  bin.showTextPreview(bufCache.b64);
+txtbin.showPreviewAsText = function(bufCache) {
+  txtbin.showTextPreview(bufCache.b64);
 };
 
-bin.showPreviewAsBin = function(peviewMode, buf) {
-  var r = bin.getBinDump(peviewMode, buf);
-  bin.drawPreview(r);
+txtbin.showPreviewAsBin = function(peviewMode, buf) {
+  var r = txtbin.getBinDump(peviewMode, buf);
+  txtbin.drawPreview(r);
 };
 
-bin.showPreviewAsB64 = function(bufCache) {
+txtbin.showPreviewAsB64 = function(bufCache) {
   var b64 = bufCache.b64;
-  var r = bin.formatB64(b64);
-  bin.drawPreview(r);
+  var r = txtbin.formatB64(b64);
+  txtbin.drawPreview(r);
 };
 
-bin.showPreviewAsB64s = function(bufCache) {
+txtbin.showPreviewAsB64s = function(bufCache) {
   var buf = bufCache.buf;
   var key = $el('#key').value;
   var b64s = util.encodeBase64s(buf, key);
-  var r = bin.formatB64(b64s);
-  bin.drawPreview(r);
+  var r = txtbin.formatB64(b64s);
+  txtbin.drawPreview(r);
 };
 
-bin.showPreviewAsBSB64 = function(bufCache) {
+txtbin.showPreviewAsBSB64 = function(bufCache) {
   var buf = bufCache.buf;
   var n = $el('#bsb64-n').value | 0;
   var b64s = util.BSB64.encode(buf, n);
-  var r = bin.formatB64(b64s);
-  bin.drawPreview(r);
+  var r = txtbin.formatB64(b64s);
+  txtbin.drawPreview(r);
 };
 
-bin.showTextPreview = function(b64) {
+txtbin.showTextPreview = function(b64) {
   var s = util.decodeBase64(b64);
   s = util.escHtml(s);
   if ($el('#show-preview-cc').checked) {
-    s = s.replace(/ /g, bin.SP);
-    s = s.replace(/\r\n/g, bin.CHR_CRLF_S + '\n');
-    s = s.replace(/([^>])\n/g, '$1' + bin.CHR_LF_S + '\n');
-    s = s.replace(/\r/g, bin.CHR_CR_S + '\n');
-    s = s.replace(/\t/g, bin.TAB);
-    s = s.replace(/([\u0300-\u036F])(.)/g, bin.CDM + '$1 $2');
-    s = s.replace(/\u3000/g, bin.FULL_SP);
-    s = s.replace(/\u00A0/g, bin.NBSP);
-    s = s.replace(/\u200B/g, bin.ZWSP);
-    s = s.replace(/\u200E/g, bin.LRM);
-    s = s.replace(/\u200F/g, bin.RLM);
-    s = s.replace(/\u202A/g, bin.LRE);
-    s = s.replace(/\u202B/g, bin.RLE);
-    s = s.replace(/\u202C/g, bin.PDF);
-    s = s.replace(/\u202D/g, bin.LRO);
-    s = s.replace(/\u202E/g, bin.RLO);
-    s = s.replace(/([\uFE00-\uFE0F])(.)/g, bin.VS + '$1$2');
-    s = s.replace(/\uFEFF/g, bin.BOM);
-    s = s.replace(/\u0000/g, bin.CHR_NULL);
-    s = s.replace(/[\u0001-\u0008]|\u000B|\u000C|[\u000E-\u001A]|[\u001C-\u001F]/g, bin.CHR_CTRL);
-    s = s.replace(/\u001B/g, bin.CHR_ESC);
-    s = s.replace(/\u007F/g, bin.CHR_DELL);
-    s = s + bin.EOF + '\n';
+    s = s.replace(/ /g, txtbin.SP);
+    s = s.replace(/\r\n/g, txtbin.CHR_CRLF_S + '\n');
+    s = s.replace(/([^>])\n/g, '$1' + txtbin.CHR_LF_S + '\n');
+    s = s.replace(/\r/g, txtbin.CHR_CR_S + '\n');
+    s = s.replace(/\t/g, txtbin.TAB);
+    s = s.replace(/([\u0300-\u036F])(.)/g, txtbin.CDM + '$1 $2');
+    s = s.replace(/\u3000/g, txtbin.FULL_SP);
+    s = s.replace(/\u00A0/g, txtbin.NBSP);
+    s = s.replace(/\u200B/g, txtbin.ZWSP);
+    s = s.replace(/\u200E/g, txtbin.LRM);
+    s = s.replace(/\u200F/g, txtbin.RLM);
+    s = s.replace(/\u202A/g, txtbin.LRE);
+    s = s.replace(/\u202B/g, txtbin.RLE);
+    s = s.replace(/\u202C/g, txtbin.PDF);
+    s = s.replace(/\u202D/g, txtbin.LRO);
+    s = s.replace(/\u202E/g, txtbin.RLO);
+    s = s.replace(/([\uFE00-\uFE0F])(.)/g, txtbin.VS + '$1$2');
+    s = s.replace(/\uFEFF/g, txtbin.BOM);
+    s = s.replace(/\u0000/g, txtbin.CHR_NULL);
+    s = s.replace(/[\u0001-\u0008]|\u000B|\u000C|[\u000E-\u001A]|[\u001C-\u001F]/g, txtbin.CHR_CTRL);
+    s = s.replace(/\u001B/g, txtbin.CHR_ESC);
+    s = s.replace(/\u007F/g, txtbin.CHR_DELL);
+    s = s + txtbin.EOF + '\n';
   }
-  bin.drawPreview(s);
+  txtbin.drawPreview(s);
 };
 
-bin.showImagePreview = function(b64, ftype) {
-  bin.resetFontSize4Preview();
+txtbin.showImagePreview = function(b64, ftype) {
+  txtbin.resetFontSize4Preview();
   var mime = ftype.mime;
   var d = 'data:' + mime + ';base64,' + b64;
   var v = '<img id="img-preview" src="' + d + '" style="max-width:100%;max-height:calc(100% - 8px);" onmousedown="return false;">';
-  bin.drawPreview(v);
+  txtbin.drawPreview(v);
   var id = 'img-preview';
-  setTimeout(bin.postShowMediaPreview, 0, id);
-  setTimeout(bin.postShowImgPreview, 0, id);
+  setTimeout(txtbin.postShowMediaPreview, 0, id);
+  setTimeout(txtbin.postShowImgPreview, 0, id);
 };
-bin.postShowMediaPreview = function(id) {
-  bin.mediaPreviewRect = $el('#' + id).getRect();
+txtbin.postShowMediaPreview = function(id) {
+  txtbin.mediaPreviewRect = $el('#' + id).getRect();
 };
-bin.postShowImgPreview = function(id) {
-  $el('#' + id).addEventListener('mousedown', bin.startDragImg, {passive: true});
+txtbin.postShowImgPreview = function(id) {
+  $el('#' + id).addEventListener('mousedown', txtbin.startDragImg, {passive: true});
 };
 
-bin.isImageShowing = function() {
-  if (!bin.bufCache) return false;
-  var ftype = bin.bufCache.ftype;
+txtbin.isImageShowing = function() {
+  if (!txtbin.bufCache) return false;
+  var ftype = txtbin.bufCache.ftype;
   var peviewMode = $el('#preview-mode').value;
-  return (bin.isImage(ftype) && (peviewMode == 'view'));
+  return (txtbin.isImage(ftype) && (peviewMode == 'view'));
 };
 
-bin.startDragImg = function(e) {
+txtbin.startDragImg = function(e) {
   var x = e.clientX;
   var y = e.clientY;
-  bin.uiStatus |= bin.UI_ST_DRAGGING;
+  txtbin.uiStatus |= txtbin.UI_ST_DRAGGING;
   document.body.style.cursor = 'move';
-  bin.disableTextSelect();
-  bin.orgPos.x = x;
-  bin.orgPos.y = y;
-  bin.orgPrvScrl = bin.getPreviewScrollInfo();
+  txtbin.disableTextSelect();
+  txtbin.orgPos.x = x;
+  txtbin.orgPos.y = y;
+  txtbin.orgPrvScrl = txtbin.getPreviewScrollInfo();
 };
-bin.dragImg = function(x, y) {
-  var dX = x - bin.orgPos.x;
-  var dY = y - bin.orgPos.y;
-  var l = bin.orgPrvScrl.l - dX;
-  var t = bin.orgPrvScrl.t - dY;
-  bin.setPreviewScroll(l, t);
+txtbin.dragImg = function(x, y) {
+  var dX = x - txtbin.orgPos.x;
+  var dY = y - txtbin.orgPos.y;
+  var l = txtbin.orgPrvScrl.l - dX;
+  var t = txtbin.orgPrvScrl.t - dY;
+  txtbin.setPreviewScroll(l, t);
 };
-bin.endDragImg = function(e) {
-  bin.uiStatus &= ~bin.UI_ST_DRAGGING;
-  bin.enableTextSelect();
+txtbin.endDragImg = function(e) {
+  txtbin.uiStatus &= ~txtbin.UI_ST_DRAGGING;
+  txtbin.enableTextSelect();
   document.body.style.cursor = 'auto';
-  bin.orgPos.x = 0;
-  bin.orgPos.y = 0;
-  bin.orgPrvScrl = null;
+  txtbin.orgPos.x = 0;
+  txtbin.orgPos.y = 0;
+  txtbin.orgPrvScrl = null;
 };
 
-bin.onImgWheel = function(e) {
-  if (!bin.isImageShowing()) return;
+txtbin.onImgWheel = function(e) {
+  if (!txtbin.isImageShowing()) return;
   var dY = e.deltaY;
   var dS = 2;
   if (dY == 0) return;
   if (dY > 0) dS *= (-1);
-  var sz = bin.getFontSize4Preview() + dS;
-  var sc0 = bin.getPreviewScrollInfo();
-  bin.setFontSize4Preview(sz);
-  var sc1 = bin.getPreviewScrollInfo();
+  var sz = txtbin.getFontSize4Preview() + dS;
+  var sc0 = txtbin.getPreviewScrollInfo();
+  txtbin.setFontSize4Preview(sz);
+  var sc1 = txtbin.getPreviewScrollInfo();
   var dW = (sc1.w - sc0.w) / 2;
   var dH = (sc1.h - sc0.h) / 2;
   var l = sc1.l + dW;
   var t = sc1.t + dH;
-  bin.setPreviewScroll(l, t);
+  txtbin.setPreviewScroll(l, t);
   e.preventDefault();
 };
-bin.getPreviewScrollInfo = function() {
+txtbin.getPreviewScrollInfo = function() {
   var o = {
     w: $el('#preview-wrapper').scrollWidth,
     h: $el('#preview-wrapper').scrollHeight,
@@ -2773,15 +2773,15 @@ bin.getPreviewScrollInfo = function() {
   };
   return o;
 };
-bin.setPreviewScroll = function(l, t) {
+txtbin.setPreviewScroll = function(l, t) {
   $el('#preview-wrapper').scrollLeft = l;
   $el('#preview-wrapper').scrollTop = t;
 };
 
-bin.onPreviewDblClick = function() {
-  if (!bin.prevWin && bin.isImageShowing()) bin.openPreviewWin();
+txtbin.onPreviewDblClick = function() {
+  if (!txtbin.prevWin && txtbin.isImageShowing()) txtbin.openPreviewWin();
 };
-bin.openPreviewWin = function() {
+txtbin.openPreviewWin = function() {
   var opt = {
     name: 'win1',
     draggable: true,
@@ -2800,74 +2800,74 @@ bin.openPreviewWin = function() {
         background: '#111'
       }
     },
-    oncreate: bin.onPrevWinCreate,
-    onshow: bin.onPrevWinShow,
-    onclose: bin.onPrevWinClose
+    oncreate: txtbin.onPrevWinCreate,
+    onshow: txtbin.onPrevWinShow,
+    onclose: txtbin.onPrevWinClose
   };
 
-  bin.prevWin = util.newWindow(opt);
-  bin.prevWin.max();
-  bin.prevWin.body.appendChild($el('#preview-wrapper'));
+  txtbin.prevWin = util.newWindow(opt);
+  txtbin.prevWin.max();
+  txtbin.prevWin.body.appendChild($el('#preview-wrapper'));
 };
-bin.onPrevWinClose = function() {
+txtbin.onPrevWinClose = function() {
   $el('#preview-wrapper0').appendChild($el('#preview-wrapper'));
-  bin.prevWin = null;
-  if (bin.isImageShowing()) bin.resetFontSize4Preview();
+  txtbin.prevWin = null;
+  if (txtbin.isImageShowing()) txtbin.resetFontSize4Preview();
 };
 
-bin.showVideoPreview = function(b64) {
+txtbin.showVideoPreview = function(b64) {
   var d = 'data:video/mp4;base64,' + b64;
   var v = '<video id="video-preview" src="' + d + '" style="max-width:100%;max-height:100%;" controls onmousedown="return false;">';
-  bin.drawPreview(v);
-  setTimeout(bin.postShowMediaPreview, 0, 'video-preview');
+  txtbin.drawPreview(v);
+  setTimeout(txtbin.postShowMediaPreview, 0, 'video-preview');
 };
 
-bin.showAudioPreview = function(b64) {
+txtbin.showAudioPreview = function(b64) {
   var d = 'data:audio/wav;base64,' + b64;
   var v = '<audio src="' + d + '" style="max-width:100%;max-height:100%;" controls>';
-  bin.drawPreview(v);
+  txtbin.drawPreview(v);
 };
 
-bin.showPdfPreview = function(b64) {
+txtbin.showPdfPreview = function(b64) {
   var d = 'data:application/pdf;base64,' + b64;
   var v = '<embed src="' + d + '" style="width:100%;height:calc(100% - 2px);"></embed>';
-  bin.drawPreview(v);
+  txtbin.drawPreview(v);
 };
 
-bin.drawPreview = function(s) {
-  bin.mediaPreviewRect = null;
+txtbin.drawPreview = function(s) {
+  txtbin.mediaPreviewRect = null;
   $el('#preview').innerHTML = s;
   $el('#preview-area').scrollToTop();
   $el('#preview-area').scrollToLeft();
 };
 
-bin.confirmClear = function() {
-  var v = bin.getSrcValue();
-  if (v && !bin.bufCache) {
-    util.confirm('Clear?', bin.clear);
+txtbin.confirmClear = function() {
+  var v = txtbin.getSrcValue();
+  if (v && !txtbin.bufCache) {
+    util.confirm('Clear?', txtbin.clear);
   } else {
-    bin.clear();
+    txtbin.clear();
   }
 };
 
-bin.clear = function() {
-  bin.clearBuf();
-  bin.setSrcValue('', true);
-  bin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
-  bin.drawPreview('<span style="color:#888;">PREVIEW</span>');
+txtbin.clear = function() {
+  txtbin.clearBuf();
+  txtbin.setSrcValue('', true);
+  txtbin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
+  txtbin.drawPreview('<span style="color:#888;">PREVIEW</span>');
   $el('#src').focus();
 };
 
-bin.clearBuf = function() {
-  bin.bufCache = null;
-  bin.file = null;
+txtbin.clearBuf = function() {
+  txtbin.bufCache = null;
+  txtbin.file = null;
   $el('#key-update-button').disabled = true;
   $el('#copy-button').disabled = true;
 };
 
-bin.submit = function() {
+txtbin.submit = function() {
   var v = ''
-  var mode = bin.getMode();
+  var mode = txtbin.getMode();
   switch (mode) {
     case 'b64s':
       v  = $el('#key').value;
@@ -2880,34 +2880,34 @@ bin.submit = function() {
   document.f1.submit();
 };
 
-bin.str2arr = function(s) {
+txtbin.str2arr = function(s) {
   return s.match(/[\uD800-\uDBFF][\uDC00-\uDFFF]|[\s\S]/g) || [];
 };
 
-bin.onFontRangeChanged = function(el) {
+txtbin.onFontRangeChanged = function(el) {
   var v = el.value;
-  bin.setFontSize(v);
+  txtbin.setFontSize(v);
 };
-bin.setFontSize = function(v) {
+txtbin.setFontSize = function(v) {
   var fontSize = v + 'px';
   $el('#font-range').value = v;
   $el('#src').style.fontSize = fontSize;
   $el('#fontsize').innerHTML = fontSize;
 };
-bin.resetFontSize = function() {
-  bin.setFontSize(bin.DEFAULT_FONT_SIZE);
+txtbin.resetFontSize = function() {
+  txtbin.setFontSize(txtbin.DEFAULT_FONT_SIZE);
 };
 
-bin.onFontRangeChanged4Preview = function(el) {
+txtbin.onFontRangeChanged4Preview = function(el) {
   var v = el.value;
-  bin.setFontSize4Preview(v);
+  txtbin.setFontSize4Preview(v);
 };
-bin.setFontSize4Preview = function(v) {
+txtbin.setFontSize4Preview = function(v) {
   var fontSize = v + 'px';
   $el('#font-range-preview').value = v;
   $el('#preview').style.fontSize = fontSize;
   $el('#fontsize-preview').innerHTML = fontSize;
-  if (bin.mediaPreviewRect) {
+  if (txtbin.mediaPreviewRect) {
     var el = null;
     if ($el('#img-preview').exists()) {
       el = $el('#img-preview');
@@ -2915,16 +2915,16 @@ bin.setFontSize4Preview = function(v) {
       el = $el('#video-preview');
     }
     if (el) {
-      bin.resizeMediaPreview(el, v);
+      txtbin.resizeMediaPreview(el, v);
     }
   }
 };
-bin.getFontSize4Preview = function() {
+txtbin.getFontSize4Preview = function() {
   return $el('#font-range-preview').value | 0;
 };
-bin.resizeMediaPreview = function(el, v) {
-  var orgW = bin.mediaPreviewRect.width;
-  var orgH = bin.mediaPreviewRect.height;
+txtbin.resizeMediaPreview = function(el, v) {
+  var orgW = txtbin.mediaPreviewRect.width;
+  var orgH = txtbin.mediaPreviewRect.height;
   var srcV = orgW;
   var prop = 'width';
   if (orgW < orgH) {
@@ -2936,47 +2936,47 @@ bin.resizeMediaPreview = function(el, v) {
   el.style['max-width'] = '';
   el.style['max-height'] = '';
 };
-bin.resetFontSize4Preview = function() {
-  bin.setFontSize4Preview(bin.DEFAULT_FONT_SIZE);
+txtbin.resetFontSize4Preview = function() {
+  txtbin.setFontSize4Preview(txtbin.DEFAULT_FONT_SIZE);
 };
-bin.fontFamily4Preview = '';
-bin.onFontChanged4Preview = function(el) {
+txtbin.fontFamily4Preview = '';
+txtbin.onFontChanged4Preview = function(el) {
   var v = el.value;
-  bin.fontFamily4Preview = v;
-  bin._setFont4Preview(v);
+  txtbin.fontFamily4Preview = v;
+  txtbin._setFont4Preview(v);
 };
-bin.setFont4Preview = function(n) {
+txtbin.setFont4Preview = function(n) {
   $el('#font-preview').value = n;
-  bin._setFont4Preview(n);
+  txtbin._setFont4Preview(n);
 };
-bin._setFont4Preview = function(v) {
+txtbin._setFont4Preview = function(v) {
   $el('#preview').style.fontFamily = v;
 };
 
-bin.changeFont4Preview = function(n) {
-  bin.setFont4Preview(n);
-  bin.fontFamily4Preview = n;
+txtbin.changeFont4Preview = function(n) {
+  txtbin.setFont4Preview(n);
+  txtbin.fontFamily4Preview = n;
 };
 
-bin.fontFamily = '';
-bin.onFontChanged = function(el) {
+txtbin.fontFamily = '';
+txtbin.onFontChanged = function(el) {
   var v = el.value;
-  bin.fontFamily = v;
-  bin._setFont(v);
+  txtbin.fontFamily = v;
+  txtbin._setFont(v);
 };
-bin.setFont = function(n) {
+txtbin.setFont = function(n) {
   $el('#font').value = n;
-  bin._setFont(n);
+  txtbin._setFont(n);
 };
-bin._setFont = function(v) {
+txtbin._setFont = function(v) {
   $el('#src').style.fontFamily = v;
 };
-bin.changeFont = function(n) {
-  bin.setFont(n);
-  bin.fontFamily = n;
+txtbin.changeFont = function(n) {
+  txtbin.setFont(n);
+  txtbin.fontFamily = n;
 };
 
-bin.switchKeyViewHide = function() {
+txtbin.switchKeyViewHide = function() {
   var type = (($el('#key').type == 'text') ? 'password' : 'text');
   $el('#key').type = type;
   if (type == 'password') {
@@ -2986,66 +2986,66 @@ bin.switchKeyViewHide = function() {
   }
 };
 
-bin.updateB64sKey = function() {
-  var mode = bin.getMode();
+txtbin.updateB64sKey = function() {
+  var mode = txtbin.getMode();
   var peviewMode = $el('#preview-mode').value;
   var peviewModeEncryption = $el('#preview-mode-encryption').value;
-  if (bin.bufCache) {
+  if (txtbin.bufCache) {
     if (mode == 'b64s') {
-      bin.switchRadix(mode, bin.bufCache);
+      txtbin.switchRadix(mode, txtbin.bufCache);
     }
     if ((peviewMode != 'view') && (peviewMode != 'txt') && (peviewModeEncryption == 'b64s')) {
-      bin.showPreview(bin.bufCache);
+      txtbin.showPreview(txtbin.bufCache);
     }
   }
 };
 
-bin.onInputKey = function() {
+txtbin.onInputKey = function() {
   if ($el('#b64-auto-update').checked) {
-    bin.updateB64sKey();
+    txtbin.updateB64sKey();
   }
 };
 
-bin.onChangeBsb64N = function() {
-  var mode = bin.getMode();
+txtbin.onChangeBsb64N = function() {
+  var mode = txtbin.getMode();
   var peviewMode = $el('#preview-mode').value;
   var peviewModeEncryption = $el('#preview-mode-encryption').value;
-  if (bin.bufCache) {
+  if (txtbin.bufCache) {
     if (mode == 'bsb64') {
-      bin.switchRadix(mode, bin.bufCache);
+      txtbin.switchRadix(mode, txtbin.bufCache);
     }
     if ((peviewMode != 'view') && (peviewMode != 'txt') && (peviewModeEncryption == 'bsb64')) {
-      bin.showPreview(bin.bufCache);
+      txtbin.showPreview(txtbin.bufCache);
     }
   }
 };
 
-bin.onMouseMove = function(e) {
+txtbin.onMouseMove = function(e) {
   var x = e.clientX;
   var y = e.clientY;
-  if (bin.uiStatus == bin.UI_ST_AREA_RESIZING_X) {
-    bin.onAreaResizeX(x);
-  } else if (bin.uiStatus == bin.UI_ST_AREA_RESIZING_Y) {
-    bin.onAreaResizeY(y);
-  } else if (bin.uiStatus & bin.UI_ST_DRAGGING) {
-    bin.dragImg(x, y);
+  if (txtbin.uiStatus == txtbin.UI_ST_AREA_RESIZING_X) {
+    txtbin.onAreaResizeX(x);
+  } else if (txtbin.uiStatus == txtbin.UI_ST_AREA_RESIZING_Y) {
+    txtbin.onAreaResizeY(y);
+  } else if (txtbin.uiStatus & txtbin.UI_ST_DRAGGING) {
+    txtbin.dragImg(x, y);
   }
 };
-bin.onMouseUp = function(e) {
+txtbin.onMouseUp = function(e) {
   switch (e.button) {
     case 0:
-      if ((bin.uiStatus == bin.UI_ST_AREA_RESIZING_X) || (bin.uiStatus == bin.UI_ST_AREA_RESIZING_Y)) {
-        bin.onAreaResizeEnd(e);
-      } else if (bin.uiStatus & bin.UI_ST_DRAGGING) {
-        bin.endDragImg(e);
+      if ((txtbin.uiStatus == txtbin.UI_ST_AREA_RESIZING_X) || (txtbin.uiStatus == txtbin.UI_ST_AREA_RESIZING_Y)) {
+        txtbin.onAreaResizeEnd(e);
+      } else if (txtbin.uiStatus & txtbin.UI_ST_DRAGGING) {
+        txtbin.endDragImg(e);
       }
   }
 };
 
-bin.copyPreview = function() {
+txtbin.copyPreview = function() {
   var previewMode = $el('#preview-mode').value;
-  if (bin.bufCache && ((previewMode == 'view') || (previewMode == 'txt'))) {
-    var b64 = bin.bufCache.b64;
+  if (txtbin.bufCache && ((previewMode == 'view') || (previewMode == 'txt'))) {
+    var b64 = txtbin.bufCache.b64;
     var s = util.decodeBase64(b64);
   } else {
     s = $el('#preview').innerText;
@@ -3060,7 +3060,7 @@ bin.copyPreview = function() {
   util.infotip.show('Copied', o);
 };
 
-bin.getSelfSizePos = function(el) {
+txtbin.getSelfSizePos = function(el) {
   var rect = el.getBoundingClientRect();
   var resizeBoxSize = 6;
   var sp = {};
@@ -3073,116 +3073,116 @@ bin.getSelfSizePos = function(el) {
   return sp;
 };
 
-bin.nop = function() {
+txtbin.nop = function() {
   return false;
 };
-bin.disableTextSelect = function() {
-  document.onselectstart = bin.nop;
+txtbin.disableTextSelect = function() {
+  document.onselectstart = txtbin.nop;
 };
-bin.enableTextSelect = function() {
-  document.onselectstart = bin.onselectstart;
+txtbin.enableTextSelect = function() {
+  document.onselectstart = txtbin.onselectstart;
 };
 
-bin.storeAreaSize = function() {
-  var sp1 = bin.getSelfSizePos($el('#input-area'));
+txtbin.storeAreaSize = function() {
+  var sp1 = txtbin.getSelfSizePos($el('#input-area'));
   var adj = 8;
   var w1 = sp1.w + adj;
 
-  sp1 = bin.getSelfSizePos($el('#info-area'));
+  sp1 = txtbin.getSelfSizePos($el('#info-area'));
   adj = 8;
   var h1 = sp1.h + adj;
 
-  bin.orgSize = {
+  txtbin.orgSize = {
     a1: {w: w1},
     a2: {h: h1}
   };
 };
 
-bin.onAreaResizeStartX = function(e) {
-  bin.onAreaResizeStart(e, 0, 'X', bin.UI_ST_AREA_RESIZING_X, $el('#input-area'), $el('#right-area'), 'ew-resize');
+txtbin.onAreaResizeStartX = function(e) {
+  txtbin.onAreaResizeStart(e, 0, 'X', txtbin.UI_ST_AREA_RESIZING_X, $el('#input-area'), $el('#right-area'), 'ew-resize');
 };
-bin.onAreaResizeX = function(x) {
+txtbin.onAreaResizeX = function(x) {
   var adj = 8;
-  var dX = bin.areaSize[0].orgX - x;
-  var w1 = bin.areaSize[0].orgSP1.w - dX - adj;
-  var dW = bin.areaSize[0].orgDW - dX;
-  bin.areaSize[0].dW = dW;
+  var dX = txtbin.areaSize[0].orgX - x;
+  var w1 = txtbin.areaSize[0].orgSP1.w - dX - adj;
+  var dW = txtbin.areaSize[0].orgDW - dX;
+  txtbin.areaSize[0].dW = dW;
   var bw = document.body.clientWidth;
   if ((w1 < 200) || (w1 > (bw - 200))) {
     return;
   }
-  bin.setAreaSizeX(w1, dW);
+  txtbin.setAreaSizeX(w1, dW);
 };
-bin.resetAreaSizeX = function() {
-  bin.setAreaSizeX(bin.orgSize.a1.w, 0);
-  bin.areaSize[0].orgDW = 0;
-  bin.areaSize[0].dW = 0;
+txtbin.resetAreaSizeX = function() {
+  txtbin.setAreaSizeX(txtbin.orgSize.a1.w, 0);
+  txtbin.areaSize[0].orgDW = 0;
+  txtbin.areaSize[0].dW = 0;
 };
-bin.setAreaSizeX = function(w1, dW) {
-  bin._setAreaSizeX($el('#input-area'), $el('#right-area'), w1, dW, 28);
+txtbin.setAreaSizeX = function(w1, dW) {
+  txtbin._setAreaSizeX($el('#input-area'), $el('#right-area'), w1, dW, 28);
 };
-bin._setAreaSizeX = function(el1, el2, w1, dW, adj2) {
+txtbin._setAreaSizeX = function(el1, el2, w1, dW, adj2) {
   var adj = 8;
   var w2 = w1 + adj2;
   el1.style.width = w1 + adj + 'px';
   el2.style.width = 'calc(100% - ' + w2 + 'px)';
 };
 
-bin.onAreaResizeStartY = function(e) {
-  bin.onAreaResizeStart(e, 1, 'Y', bin.UI_ST_AREA_RESIZING_Y, $el('#info-area'), $el('#preview-area'), 'ns-resize');
+txtbin.onAreaResizeStartY = function(e) {
+  txtbin.onAreaResizeStart(e, 1, 'Y', txtbin.UI_ST_AREA_RESIZING_Y, $el('#info-area'), $el('#preview-area'), 'ns-resize');
 };
-bin.onAreaResizeY = function(y) {
+txtbin.onAreaResizeY = function(y) {
   var adj = 12;
-  var dY = bin.areaSize[1].orgY - y;
-  var h1 = bin.areaSize[1].orgSP1.h - dY - adj;
-  var h2 = bin.areaSize[1].orgSP2.h + dY - adj;
-  var dH = bin.areaSize[1].orgDH - dY;
-  bin.areaSize[1].dH = dH;
+  var dY = txtbin.areaSize[1].orgY - y;
+  var h1 = txtbin.areaSize[1].orgSP1.h - dY - adj;
+  var h2 = txtbin.areaSize[1].orgSP2.h + dY - adj;
+  var dH = txtbin.areaSize[1].orgDH - dY;
+  txtbin.areaSize[1].dH = dH;
   if ((h1 < 100) || ((h2 < 100))) {
     return;
   }
-  bin.setAreaSizeY(h1, dH);
+  txtbin.setAreaSizeY(h1, dH);
 };
-bin.resetAreaSizeY = function() {
-  bin.setAreaSizeY(bin.orgSize.a2.h, 0);
-  bin.areaSize[1].orgDH = 0;
-  bin.areaSize[1].dH = 0;
+txtbin.resetAreaSizeY = function() {
+  txtbin.setAreaSizeY(txtbin.orgSize.a2.h, 0);
+  txtbin.areaSize[1].orgDH = 0;
+  txtbin.areaSize[1].dH = 0;
 };
-bin.setAreaSizeY = function(h1, dH) {
-  bin._setAreaSizeY($el('#info-area'), $el('#preview-area'), h1, dH, 56);
+txtbin.setAreaSizeY = function(h1, dH) {
+  txtbin._setAreaSizeY($el('#info-area'), $el('#preview-area'), h1, dH, 56);
 };
-bin._setAreaSizeY = function(el1, el2, h1, dH, adj2) {
+txtbin._setAreaSizeY = function(el1, el2, h1, dH, adj2) {
   var adj = 8;
   var h2 = h1 + adj2;
   el1.style.height = h1 + adj + 'px';
   el2.style.height = 'calc(100% - ' + h2 + 'px)';
 };
 
-bin.onAreaResizeStart = function(e, idx, dir, uiStatus, el1, el2, cursor) {
-  bin.uiStatus = uiStatus;
+txtbin.onAreaResizeStart = function(e, idx, dir, uiStatus, el1, el2, cursor) {
+  txtbin.uiStatus = uiStatus;
   var x = e.clientX;
   var y = e.clientY;
-  var sp1 = bin.getSelfSizePos(el1);
-  var sp2 = bin.getSelfSizePos(el2);
-  bin.areaSize[idx].orgSP1 = sp1;
-  bin.areaSize[idx].orgSP2 = sp2;
-  bin.disableTextSelect();
+  var sp1 = txtbin.getSelfSizePos(el1);
+  var sp2 = txtbin.getSelfSizePos(el2);
+  txtbin.areaSize[idx].orgSP1 = sp1;
+  txtbin.areaSize[idx].orgSP2 = sp2;
+  txtbin.disableTextSelect();
   document.body.style.cursor = cursor;
   if (dir == 'X') {
-    bin.areaSize[idx].orgX = x;
-    bin.areaSize[idx].orgDW = bin.areaSize[0].dW;
+    txtbin.areaSize[idx].orgX = x;
+    txtbin.areaSize[idx].orgDW = txtbin.areaSize[0].dW;
   } else {
-    bin.areaSize[idx].orgY = y;
-    bin.areaSize[idx].orgDH = bin.areaSize[idx].dH;
+    txtbin.areaSize[idx].orgY = y;
+    txtbin.areaSize[idx].orgDH = txtbin.areaSize[idx].dH;
   }
 };
-bin.onAreaResizeEnd = function(e) {
-  bin.enableTextSelect();
+txtbin.onAreaResizeEnd = function(e) {
+  txtbin.enableTextSelect();
   document.body.style.cursor = 'auto';
-  bin.uiStatus = bin.UI_ST_NONE;
+  txtbin.uiStatus = txtbin.UI_ST_NONE;
 };
 
-bin.TXT_EDIT_FN = [
+txtbin.TXT_EDIT_FN = [
   {lbl: ''},
   {lbl: 'CLEANSE_TEXT', opt: [{lbl: 'NBSP', optvals: [{v: 'Y'}, {v: 'N'}]}, {lbl: 'ZWSP', optvals: [{v: 'Y'}, {v: 'N'}]}], fn: function(s, o) {return DebugJS.cleanseText(s, (o[0] == 'Y'), (o[1] == 'Y'));}},
   {lbl: 'DATE_TIME_SEP', opt: [{lbl: 'SEPARATOR', v: '/'}], fn: function(s, o) {return DebugJS.dateSep(s, o[0]);}},
@@ -3292,30 +3292,30 @@ bin.TXT_EDIT_FN = [
   {lbl: '&#n;', opt: [{lbl: '', optvals: [{t: 'Decode', v: 'D'}, {t: 'Encode', v: 'E'}]}], fn: function(s, o) {var f = o[0] == 'E' ? 'encodeChrEntRefs' : 'decodeChrEntRefs';return DebugJS[f](s);}}
 ];
 
-bin.txtEdtOptEl = [];
-bin.initTxtEditMode = function() {
+txtbin.txtEdtOptEl = [];
+txtbin.initTxtEditMode = function() {
   var o = '';
-  for (var i = 0; i < bin.TXT_EDIT_FN.length; i++) {
-    o += '<option value="' + i + '">' + bin.TXT_EDIT_FN[i].lbl + '</option>';
+  for (var i = 0; i < txtbin.TXT_EDIT_FN.length; i++) {
+    o += '<option value="' + i + '">' + txtbin.TXT_EDIT_FN[i].lbl + '</option>';
   }
   $el('#txt-edit-mode').innerHTML = o;
-  $el('#txt-edit-mode').addEventListener('change', bin.onTxtEdtMdChg);
+  $el('#txt-edit-mode').addEventListener('change', txtbin.onTxtEdtMdChg);
   var basePanel = $el('#txt-edit-opts');
   for (i = 0; i < 4; i++) {
-    bin.txtEdtOptEl[i] = {
+    txtbin.txtEdtOptEl[i] = {
       lbl: DebugJS.ui.addLabel(basePanel, '', {'margin-left': '4px'}),
       txt: DebugJS.ui.addTextInput(basePanel, '3em', 'left', '#ccc', '', null),
       sel: DebugJS.ui.addElement(basePanel, 'select')
     };
   }
-  bin.onTxtEdtMdChg();
+  txtbin.onTxtEdtMdChg();
 };
 
-bin.onTxtEdtMdChg = function() {
+txtbin.onTxtEdtMdChg = function() {
   var v = $el('#txt-edit-mode').value | 0;
-  var d = bin.TXT_EDIT_FN[v];
+  var d = txtbin.TXT_EDIT_FN[v];
   for (var i = 0; i < 4; i++) {
-    var optEl = bin.txtEdtOptEl;
+    var optEl = txtbin.txtEdtOptEl;
     DebugJS.hideEl(optEl[i].lbl);
     DebugJS.hideEl(optEl[i].txt);
     DebugJS.hideEl(optEl[i].sel);
@@ -3343,29 +3343,29 @@ bin.onTxtEdtMdChg = function() {
     }
   }
 };
-bin.execTxtEdit = function() {
+txtbin.execTxtEdit = function() {
   var idx = $el('#txt-edit-mode').value | 0;
-  var d = bin.TXT_EDIT_FN[idx];
+  var d = txtbin.TXT_EDIT_FN[idx];
   if (!d.fn) return;
-  var s = bin.getSrcValue();
+  var s = txtbin.getSrcValue();
   var o = [];
   for (var i = 0; i < 4; i++) {
-    var oEls = bin.txtEdtOptEl[i];
+    var oEls = txtbin.txtEdtOptEl[i];
     o[i] = oEls.txt.value;
     if (oEls.sel.active) o[i] = oEls.sel.value;
   }
   var v = d.fn(s, o);
   v = DebugJS.escHtml(v);
-  bin.drawPreview(v);
+  txtbin.drawPreview(v);
   $el('#copy-button').disabled = false;
-  bin.bufCache = null;
+  txtbin.bufCache = null;
 };
 
-bin.UTF8 = {};
-bin.UTF8.toByteArray = function(s) {
+txtbin.UTF8 = {};
+txtbin.UTF8.toByteArray = function(s) {
   var a = [];
   if (!s) return a;
-  var chs = bin.str2arr(s);
+  var chs = txtbin.str2arr(s);
   for (var i = 0; i < chs.length; i++) {
     var ch = chs[i];
     var c = ch.charCodeAt(0);
@@ -3381,11 +3381,11 @@ bin.UTF8.toByteArray = function(s) {
   }
   return a;
 };
-bin.UTF8.fromByteArray = function(b) {
+txtbin.UTF8.fromByteArray = function(b) {
   if (!b) return null;
   var e = '';
   for (var i = 0; i < b.length; i++) {
-    e += '%' + bin.toHex(b[i], true, '', 2);
+    e += '%' + txtbin.toHex(b[i], true, '', 2);
   }
   return decodeURIComponent(e);
 };
