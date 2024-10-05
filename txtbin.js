@@ -2434,10 +2434,7 @@ txtbin.onChangeShowPreviewCc = function() {
 };
 
 txtbin.onChangeForceLineBreak = function() {
-  if (!txtbin.bufCache) {
-    return;
-  }
-  var ftype = txtbin.bufCache.ftype;
+  var ftype = (txtbin.bufCache ? txtbin.bufCache.ftype : null);
   var previewMode = $el('#preview-mode').value;
   if ((previewMode == 'txt') || !txtbin.isMedia(ftype)) {
     if ($el('#no-line-break').checked) {
