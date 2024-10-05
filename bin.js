@@ -3182,6 +3182,7 @@ bin.onAreaResizeEnd = function(e) {
 
 bin.TXT_EDIT_FN = [
   {lbl: ''},
+  {lbl: 'CLEANSE_TEXT', fn: function(s) {return DebugJS.cleanseText(s);}},
   {lbl: 'DATE_TIME_SEP', opt: [{lbl: 'SEPARATOR', v: '/'}], fn: function(s, o) {return DebugJS.dateSep(s, o[0]);}},
   {lbl: 'DELIMIT', opt: [{lbl: 'POS', v: ''}, {lbl: 'ORG', optvals: [{v: '0'}, {v: '1', s: 1}]}, {lbl: 'TRIM', optvals: [{v: 'Y'}, {v: 'N'}]}],
     fn: function(s, o) {
@@ -3277,7 +3278,6 @@ bin.TXT_EDIT_FN = [
   {lbl: 'SUM', fn: function(s) {return DebugJS.sum(s);}},
   {lbl: 'TAB_ALIGN', opt: [{lbl: 'SPACE', v: '2'}], fn: function(s, o) {return DebugJS.alignByTab(s, o[0] | 0);}},
   {lbl: 'TIME_CONV', fn: function(s) {return DebugJS.timecnv(s);}},
-  {lbl: 'TRIM_TEXT', fn: function(s) {return DebugJS.trimText(s);}},
   {
     lbl: 'UNIQUE', opt: [{lbl: 'SORT', optvals: [{t: '', v: ''}, {t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COUNT', optvals: [{v: 'N'}, {v: 'Y'}]}],
     fn: function(s, o) {
