@@ -1,5 +1,5 @@
 /*!
- * Binary Decoder
+ * Text/Binary Editor
  * Copyright 2023 Takashi Harano
  * Released under the MIT license
  * https://github.com/takashiharano/binarydecoder
