@@ -184,6 +184,11 @@ select {
   border-radius: 4px;
 }
 
+.no-line-break {
+  white-space: pre;
+  word-break: keep-all;
+}
+
 .force-line-break {
   white-space: pre-wrap;
   word-break: break-all;

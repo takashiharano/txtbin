@@ -724,7 +724,7 @@ $onReady = function() {
   $el('#show-preview').addEventListener('change', bin.onChangeShowPreview);
   $el('#show-preview-rt').addEventListener('change', bin.onRealtimePreviewChange);
   $el('#show-preview-cc').addEventListener('change', bin.onChangeShowPreviewCc);
-  $el('#force-line-break').addEventListener('change', bin.onChangeForceLineBreak);
+  $el('#no-line-break').addEventListener('change', bin.onChangeForceLineBreak);
   $el('#preview-mode').addEventListener('change', bin.onChangeShowPreview);
   $el('#preview-mode-encryption').addEventListener('change', bin.onChangeShowPreview);
 
@@ -2440,10 +2440,12 @@ bin.onChangeForceLineBreak = function() {
   var ftype = bin.bufCache.ftype;
   var previewMode = $el('#preview-mode').value;
   if ((previewMode == 'txt') || !bin.isMedia(ftype)) {
-    if ($el('#force-line-break').checked) {
-      $el('#preview').addClass('force-line-break');
-    } else {
+    if ($el('#no-line-break').checked) {
       $el('#preview').removeClass('force-line-break');
+      $el('#preview').addClass('no-line-break');
+    } else {
+      $el('#preview').removeClass('no-line-break');
+      $el('#preview').addClass('force-line-break');
     }
   }
 };
