@@ -724,7 +724,7 @@ $onReady = function() {
   $el('#show-preview').addEventListener('change', txtbin.onChangeShowPreview);
   $el('#show-preview-rt').addEventListener('change', txtbin.onRealtimePreviewChange);
   $el('#show-preview-cc').addEventListener('change', txtbin.onChangeShowPreviewCc);
-  $el('#no-line-break').addEventListener('change', txtbin.onChangeForceLineBreak);
+  $el('#word-wrap').addEventListener('change', txtbin.onChangeWordWrap);
   $el('#preview-mode').addEventListener('change', txtbin.onChangeShowPreview);
   $el('#preview-mode-encryption').addEventListener('change', txtbin.onChangeShowPreview);
 
@@ -2433,16 +2433,16 @@ txtbin.onChangeShowPreviewCc = function() {
   }
 };
 
-txtbin.onChangeForceLineBreak = function() {
+txtbin.onChangeWordWrap = function() {
   var ftype = (txtbin.bufCache ? txtbin.bufCache.ftype : null);
   var previewMode = $el('#preview-mode').value;
   if ((previewMode == 'txt') || !txtbin.isMedia(ftype)) {
-    if ($el('#no-line-break').checked) {
-      $el('#preview').removeClass('force-line-break');
-      $el('#preview').addClass('no-line-break');
+    if ($el('#word-wrap').checked) {
+      $el('#preview').removeClass('line-break-asis');
+      $el('#preview').addClass('line-break-viewport-width');
     } else {
-      $el('#preview').removeClass('no-line-break');
-      $el('#preview').addClass('force-line-break');
+      $el('#preview').removeClass('line-break-viewport-width');
+      $el('#preview').addClass('line-break-asis');
     }
   }
 };
