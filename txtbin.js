@@ -2786,8 +2786,8 @@ txtbin.openPreviewWin = function() {
     maximize: true,
     pos: 'c',
     closeButton: true,
-    width: 900,
-    height: 600,
+    width: '60vw',
+    height: '70vh',
     scale: 1,
     title: {
       text: 'Preview'
@@ -2803,7 +2803,6 @@ txtbin.openPreviewWin = function() {
   };
 
   txtbin.prevWin = util.newWindow(opt);
-  txtbin.prevWin.max();
   txtbin.prevWin.body.appendChild($el('#preview-wrapper'));
 };
 txtbin.onPrevWinClose = function() {
