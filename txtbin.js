@@ -3110,7 +3110,8 @@ txtbin.onAreaResizeX = function(x) {
   txtbin.setAreaSizeX(w1, dW);
 };
 txtbin.resetAreaSizeX = function() {
-  txtbin.setAreaSizeX(txtbin.orgSize.a1.w, 0);
+  var w1 = txtbin.orgSize.a1.w - 16;
+  txtbin.setAreaSizeX(w1, 0);
   txtbin.areaSize[0].orgDW = 0;
   txtbin.areaSize[0].dW = 0;
 };
@@ -3140,7 +3141,8 @@ txtbin.onAreaResizeY = function(y) {
   txtbin.setAreaSizeY(h1, dH);
 };
 txtbin.resetAreaSizeY = function() {
-  txtbin.setAreaSizeY(txtbin.orgSize.a2.h, 0);
+  var h = txtbin.orgSize.a2.h - 20;
+  txtbin.setAreaSizeY(h, 0);
   txtbin.areaSize[1].orgDH = 0;
   txtbin.areaSize[1].dH = 0;
 };
