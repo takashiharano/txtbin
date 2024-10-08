@@ -703,9 +703,9 @@ $onReady = function() {
   window.addEventListener('mousemove', txtbin.onMouseMove, true);
   window.addEventListener('mouseup', txtbin.onMouseUp, true);
   $el('#adjuster-x').addEventListener('mousedown', txtbin.onAreaResizeStartX);
-  $el('#adjuster-x').addEventListener('dblclick', txtbin.resetAreaSizeX);
+  $el('#adjuster-x').addEventListener('dblclick', txtbin.onDblclickX);
   $el('#adjuster-y').addEventListener('mousedown', txtbin.onAreaResizeStartY);
-  $el('#adjuster-y').addEventListener('dblclick', txtbin.resetAreaSizeY);
+  $el('#adjuster-y').addEventListener('dblclick', txtbin.onDblclickY);
 
   $el('#dump-flag-show-addr').addEventListener('input', txtbin.onChangeDumpFlag);
   $el('#dump-flag-show-sp').addEventListener('input', txtbin.onChangeDumpFlag);
@@ -3154,6 +3154,14 @@ txtbin._setAreaSizeY = function(el1, el2, h1, dH, adj2) {
   var h2 = h1 + adj2;
   el1.style.height = h1 + adj + 'px';
   el2.style.height = 'calc(100% - ' + h2 + 'px)';
+};
+
+txtbin.onDblclickX = function() {
+  txtbin.resetAreaSizeX();
+  $el('#src').focus();
+};
+txtbin.onDblclickY = function() {
+  txtbin.resetAreaSizeY();
 };
 
 txtbin.onAreaResizeStart = function(e, idx, dir, uiStatus, el1, el2, cursor) {
