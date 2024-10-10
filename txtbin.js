@@ -1902,7 +1902,7 @@ txtbin.getFileType = function(b, f) {
     var tp = filetypes[k]
     if (!tp['head']) continue;
     if (txtbin._hasBinaryPattern(b, 0, tp['head'])) {
-      ftype = tp;
+      ftype = util.copyObject(tp);
       break;
     }
   }
@@ -2135,7 +2135,7 @@ txtbin.getZipContentType = function(buf) {
     var ftype = txtbin.FILETYPES[k];
     var hexptn = ftype['hexptn'];
     if (ftype['supertype'] == 'zip') {
-      if (txtbin.hasBinaryPattern(buf, hexptn)) return ftype;
+      if (txtbin.hasBinaryPattern(buf, hexptn)) return util.copyObject(ftype);
     }
   }
   return null;
@@ -2448,6 +2448,7 @@ txtbin.onChangeWordWrap = function() {
 };
 
 txtbin.onDnd = function(s, f) {
+  txtbin.clearBuf();
   txtbin.file = f;
   var showInfoRequired = true;
   if ((s instanceof ArrayBuffer) || (f && txtbin.isB64Mode())) {
@@ -2467,7 +2468,6 @@ txtbin.onDnd = function(s, f) {
 };
 
 txtbin.onDndLoadStart = function(f) {
-  txtbin.clearBuf();
   txtbin.setSrcValue('Loading...', true);
   txtbin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
   txtbin.drawPreview('<span style="color:#888;">PREVIEW</span>');
