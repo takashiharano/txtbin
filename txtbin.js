@@ -149,6 +149,54 @@ txtbin.CODE_BLOCKS = [
     ]
   },
   {
+    name: 'digit',
+    fullname: 'Digit',
+    label: '1',
+    block_level: 2,
+    ranges: [
+      {
+        cp_s: 0x0030,
+        cp_e: 0x0039,
+        utf16_s: 0x0030,
+        utf16_e: 0x0039,
+        utf8_s: 0x30,
+        utf8_e: 0x39
+      }
+    ]
+  },
+  {
+    name: 'latin_capital_letter',
+    fullname: 'Latin Capital letter',
+    label: 'A',
+    block_level: 2,
+    ranges: [
+      {
+        cp_s: 0x0041,
+        cp_e: 0x005A,
+        utf16_s: 0x0041,
+        utf16_e: 0x005A,
+        utf8_s: 0x41,
+        utf8_e: 0x5A
+      }
+    ]
+  },
+  {
+    name: 'latin_small_letter',
+    fullname: 'Latin Small letter',
+    label: 'a',
+    block_level: 2,
+    ranges: [
+      {
+        cp_s: 0x0041,
+        cp_e: 0x005A,
+        utf16_s: 0x0041,
+        utf16_e: 0x005A,
+        utf8_s: 0x41,
+        utf8_e: 0x5A
+      }
+    ]
+  },
+  {
     name: 'latin1_suppl',
     fullname: 'Latin-1 Supplement',
     label: 'Ü',
@@ -1723,22 +1771,6 @@ txtbin.checkNewline = function(buf, pos, code, chunk, flags) {
       flags['general']['newline']['cr']++;
     }
     flags['wk']['tmpNL'] = null;
-  }
-
-  return flags;
-};
-
-txtbin.checkAscii = function(buf, pos, code, chunk, flags) {
-  if (pos % 2 == 0) {
-    if (txtbin.inRange(chunk['ptn2U'], 0x0020, 0x007F)) {
-      flags['utf16be']['codeblock_count']['ascii']++;
-    } else if (txtbin.inRange(chunk['ptn2Ur'], 0x0020, 0x007F)) {
-      flags['utf16le']['codeblock_count']['ascii']++;
-    }
-  }
-
-  if (txtbin.inRange(code, 0x20, 0x7F)) {
-    flags['utf8']['codeblock_count']['ascii']++;
   }
 
   return flags;
