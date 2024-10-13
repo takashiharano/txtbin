@@ -102,8 +102,7 @@ txtbin.CODE_BLOCKS = [
     block_level: 0,
     ranges: [
       {
-        cp_s: 0x0000,
-        cp_e: 0xFFFF
+        cp: {s: 0x0000, e: 0xFFFF}
       }
     ],
     skip_check: true
@@ -115,12 +114,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x0000,
-        cp_e: 0x007F,
-        utf16_s: 0x0020,
-        utf16_e: 0x007F,
-        utf8_s: 0x20,
-        utf8_e: 0x7F
+        cp: {s: 0x0000, e: 0x007F},
+        utf8: {s: 0x20, e: 0x7F},
+        utf16: {s: 0x0020, e: 0x007F}
       }
     ]
   },
@@ -130,9 +126,9 @@ txtbin.CODE_BLOCKS = [
     label: 'TAB',
     ranges: [
       {
-        cp_s: 0x0009,
-        utf16_s: 0x0009,
-        utf8_s: 0x09
+        cp: {s: 0x0009},
+        utf8: {s: 0x09},
+        utf16: {s: 0x0009}
       }
     ]
   },
@@ -142,9 +138,9 @@ txtbin.CODE_BLOCKS = [
     label: 'SP',
     ranges: [
       {
-        cp_s: 0x0020,
-        utf16_s: 0x0020,
-        utf8_s: 0x20
+        cp: {s: 0x0020},
+        utf8: {s: 0x20},
+        utf16: {s: 0x0020}
       }
     ]
   },
@@ -155,12 +151,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 2,
     ranges: [
       {
-        cp_s: 0x0030,
-        cp_e: 0x0039,
-        utf16_s: 0x0030,
-        utf16_e: 0x0039,
-        utf8_s: 0x30,
-        utf8_e: 0x39
+        cp: {s: 0x0030, e: 0x0039},
+        utf8: {s: 0x30, e: 0x39},
+        utf16: {s: 0x0030, e: 0x0039}
       }
     ]
   },
@@ -171,12 +164,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 2,
     ranges: [
       {
-        cp_s: 0x0041,
-        cp_e: 0x005A,
-        utf16_s: 0x0041,
-        utf16_e: 0x005A,
-        utf8_s: 0x41,
-        utf8_e: 0x5A
+        cp: {s: 0x0041, e: 0x005A},
+        utf8: {s: 0x41, e: 0x5A},
+        utf16: {s: 0x0041, e: 0x005A}
       }
     ]
   },
@@ -187,12 +177,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 2,
     ranges: [
       {
-        cp_s: 0x0041,
-        cp_e: 0x005A,
-        utf16_s: 0x0041,
-        utf16_e: 0x005A,
-        utf8_s: 0x41,
-        utf8_e: 0x5A
+        cp: {s: 0x0061, e: 0x007A},
+        utf8: {s: 0x61, e: 0x7A},
+        utf16: {s: 0x0061, e: 0x007A}
       }
     ]
   },
@@ -203,10 +190,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x0080,
-        cp_e: 0x00FF,
-        utf16_s: 0x0080,
-        utf16_e: 0x00FF
+        cp: {s: 0x0080, e: 0x00FF},
+        utf8: {s: 0x80A0, e: 0xC3BF},
+        utf16: {s: 0x0080, e: 0x00FF}
       }
     ]
   },
@@ -216,9 +202,9 @@ txtbin.CODE_BLOCKS = [
     label: 'NBSP',
     ranges: [
       {
-        cp_s: 0x00A0,
-        utf16_s: 0x00A0,
-        utf8_s: 0xC2A0
+        cp: {s: 0x00A0},
+        utf8: {s: 0xC2A0},
+        utf16: {s: 0x00A0}
       }
     ],
     caution: true
@@ -230,12 +216,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x0300,
-        cp_e: 0x036F,
-        utf16_s: 0x0300,
-        utf16_e: 0x036F,
-        utf8_s: 0xCAB0,
-        utf8_e: 0xCDAF
+        cp: {s: 0x0300, e: 0x036F},
+        utf8: {s: 0xCAB0, e: 0xCDAF},
+        utf16: {s: 0x0300, e: 0x036F}
       }
     ],
     caution: true
@@ -247,12 +230,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x0E00,
-        cp_e: 0x0E7F,
-        utf16_s: 0x0E00,
-        utf16_e: 0x0E7F,
-        utf8_s: 0xE0B880,
-        utf8_e: 0xE0B9BF
+        cp: {s: 0x0E00, e: 0x0E7F},
+        utf8: {s: 0xE0B880, e: 0xE0B9BF},
+        utf16: {s: 0x0E00, e: 0x0E7F}
       }
     ]
   },
@@ -263,12 +243,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x2000,
-        cp_e: 0x2BFF,
-        utf16_s: 0x2000,
-        utf16_e: 0x2BFF,
-        utf8_s: 0xE28080,
-        utf8_e: 0xE2AFBF
+        cp: {s: 0x2000, e: 0x2BFF},
+        utf8: {s: 0xE28080, e: 0xE2AFBF},
+        utf16: {s: 0x2000, e: 0x2BFF}
       }
     ]
   },
@@ -278,9 +255,9 @@ txtbin.CODE_BLOCKS = [
     label: 'ZWSP',
     ranges: [
       {
-        cp_s: 0x200B,
-        utf16_s: 0x200B,
-        utf8_s: 0xE2808B
+        cp: {s: 0x200B},
+        utf8: {s: 0xE2808B},
+        utf16: {s: 0x200B}
       }
     ],
     caution: true
@@ -292,20 +269,14 @@ txtbin.CODE_BLOCKS = [
     block_level: 2,
     ranges: [
       {
-        cp_s: 0x200E,
-        cp_e: 0x200F,
-        utf16_s: 0x200E,
-        utf16_e: 0x200F,
-        utf8_s: 0xE2808E,
-        utf8_e: 0xE2808F
+        cp: {s: 0x200E, e: 0x200F},
+        utf8: {s: 0xE2808E, e: 0xE2808F},
+        utf16: {s: 0x200E, e: 0x200F}
       },
       {
-        cp_s: 0x202A,
-        cp_e: 0x202E,
-        utf16_s: 0x202A,
-        utf16_e: 0x202E,
-        utf8_s: 0xE280AA,
-        utf8_e: 0xE280AE
+        cp: {s: 0x202A, e: 0x202E},
+        utf8: {s: 0xE280AA, e: 0xE280AE},
+        utf16: {s: 0x202A, e: 0x202E}
       }
     ],
     caution: true
@@ -316,9 +287,9 @@ txtbin.CODE_BLOCKS = [
     label: 'ＳＰ',
     ranges: [
       {
-        cp_s: 0x3000,
-        utf16_s: 0x3000,
-        utf8_s: 0xE38080
+        cp: {s: 0x3000},
+        utf8: {s: 0xE38080},
+        utf16: {s: 0x3000}
       }
     ]
   },
@@ -329,12 +300,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x3040,
-        cp_e: 0x3096,
-        utf16_s: 0x3040,
-        utf16_e: 0x3096,
-        utf8_s: 0xE38181,
-        utf8_e: 0xE38296
+        cp: {s: 0x3040, e: 0x3096},
+        utf8: {s: 0xE38181, e: 0xE38296},
+        utf16: {s: 0x3040, e: 0x3096}
       }
     ]
   },
@@ -345,12 +313,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x30A1,
-        cp_e: 0x30FF,
-        utf16_s: 0x30A1,
-        utf16_e: 0x30FF,
-        utf8_s: 0xE382A1,
-        utf8_e: 0xE383BF
+        cp: {s: 0x30A1, e: 0x30FF},
+        utf8: {s: 0xE382A1, e: 0xE383BF},
+        utf16: {s: 0x30A1, e: 0x30FF}
       }
     ]
   },
@@ -361,12 +326,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x3100,
-        cp_e: 0x312F,
-        utf16_s: 0x3100,
-        utf16_e: 0x312F,
-        utf8_s: 0xE38480,
-        utf8_e: 0xE384AF
+        cp: {s: 0x3100, e: 0x312F},
+        utf8: {s: 0xE38480, e: 0xE384AF},
+        utf16: {s: 0x3100, e: 0x312F}
       }
     ]
   },
@@ -377,12 +339,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x3400,
-        cp_e: 0x9FFF,
-        utf16_s: 0x3400,
-        utf16_e: 0x9FFF,
-        utf8_s: 0xE39080,
-        utf8_e: 0xE9BFBF
+        cp: {s: 0x3400, e: 0x9FFF},
+        utf8: {s: 0xE39080, e: 0xE9BFBF},
+        utf16: {s: 0x3400, e: 0x9FFF}
       }
     ]
   },
@@ -392,9 +351,9 @@ txtbin.CODE_BLOCKS = [
     label: '〇',
     ranges: [
       {
-        cp_s: 0x3007,
-        utf16_s: 0x3007,
-        utf8_s: 0xE38087
+        cp: {s: 0x3007},
+        utf8: {s: 0xE38087},
+        utf16: {s: 0x3007}
       }
     ]
   },
@@ -405,12 +364,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0xAC00,
-        cp_e: 0xD7AF,
-        utf16_s: 0xAC00,
-        utf16_e: 0xD7AF,
-        utf8_s: 0xEAB080,
-        utf8_e: 0xED9EAF
+        cp: {s: 0xAC00, e: 0xD7AF},
+        utf8: {s: 0xEAB080, e: 0xED9EAF},
+        utf16: {s: 0xAC00, e: 0xD7AF}
       }
     ]
   },
@@ -421,12 +377,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0xD800,
-        cp_e: 0xDFFF,
-        utf16_s: 0xD800,
-        utf16_e: 0xDFFF,
-        utf8_s: 0xEFBFBD,
-        utf8_e: 0xEFBFBD
+        cp: {s: 0xD800, e: 0xDFFF},
+        utf8: {s: 0xEFBFBD, e: 0xEFBFBD},
+        utf16: {s: 0xD800, e: 0xDFFF}
       }
     ],
     caution: {
@@ -440,12 +393,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0xE000,
-        cp_e: 0xF8FF,
-        utf16_s: 0xE000,
-        utf16_e: 0xF8FF,
-        utf8_s: 0xEE8080,
-        utf8_e: 0xEFA3BF
+        cp: {s: 0xE000, e: 0xF8FF},
+        utf8: {s: 0xEE8080, e: 0xEFA3BF},
+        utf16: {s: 0xE000, e: 0xF8FF}
       }
     ],
     caution: true
@@ -457,12 +407,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0xF900,
-        cp_e: 0xFAFF,
-        utf16_s: 0xF900,
-        utf16_e: 0xFAFF,
-        utf8_s: 0xEFA480,
-        utf8_e: 0xEFABBF
+        cp: {s: 0xF900, e: 0xFAFF},
+        utf8: {s: 0xEFA480, e: 0xEFABBF},
+        utf16: {s: 0xF900, e: 0xFAFF}
       }
     ]
   },
@@ -473,12 +420,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0xFE00,
-        cp_e: 0xFE0F,
-        utf16_s: 0xFE00,
-        utf16_e: 0xFE0F,
-        utf8_s: 0xEFB880,
-        utf8_e: 0xEFB88F
+        cp: {s: 0xFE00, e: 0xFE0F},
+        utf8: {s: 0xEFB880, e: 0xEFB88F},
+        utf16: {s: 0xFE00, e: 0xFE0F}
       }
     ],
     caution: true
@@ -490,12 +434,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0xFF00,
-        cp_e: 0xFF5E,
-        utf16_s: 0xFF00,
-        utf16_e: 0xFF5E,
-        utf8_s: 0xEFBC80,
-        utf8_e: 0xEFBD9E
+        cp: {s: 0xFF00, e: 0xFF5E},
+        utf8: {s: 0xEFBC80, e: 0xEFBD9E},
+        utf16: {s: 0xFF00, e: 0xFF5E}
       }
     ]
   },
@@ -506,12 +447,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 2,
     ranges: [
       {
-        cp_s: 0xFF10,
-        cp_e: 0xFF19,
-        utf16_s: 0xFF10,
-        utf16_e: 0xFF19,
-        utf8_s: 0xEFBC90,
-        utf8_e: 0xEFBC99
+        cp: {s: 0xFF10, e: 0xFF19},
+        utf8: {s: 0xEFBC90, e: 0xEFBC99},
+        utf16: {s: 0xFF10, e: 0xFF19}
       }
     ]
   },
@@ -522,12 +460,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0xFF61,
-        cp_e: 0xFF9F,
-        utf16_s: 0xFF61,
-        utf16_e: 0xFF9F,
-        utf8_s: 0xEFBDA1,
-        utf8_e: 0xEFBE9F
+        cp: {s: 0xFF61, e: 0xFF9F},
+        utf8: {s: 0xEFBDA1, e: 0xEFBE9F},
+        utf16: {s: 0xFF61, e: 0xFF9F}
       }
     ]
   },
@@ -538,8 +473,7 @@ txtbin.CODE_BLOCKS = [
     block_level: 0,
     ranges: [
       {
-        cp_s: 0x10000,
-        cp_e: 0x10FFFF
+        cp: {s: 0x10000, e: 0x10FFFF}
       }
     ],
     skip_check: true
@@ -551,12 +485,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x10000,
-        cp_e: 0x1FFFF,
-        utf16_s: 0xD800DC00,
-        utf16_e: 0xD83FDFFF,
-        utf8_s: 0xF0908080,
-        utf8_e: 0xF09FBFBF
+        cp: {s: 0x10000, e: 0x1FFFF},
+        utf8: {s: 0xF0908080, e: 0xF09FBFBF},
+        utf16: {s: 0xD800DC00, e: 0xD83FDFFF}
       }
     ]
   },
@@ -567,12 +498,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 2,
     ranges: [
       {
-        cp_s: 0x1F300,
-        cp_e: 0x1FBFF,
-        utf16_s: 0xD83CDF00,
-        utf16_e: 0xD83EDFFF,
-        utf8_s: 0xF09F8C80,
-        utf8_e: 0xF09FAFBF
+        cp: {s: 0x1F300, e: 0x1FBFF},
+        utf8: {s: 0xF09F8C80, e: 0xF09FAFBF},
+        utf16: {s: 0xD83CDF00, e: 0xD83EDFFF}
       }
     ]
   },
@@ -583,12 +511,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x20000,
-        cp_e: 0x2FFFF,
-        utf16_s: 0xD840DC00,
-        utf16_e: 0xD87FDFFF,
-        utf8_s: 0xF0A08080,
-        utf8_e: 0xF0AFBFBF
+        cp: {s: 0x20000, e: 0x2FFFF},
+        utf8: {s: 0xF0A08080, e: 0xF0AFBFBF},
+        utf16: {s: 0xD840DC00, e: 0xD87FDFFF}
       }
     ]
   },
@@ -599,12 +524,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x30000,
-        cp_e: 0x3FFFF,
-        utf16_s: 0xD880DC00,
-        utf16_e: 0xDB3FDFFF,
-        utf8_s: 0xF0B08080,
-        utf8_e: 0xF39FBFBF
+        cp: {s: 0x30000, e: 0x3FFFF},
+        utf8: {s: 0xF0B08080, e: 0xF39FBFBF},
+        utf16: {s: 0xD880DC00, e: 0xDB3FDFFF}
       }
     ]
   },
@@ -615,12 +537,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x31350,
-        cp_e: 0xDFFFF,
-        utf16_s: 0xD884DF50,
-        utf16_e: 0xDB3FDFFF,
-        utf8_s: 0xF0B18D90,
-        utf8_e: 0xF39FBFBF
+        cp: {s: 0x31350, e: 0xDFFFF},
+        utf8: {s: 0xF0B18D90, e: 0xF39FBFBF},
+        utf16: {s: 0xD884DF50, e: 0xDB3FDFFF}
       }
     ]
   },
@@ -631,12 +550,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0xE0000,
-        cp_e: 0xEFFFF,
-        utf16_s: 0xDB40DC00,
-        utf16_e: 0xDB7FDFFF,
-        utf8_s: 0xF3A08080,
-        utf8_e: 0xF3AFBFBF
+        cp: {s: 0xE0000, e: 0xEFFFF},
+        utf8: {s: 0xF3A08080, e: 0xF3AFBFBF},
+        utf16: {s: 0xDB40DC00, e: 0xDB7FDFFF}
       }
     ]
   },
@@ -647,12 +563,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 2,
     ranges: [
       {
-        cp_s: 0xE0100,
-        cp_e: 0xE01EF,
-        utf16_s: 0xDB40DD00,
-        utf16_e: 0xDB40DDEF,
-        utf8_s: 0xF3A08480,
-        utf8_e: 0xF3A087AF
+        cp: {s: 0xE0100, e: 0xE01EF},
+        utf8: {s: 0xF3A08480, e: 0xF3A087AF},
+        utf16: {s: 0xDB40DD00, e: 0xDB40DDEF}
       }
     ],
     caution: true
@@ -664,12 +577,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0xF0000,
-        cp_e: 0xFFFFF,
-        utf16_s: 0xDB80DC00,
-        utf16_e: 0xDBBFDFFF,
-        utf8_s: 0xF3B08080,
-        utf8_e: 0xF3BFBFBF
+        cp: {s: 0xF0000, e: 0xFFFFF},
+        utf8: {s: 0xF3B08080, e: 0xF3BFBFBF},
+        utf16: {s: 0xDB80DC00, e: 0xDBBFDFFF}
       }
     ]
   },
@@ -680,12 +590,9 @@ txtbin.CODE_BLOCKS = [
     block_level: 1,
     ranges: [
       {
-        cp_s: 0x100000,
-        cp_e: 0x10FFFF,
-        utf16_s: 0xDBC0DC00,
-        utf16_e: 0xDBFFDFFE,
-        utf8_s: 0xF4808080,
-        utf8_e: 0xF48FBFBF
+        cp: {s: 0x100000, e: 0x10FFFF},
+        utf8: {s: 0xF4808080, e: 0xF48FBFBF},
+        utf16: {s: 0xDBC0DC00, e: 0xDBFFDFFE}
       }
     ]
   }
@@ -1103,7 +1010,7 @@ txtbin.buildCodeBlockInfo = function(codeBlock, codeBlockLv, clz, codeblockCount
     s += '<span style="margin-left:' + mrgn + 'px;">';
   }
 
-  var cpS = codeBlock['ranges'][0]['cp_s'];
+  var cpS = codeBlock['ranges'][0]['cp']['s'];
   var cpHexS = txtbin.toHex(cpS, true, '0x', 4);
   var cpRange = txtbin.buildCodeRangeString(codeBlock);
   var tooltip = cpRange + ': ' + codeBlock['fullname'];
@@ -1132,8 +1039,8 @@ txtbin.buildCodeRangeString = function(codeBlock) {
   var codeBlockRangeList = codeBlock['ranges'];
   for (var i = 0; i < codeBlockRangeList.length; i++) {
     var range = codeBlockRangeList[i];
-    var cp_s = range['cp_s'];
-    var cp_e = range['cp_e'];
+    var cp_s = range['cp']['s'];
+    var cp_e = range['cp']['e'];
     if (i > 0) {
       s += ',';
     }
@@ -1146,7 +1053,7 @@ txtbin.buildCodeRangeString = function(codeBlock) {
 };
 
 txtbin.isSingleCode = function(codeBlock) {
-  return (codeBlock['ranges'][0]['cp_e'] == undefined);
+  return (codeBlock['ranges'][0]['cp']['e'] == undefined);
 };
 
 txtbin.isUnicode = function(type) {
@@ -1727,7 +1634,7 @@ txtbin.checkCodeBlock = function(buf, pos, code, chunk, flags, codeBlock) {
   var codeBlockRangeList = codeBlock['ranges'];
   for (var i = 0; i < codeBlockRangeList.length; i++) {
     var range = codeBlockRangeList[i];
-    if (range['cp_s'] >= 0x10000) {
+    if (range['cp']['s'] >= 0x10000) {
       txtbin.checkCodeBlock2(buf, pos, code, chunk, flags, blockName, range);
     } else {
       txtbin.checkCodeBlock1(buf, pos, code, chunk, flags, blockName, range);
@@ -1777,10 +1684,10 @@ txtbin.checkNewline = function(buf, pos, code, chunk, flags) {
 };
 
 txtbin.checkCodeBlock1 = function(buf, pos, code, chunk, flags, blockName, range) {
-  var utf16S = range['utf16_s'];
-  var utf16E = range['utf16_e'];
-  var utf8S = range['utf8_s'];
-  var utf8E = range['utf8_e'];
+  var utf16S = range['utf16']['s'];
+  var utf16E = range['utf16']['e'];
+  var utf8S = range['utf8']['s'];
+  var utf8E = range['utf8']['e'];
 
   if (utf16E == undefined) {
     utf16E = utf16S;
@@ -1817,10 +1724,10 @@ txtbin.checkCodeBlock2 = function(buf, pos, code, chunk, flags, blockName, range
     return flags;
   }
 
-  var utf16S = range['utf16_s'];
-  var utf16E = range['utf16_e'];
-  var utf8S = range['utf8_s'];
-  var utf8E = range['utf8_e'];
+  var utf16S = range['utf16']['s'];
+  var utf16E = range['utf16']['e'];
+  var utf8S = range['utf8']['s'];
+  var utf8E = range['utf8']['e'];
 
   if (utf16S == undefined) {
     return flags;
