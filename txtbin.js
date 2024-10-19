@@ -2,7 +2,7 @@
  * Text/Binary Editor
  * Copyright 2023 Takashi Harano
  * Released under the MIT license
- * https://github.com/takashiharano/text-binary-editor
+ * https://github.com/takashiharano/txtbin
  */
 var txtbin = {};
 txtbin.TXT_CHR_LF = '|';
