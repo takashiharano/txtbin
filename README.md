@@ -34,3 +34,6 @@ Input the source text into the textarea and select the decode mode, then decode 
 Base64, HEX, DEC, BIN, Plain Text, Base64S, BSB64 are supported for decoding.
 
 ![image](https://github.com/user-attachments/assets/8389801b-ac49-4c8f-9ea6-8998054f3e20)
+
+Except for the save function, it also works locally as a standalone application without a server.  
+In that case, open index.html.
