@@ -3136,7 +3136,7 @@ txtbin.TXT_EDIT_FN = [
       return DebugJS.delimit(s, pos, o[1] | 0, '\t', (o[2] == 'Y'));
     }
   },
-  {lbl: 'FORMAT_DATE_TIME', opt: [{lbl: 'SEPARATOR', v: '-'}], fn: function(s, o) {return DebugJS.dateSep(s, o[0]);}},
+  {lbl: 'FORMAT_DATETIME', opt: [{lbl: 'SEPARATOR', v: '-'}], fn: function(s, o) {return DebugJS.dateSep(s, o[0]);}},
   {lbl: 'FORMAT_JSON', opt: [{lbl: 'INDENT', v: '1'}],
     fn: function(s, o) {
       try {var j = DebugJS.formatJSON(s, +o[0]);} catch (e) {j = '[ERROR]' + e + '\n' + s;}
@@ -3227,10 +3227,10 @@ txtbin.TXT_EDIT_FN = [
   {lbl: 'TAB_ALIGN', opt: [{lbl: 'SPACE', v: '2'}], fn: function(s, o) {return DebugJS.alignByTab(s, o[0] | 0);}},
   {lbl: 'TIME_CONV', fn: function(s) {return DebugJS.timecnv(s);}},
   {
-    lbl: 'UNIQUE', opt: [{lbl: 'SORT', optvals: [{t: '', v: ''}, {t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COUNT', optvals: [{v: 'N'}, {v: 'Y'}]}],
+    lbl: 'UNIQUE', opt: [{lbl: 'SORT', optvals: [{t: '', v: ''}, {t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COUNT', optvals: [{v: 'N'}, {v: 'Y'}]}, {lbl: 'BLANK', optvals: [{v: 'Y'}, {v: 'N'}]}],
     fn: function(s, o) {
-      var opt = {sort: o[0], count: (o[1] == 'Y' ? 1 : 0), blank: 1};
-      return DebugJS.toUnique(s, opt).r;
+      var opt = {sort: o[0], count: (o[1] == 'Y' ? 1 : 0), blank: (o[2] == 'Y' ? 1 : 0)};
+      return DebugJS.toUnique(s, opt);
     }
   },
   {lbl: '%XX', opt: [{lbl: '', optvals: [{t: 'Decode', v: 'D'}, {t: 'Encode', v: 'E'}]}], fn: function(s, o) {var f = o[0] == 'E' ? 'encodeUri' : 'decodeUri';return DebugJS[f](s);}},
