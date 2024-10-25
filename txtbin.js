@@ -224,6 +224,19 @@ txtbin.CODE_BLOCKS = [
     caution: true
   },
   {
+    name: 'greek',
+    fullname: 'Greek and Coptic',
+    label: 'α',
+    block_level: 1,
+    ranges: [
+      {
+        cp: {s: 0x0370, e: 0x03FF},
+        utf8: {s: 0xCDB0, e: 0xCFBF},
+        utf16: {s: 0x0370, e: 0x03FF}
+      }
+    ]
+  },
+  {
     name: 'thai',
     fullname: 'Thai',
     label: 'ไทย',
