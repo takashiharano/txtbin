@@ -3150,7 +3150,7 @@ txtbin.TXT_EDIT_FN = [
     }
   },
   {lbl: 'FORMAT_DATETIME', opt: [{lbl: 'SEPARATOR', v: '-'}], fn: function(s, o) {return DebugJS.dateSep(s, o[0]);}},
-  {lbl: 'FORMAT_JSON', opt: [{lbl: 'INDENT', v: '1'}],
+  {lbl: 'FORMAT_JSON', opt: [{lbl: 'INDENT', v: '2'}],
     fn: function(s, o) {
       try {var j = DebugJS.formatJSON(s, +o[0]);} catch (e) {j = '[ERROR]' + e + '\n' + s;}
       return j;
