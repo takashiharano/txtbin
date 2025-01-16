@@ -336,3 +336,10 @@ select {
 .code-single {
   font-size: 0.7em;
 }
+
+.flash1 {animation: flash1 0.5s ease-in;}
+@keyframes flash1 {
+  0% {background: transparent;}
+  20% {background: #616161;}
+  100% {background: transparent;}
+}

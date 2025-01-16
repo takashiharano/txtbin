@@ -3317,6 +3317,14 @@ txtbin.execTxtEdit = function() {
   txtbin.drawPreview(v);
   $el('#copy-button').disabled = false;
   txtbin.bufCache = null;
+  txtbin.flash($el('#preview'))
+};
+txtbin.flash = function(el) {
+  el.addClass('flash1');
+  setTimeout(txtbin.flashEnd, 500, el);
+};
+txtbin.flashEnd = function(el) {
+  el.removeClass('flash1');
 };
 
 txtbin.UTF8 = {};
