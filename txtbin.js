@@ -3236,6 +3236,7 @@ txtbin.TXT_EDIT_FN = [
     lbl: 'SORT', opt: [{lbl: '', optvals: [{t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COL'}, {lbl: 'ASNUM', optvals: [{v: 'Y'}, {v: 'N'}]}],
     fn: function(s, o) {return DebugJS.sort(s, (o[0] == 'D' ? 1 : 0), o[1] | 0, (o[2] == 'Y' ? 1 : 0));}
   },
+  {lbl: 'SplitCamelCase', opt: [{lbl: 'SEPARATOR', v: ' '}], fn: function(s, o) {return DebugJS.splitCamelCase(s, eval('"' + o[0] + '"'));}},
   {lbl: 'SUM', fn: function(s) {return DebugJS.sum(s);}},
   {lbl: 'TAB_ALIGN', opt: [{lbl: 'SPACE', v: '2'}], fn: function(s, o) {return DebugJS.alignByTab(s, o[0] | 0);}},
   {lbl: 'TIME_CONV', fn: function(s) {return DebugJS.timecnv(s);}},
