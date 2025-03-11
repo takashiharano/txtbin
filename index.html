@@ -6,7 +6,7 @@
 <script src="../libs/debug.js"></script>
 <script src="../libs/util.js"></script>
 <script src="../libs/sha.js"></script>
-<script src="txtbin.js"></script>
+<script src="./txtbin.js"></script>
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -54,7 +54,7 @@
 </div>
 
 <div id="input-area">
-<form name="f1" id="f1" action="txtbin.cgi" method="post">
+<form name="f1" id="f1" action="./txtbin.cgi" method="post">
 <input type="hidden" id="mode" name="mode">
 <input type="hidden" id="h-key" name="key">
 <textarea id="src" name="src" spellcheck="false" placeholder="SOURCE DATA"></textarea><br>
@@ -78,7 +78,6 @@
 <div id="adjuster-y" class="adjuster"></div>
 <div id="preview-area">
 <div style="margin-bottom:4px;">
-<button id="copy-button" class="small-button" onclick="txtbin.copyPreview();" disabled>COPY</button>
 <div style="display:inline-block;position:relative;top:2px;">
 <input type="checkbox" id="show-preview" checked><label for="show-preview">Preview</label><input type="checkbox" id="show-preview-rt" style="margin-left:8px;"><label for="show-preview-rt">Realtime</label><input type="checkbox" id="show-preview-cc" style="margin-left:12px;" checked><label for="show-preview-cc">Ctrl Code</label><input type="checkbox" id="word-wrap" style="margin-left:8px;"><label for="word-wrap">Word Wrap</label>
 </div>
@@ -97,7 +96,8 @@
 <option value="b64s">Base64s</option>
 <option value="bsb64">BSB64</option>
 </select></span>
-<button id="open-button" class="small-button" style="margin-left:10px;" onclick="txtbin.openPreviewWin();">POPUP</button>
+<button id="open-button" class="small-button" style="margin-left:4px;" onclick="txtbin.openPreviewWin();">POPUP</button>
+<button id="copy-button" class="small-button" style="margin-left:8px;" onclick="txtbin.copyPreview();" disabled>COPY</button>
 </div>
 
 <div id="preview-wrapper0" class="block">
