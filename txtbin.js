@@ -19,7 +19,7 @@ txtbin.CHR_CR_S = '<span style="color:#f41" class="cc">' + txtbin.CHR_CR + '</sp
 txtbin.TAB = '<span style="color:#cc2" class="cc" data-tooltip="Tab">&gt;</span>';
 txtbin.CHR_ESC = '<span style="color:#c80" class="cc" data-tooltip="ESC">.</span>';
 txtbin.SP = '<span style="color:#099" class="cc" data-tooltip="Space">.</span>';
-txtbin.CHR_DELL = '<span style="color:#800" class="cc" data-tooltip="DELL">.</span>';
+txtbin.CHR_DEL = '<span style="color:#800" class="cc" data-tooltip="DEL">.</span>';
 txtbin.NBSP = '<span style="color:#ff5354" class="cc cc-link" data-tooltip="U+00A0: Non-breaking space" onclick="txtbin.openUnicodeTable(\'0x00A0\', true);">.</span>';
 txtbin.CDM = '<span style="color:#fe0" class="cc2 cc-link" onclick="txtbin.openUnicodeTable(\'0x0300\');">[CDM]</span>';
 txtbin.ZWSP = '<span style="color:#f8f" class="cc2 cc-link" data-tooltip="U+200B: Zero-width space" onclick="txtbin.openUnicodeTable(\'0x200B\', true);">[ZWSP]</span>';
@@ -2640,7 +2640,7 @@ txtbin.showTextPreview = function(b64) {
     s = s.replace(/\u0000/g, txtbin.CHR_NULL);
     s = s.replace(/[\u0001-\u0008]|\u000B|\u000C|[\u000E-\u001A]|[\u001C-\u001F]/g, txtbin.CHR_CTRL);
     s = s.replace(/\u001B/g, txtbin.CHR_ESC);
-    s = s.replace(/\u007F/g, txtbin.CHR_DELL);
+    s = s.replace(/\u007F/g, txtbin.CHR_DEL);
     s = s + txtbin.EOF + '\n';
   }
   txtbin.drawPreview(s);
