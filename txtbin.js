@@ -3142,6 +3142,7 @@ txtbin.onAreaResizeEnd = function(e) {
 
 txtbin.TXT_EDIT_FN = [
   {lbl: ''},
+  {lbl: 'CLEANSE_TEXT', opt: [{lbl: 'NBSP', optvals: [{v: 'Y'}, {v: 'N'}]}, {lbl: 'ZWSP', optvals: [{v: 'Y'}, {v: 'N'}]}], fn: function(s, o) {return DebugJS.cleanseText(s, (o[0] == 'Y'), (o[1] == 'Y'));}},
   {lbl: 'CSV', opt: [{lbl: 'MODE', optvals: [{v: 'TO_TSV'}, {v: 'TO_CSV'}, {v: 'EXTRACT_COL'}, {v: 'ALIGN'}]}, {lbl: 'QUOTE', optvals: [{v: 'N'}, {v: 'Y'}]}, {lbl: 'N', v: '1'}],
     fn: function(s, o) {
       var f = {'TO_TSV': 'toTsv', 'TO_CSV': 'toCsv', 'EXTRACT_COL': 'extractCsvCol', 'ALIGN': 'alignCsv'};
@@ -3150,7 +3151,6 @@ txtbin.TXT_EDIT_FN = [
       return DebugJS[f[o[0]]](s, q, n);
     }
   },
-  {lbl: 'CLEANSE_TEXT', opt: [{lbl: 'NBSP', optvals: [{v: 'Y'}, {v: 'N'}]}, {lbl: 'ZWSP', optvals: [{v: 'Y'}, {v: 'N'}]}], fn: function(s, o) {return DebugJS.cleanseText(s, (o[0] == 'Y'), (o[1] == 'Y'));}},
   {lbl: 'DELIMIT', opt: [{lbl: 'POS', v: ''}, {lbl: 'ORG', optvals: [{v: '0'}, {v: '1', s: 1}]}, {lbl: 'TRIM', optvals: [{v: 'Y'}, {v: 'N'}]}],
     fn: function(s, o) {
       var pos = o[0].replace(/\s{2,}/g, ' ').replace(/,/g, ' ').split(' ');
