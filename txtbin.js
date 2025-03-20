@@ -3142,11 +3142,12 @@ txtbin.onAreaResizeEnd = function(e) {
 
 txtbin.TXT_EDIT_FN = [
   {lbl: ''},
-  {lbl: 'CSV', opt: [{lbl: 'MODE', optvals: [{v: 'TO_TSV'}, {v: 'EXTRACT_COL'}, {v: 'ALIGN'}]}, {lbl: 'N', v: '1'}],
+  {lbl: 'CSV', opt: [{lbl: 'MODE', optvals: [{v: 'TO_TSV'}, {v: 'EXTRACT_COL'}, {v: 'ALIGN'}]}, {lbl: 'QUOTE', optvals: [{v: 'N'}, {v: 'Y'}]}, {lbl: 'N', v: '1'}],
     fn: function(s, o) {
       var f = {'TO_TSV': 'csv2tsv', 'EXTRACT_COL': 'extractCsvCol', 'ALIGN': 'alignCsv'};
-      var n = o[1] | 0;
-      return DebugJS[f[o[0]]](s, n);
+      var q = (o[1] == 'Y');
+      var n = o[2] | 0;
+      return DebugJS[f[o[0]]](s, q, n);
     }
   },
   {lbl: 'CLEANSE_TEXT', opt: [{lbl: 'NBSP', optvals: [{v: 'Y'}, {v: 'N'}]}, {lbl: 'ZWSP', optvals: [{v: 'Y'}, {v: 'N'}]}], fn: function(s, o) {return DebugJS.cleanseText(s, (o[0] == 'Y'), (o[1] == 'Y'));}},
