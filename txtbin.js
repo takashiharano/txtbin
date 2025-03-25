@@ -3143,6 +3143,7 @@ txtbin.onAreaResizeEnd = function(e) {
 txtbin.TXT_EDIT_FN = [
   {lbl: ''},
   {lbl: 'CLEANSE_TEXT', opt: [{lbl: 'NBSP', optvals: [{v: 'Y'}, {v: 'N'}]}, {lbl: 'ZWSP', optvals: [{v: 'Y'}, {v: 'N'}]}], fn: function(s, o) {return DebugJS.cleanseText(s, (o[0] == 'Y'), (o[1] == 'Y'));}},
+  {lbl: 'CLOCK2HOURS', fn: function(s) {return DebugJS.timecnv(s);}},
   {lbl: 'CSV', opt: [{lbl: 'MODE', optvals: [{v: 'TO_TSV'}, {v: 'TO_CSV'}, {v: 'EXTRACT_COL'}, {v: 'ALIGN'}]}, {lbl: 'QUOTE', optvals: [{v: 'N'}, {v: 'Y'}]}, {lbl: 'N', v: '1'}],
     fn: function(s, o) {
       var f = {'TO_TSV': 'toTsv', 'TO_CSV': 'toCsv', 'EXTRACT_COL': 'extractCsvCol', 'ALIGN': 'alignCsv'};
@@ -3246,7 +3247,6 @@ txtbin.TXT_EDIT_FN = [
   },
   {lbl: 'SplitCamelCase', opt: [{lbl: 'SEPARATOR', v: ' '}], fn: function(s, o) {return DebugJS.splitCamelCase(s, eval('"' + o[0] + '"'));}},
   {lbl: 'SUM', fn: function(s) {return DebugJS.sum(s);}},
-  {lbl: 'TIME_CONV', fn: function(s) {return DebugJS.timecnv(s);}},
   {
     lbl: 'UNIQUE', opt: [{lbl: 'SORT', optvals: [{t: '', v: ''}, {t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COUNT', optvals: [{v: 'N'}, {v: 'Y'}]}, {lbl: 'BLANK', optvals: [{v: 'Y'}, {v: 'N'}]}],
     fn: function(s, o) {
