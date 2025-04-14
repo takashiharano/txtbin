@@ -1898,6 +1898,7 @@ txtbin.getExtension = function(fileName) {
 };
 
 txtbin.getMimeType = function(ext) {
+  ext = ext.toLowerCase();
   var types = txtbin.FILETYPES;
   for (var k in types) {
     var tp = types[k];
@@ -2118,6 +2119,7 @@ txtbin.inertNewline = function(s, n) {
 
 txtbin.getBinDetail = function(b, mime, ext) {
   var r = {};
+  ext = ext.toLowerCase();
   if (ext == 'avif') {
     r = txtbin.getAvifInfo(b);
   } else if (ext == 'bmp') {
