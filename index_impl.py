@@ -84,13 +84,16 @@ def main():
         return
 
     if appconfig.NEED_AUTH:
-        if context.is_authorized():
-            if PERMISSION_NAME == '' or context.has_permission(PERMISSION_NAME):
-                html = build_main_screen()
+        if 'websys' in sys.modules:
+            if context.is_authorized():
+                if PERMISSION_NAME == '' or context.has_permission(PERMISSION_NAME):
+                    html = build_main_screen()
+                else:
+                    html = build_forbidden_screen()
             else:
-                html = build_forbidden_screen()
+                html = build_auth_redirection_screen()
         else:
-            html = build_auth_redirection_screen()
+            html = 'websys module is required';
     else:
         html = build_main_screen()
 
