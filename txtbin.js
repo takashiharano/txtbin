@@ -871,7 +871,7 @@ txtbin.drawBinInfo = function(ftype, buf, b64) {
   if (bLen > 1024) {
     sizeInfo += ' (' + util.convByte(bLen) + 'B)';
   }
-  sizeInfo += ' : ' + b64Size + ' bytes in Base64 (x ' + x + ')';
+  sizeInfo += ' / ' + b64Size + ' bytes in Base64 (x ' + x + ')';
 
   var fileType = '';
   if (ftype['name']) {
