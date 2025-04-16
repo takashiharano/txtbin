@@ -12,7 +12,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ROOT_DIR + 'libs'))
 import util
 import bsb64
 
-BASE_FILE_NAME = 'a'
+DEFAULT_FILE_NAME = 'a'
 MAX_SIZE = 20 * 1024 * 1024
 
 FILETYPES = {
@@ -54,7 +54,7 @@ FILETYPES = {
     'jar': {'hexptn': '4D 45 54 41 2D 49 4E 46 2F', 'mime': 'application/java-archive', 'ext': 'jar', 'supertype': 'zip'}
 }
 
-def deccode_and_send_file(mode, s):
+def deccode_and_send_file(mode, s, filename):
     func_name = 'dec_' + mode
     fn = None
     g = globals()
@@ -65,7 +65,8 @@ def deccode_and_send_file(mode, s):
         b = fn(s)
         ftype = get_file_type(b)
         ext = ftype['ext']
-        filename = BASE_FILE_NAME + '.' + ext
+        if filename == '':
+            filename = DEFAULT_FILE_NAME + '.' + ext
 
     except Exception as e:
         txt = 'ERROR: mode=' + mode + '\n' + str(e)
@@ -234,4 +235,5 @@ def get_zip_content_type(buf):
 def main():
     m = util.get_request_param('mode', '')
     s = util.get_request_param('src', '')
-    deccode_and_send_file(m, s)
+    n = util.get_request_param('filename', '')
+    deccode_and_send_file(m, s, n)

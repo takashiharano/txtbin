@@ -860,7 +860,7 @@ txtbin.drawBinInfo = function(ftype, buf, b64) {
   var bSize = util.formatNumber(bLen);
   var b64Size = util.formatNumber(b64Len);
 
-  var fileName = '-';
+  var fileName = '';
   var lastMod = '-';
   if (txtbin.file) {
     fileName = txtbin.file.name;
@@ -880,7 +880,6 @@ txtbin.drawBinInfo = function(ftype, buf, b64) {
   fileType += '.' + ftype['ext'] + '  ' + ftype['mime']
 
   var s = '';
-  s += 'FileName: ' + fileName + '\n';
   s += 'LastMod : ' + lastMod + '\n';
   s += 'Size    : ' + sizeInfo + '\n';
   s += 'SHA-1   : ' + txtbin.getSHA('SHA-1', buf, 1) + '\n';
@@ -905,6 +904,7 @@ txtbin.drawBinInfo = function(ftype, buf, b64) {
   }
 
   txtbin.drawInfo(s);
+  $el('#filename').value = fileName;
 };
 
 txtbin.buildImageInfo = function(binDetail) {
@@ -2827,6 +2827,7 @@ txtbin.submit = function() {
       break;
   }
   $el('#h-key').value = v;
+  $el('#h-filename').value = $el('#filename').value;
   document.f1.submit();
 };
 
