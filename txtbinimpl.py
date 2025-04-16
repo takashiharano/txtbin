@@ -7,6 +7,7 @@ import os
 
 ROOT_PATH = '../'
 
+sys.path.append(os.path.join(os.path.dirname(__file__), ROOT_PATH))
 sys.path.append(os.path.join(os.path.dirname(__file__), ROOT_PATH + 'libs'))
 import util
 import bsb64
