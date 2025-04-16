@@ -7,16 +7,19 @@ A simple web text editor and binary editor.
 - bsb64.py https://github.com/takashiharano/bsb64
 
 ## Deploy
-Edit the shebang in `txtbin.cgi` to the Python path of your web server.  
+Edit the shebang in `index.cgi` and `txtbin.cgi` to the Python path of your web server.  
 Deploy the files to the server as below:
 ```
 /
 |
 +- txtbin/
 |  |
-|  +- index.html [644]
+|  +- appconfig.py [644]
+|  +- index.cgi [755]
+|  +- index_impl.py [644]
 |  +- style.css [644]
 |  +- txtbin.cgi [755]
+|  +- txtbin.html [644]
 |  +- txtbin.js [644]
 |  +- txtbinimpl.py [644]
 |
@@ -42,4 +45,4 @@ The binary value written in the text is converted to a byte array on the server 
 ![txtbin2](https://github.com/user-attachments/assets/b023dfb0-5641-41cc-a789-2660285e194a)
 
 Except for the save function, it also works locally as a standalone application without a server.  
-In that case, just open index.html.
+In that case, just open txtbin.html.

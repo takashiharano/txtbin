@@ -1,19 +1,26 @@
-###############################################################################
-# Binary Decoder
-# Copyright (c) 2023 Takashi Harano
-###############################################################################
-
+#==============================================================================
+# TxtBin - Binary Decoder
+# Copyright 2023 Takashi Harano
+#==============================================================================
 import sys
 import os
 
-ROOT_DIR = '../'
+ROOT_PATH = '../'
 
-sys.path.append(os.path.join(os.path.dirname(__file__), ROOT_DIR + 'libs'))
+sys.path.append(os.path.join(os.path.dirname(__file__), ROOT_PATH + 'libs'))
 import util
 import bsb64
+import appconfig
+
+util.append_system_path(__file__, ROOT_PATH + '/websys')
+try:
+    import websys
+except:
+    pass
 
 DEFAULT_FILE_NAME = 'a'
 MAX_SIZE = 20 * 1024 * 1024
+PERMISSION_NAME = appconfig.PERMISSION_NAME
 
 FILETYPES = {
     'accdb': {'head': '00 01 00 00 53 74 61 6E 64 61 72 64 20 41 43 45 20 44 42', 'mime': 'application/msaccess', 'ext': 'accdb'},
@@ -84,6 +91,9 @@ def deccode_and_send_file(mode, s, filename):
     etag = timestamp[0] + '.' + (timestamp[1] + '00000')[:6]
 
     util.send_as_file(b, filename=filename, etag=etag)
+
+def send_error_response():
+    util.send_response('TXTBIN')
 
 def extract_bintext_part(mode, s):
   if mode == 'bin':
@@ -233,7 +243,17 @@ def get_zip_content_type(buf):
     return None
 
 def main():
+    if 'websys' in sys.modules:
+        context = websys.on_access()
+
     m = util.get_request_param('mode', '')
     s = util.get_request_param('src', '')
     n = util.get_request_param('filename', '')
-    deccode_and_send_file(m, s, n)
+
+    if appconfig.NEED_AUTH:
+        if context.is_authorized() and (PERMISSION_NAME == '' or context.has_permission(PERMISSION_NAME)):
+            deccode_and_send_file(m, s, n)
+        else:
+            send_error_response()
+    else:
+        deccode_and_send_file(m, s, n)
