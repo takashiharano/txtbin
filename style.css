@@ -210,7 +210,7 @@ select {
   position: relative;
   margin-top: 6px;
   width: 100%;
-  height: calc(100% - 228px);
+  height: calc(100% - 251px);
   overflow: auto;
 }
 

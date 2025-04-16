@@ -2803,6 +2803,7 @@ txtbin.confirmClear = function() {
 txtbin.clear = function() {
   txtbin.clearBuf();
   txtbin.setSrcValue('', true);
+  $el('#filename').value = '';
   txtbin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
   txtbin.drawPreview('<span style="color:#888;">PREVIEW</span>');
   $el('#src').focus();
