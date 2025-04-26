@@ -3174,12 +3174,12 @@ txtbin.TXT_EDIT_FN = [
     lbl: 'HALF/FULL', opt: [{lbl: '', optvals: [{t: 'HALF', v: 'H'}, {t: 'FULL', v: 'F'}]}],
     fn: function(s, o) {return (o[0] == 'H' ? DebugJS.toHalfWidth(s) : DebugJS.toFullWidth(s));}
   },
-  {lbl: 'HORIZ_VERT', opt: [{lbl: '', optvals: [{t: 'H2V', v: '0'}, {t: 'V2H', v: '1'}]}], fn: function(s, o) {return (+o[0] ? s.replace(/\n/g, '\t') : s.replace(/\t/g, '\n'));}},
+  {lbl: 'HORIZ/VERT', opt: [{lbl: '', optvals: [{t: 'H2V', v: '0'}, {t: 'V2H', v: '1'}]}], fn: function(s, o) {return (+o[0] ? s.replace(/\n/g, '\t') : s.replace(/\t/g, '\n'));}},
   {
     lbl: 'lower/UPPER', opt: [{lbl: '', optvals: [{t: 'lower', v: 'L'}, {t: 'UPPER', v: 'U'}]}],
     fn: function(s, o) {return (o[0] == 'U' ? s.toUpperCase() : s.toLowerCase());}
   },
-  {lbl: 'MAX_MIN_LEN', opt: [{lbl: 'THRESHOLD'}], fn: function(s, o) {return DebugJS.minMaxLen(s, o[0]);}},
+  {lbl: 'Max/Min Len', opt: [{lbl: 'THRESHOLD'}], fn: function(s, o) {return DebugJS.minMaxLen(s, o[0]);}},
   {
     lbl: 'NEWLINE', opt: [{lbl: '', optvals: [{t: 'DEL', v: '0'}, {t: 'AGG', v: '1', s: 1}, {t: 'DBL', v: '2'}, {t: 'INS', v: '3'}]}, {lbl: 'POS', v: '76'}],
     fn: function(s, o) {
@@ -3251,6 +3251,7 @@ txtbin.TXT_EDIT_FN = [
   },
   {lbl: 'SplitCamelCase', opt: [{lbl: 'SEPARATOR', v: ' '}], fn: function(s, o) {return DebugJS.splitCamelCase(s, eval('"' + o[0] + '"'));}},
   {lbl: 'SUM', fn: function(s) {return DebugJS.sum(s);}},
+  {lbl: 'Unicode escape seq', opt: [{lbl: '', optvals: [{t: 'Encode', v: 'E'}, {t: 'Decode', v: 'D'}]}], fn: function(s, o) {var f = o[0] == 'E' ? 'getUnicodeEscape' : 'decodeUnicodeEscape';return DebugJS[f](s);}},
   {
     lbl: 'UNIQUE', opt: [{lbl: 'SORT', optvals: [{t: '', v: ''}, {t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COUNT', optvals: [{v: 'N'}, {v: 'Y'}]}, {lbl: 'BLANK', optvals: [{v: 'Y'}, {v: 'N'}]}],
     fn: function(s, o) {
