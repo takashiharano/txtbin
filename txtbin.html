@@ -85,7 +85,8 @@
 <div id="preview-area">
 <div style="margin-bottom:4px;">
 <div style="display:inline-block;position:relative;top:2px;">
-<input type="checkbox" id="show-preview" checked><label for="show-preview">Preview</label><input type="checkbox" id="show-preview-rt" style="margin-left:8px;"><label for="show-preview-rt">Realtime</label><input type="checkbox" id="show-preview-cc" style="margin-left:12px;" checked><label for="show-preview-cc">Ctrl</label><input type="checkbox" id="word-wrap" style="margin-left:8px;"><label for="word-wrap">Word Wrap</label>
+<button id="copy-button" class="small-button" style="position:relative;top:-2px;margin-rigfht:4px;" onclick="txtbin.copyPreview();" disabled>COPY</button>
+<input type="checkbox" id="show-preview" checked><label for="show-preview">Preview</label><input type="checkbox" id="show-preview-rt" style="margin-left:8px;"><label for="show-preview-rt">Realtime</label><input type="checkbox" id="show-preview-cc" style="margin-left:12px;" checked><label for="show-preview-cc">Ctrl</label><input type="checkbox" id="word-wrap" style="margin-left:8px;"><label for="word-wrap">WordWrap</label>
 </div>
 <span style="margin-left:8px;"><select id="preview-mode">
 <option value="view">VIEW</option>
@@ -103,7 +104,6 @@
 <option value="bsb64">BSB64</option>
 </select></span>
 <button id="open-button" class="small-button" style="margin-left:4px;" onclick="txtbin.openPreviewWin();">POPUP</button>
-<button id="copy-button" class="small-button" style="margin-left:8px;" onclick="txtbin.copyPreview();" disabled>COPY</button>
 </div>
 
 <div id="preview-wrapper0" class="block">

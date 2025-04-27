@@ -1,7 +1,7 @@
 body {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
-  min-width: 1330px;
+  min-width: 1460px;
   background: #1e1e1e;
   color: #fff;
   font-size: 14px;
@@ -47,8 +47,8 @@ button:disabled {
 }
 
 .small-button {
-  height: 18px;
-  font-size: 12px;
+  height: 20px;
+  font-size: 13px;
 }
 
 #submit-button {
@@ -59,9 +59,10 @@ input[type="text"],input[type="password"] {
   border: none;
   border-bottom: 1px solid #ccc;
   background: transparent;
-  color: #fff;
-  font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
   outline: none;
+  color: #fff;
+  font-size: 14px;
+  font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
 }
 
 input:-webkit-autofill {
@@ -195,7 +196,7 @@ select {
 }
 
 #info-area {
-  height: 206px;
+  height: 216px;
   padding: 2px 4px;
   margin-bottom: 4px;
   overflow: auto;
@@ -210,14 +211,14 @@ select {
   position: relative;
   margin-top: 6px;
   width: 100%;
-  height: calc(100% - 255px);
+  height: calc(100% - 265px);
   overflow: auto;
 }
 
 #preview-wrapper0 {
   display: inline-block;
   position: relative;
-  width: calc(100% - 10px);
+  width: calc(100% - 2px);
   height: calc(100% - 32px);
 }
 
