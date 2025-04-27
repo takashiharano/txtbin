@@ -783,11 +783,8 @@ txtbin.activeMode = function(mode) {
 };
 
 txtbin.setDndHandlerMode = function(mode) {
-  if (mode == 'b64') {
-    txtbin.dndHandler.setMode('data');
-  } else {
-    txtbin.dndHandler.setMode('blob');
-  }
+  var m = (mode == 'b64') ? 'data' : 'blob';
+  txtbin.dndHandler.setMode(m);
 };
 
 txtbin.dump = function(s) {
@@ -992,11 +989,7 @@ txtbin.buildUnicodeInfo = function(encInfo, type) {
 
     s += txtbin.buildCodeBlockInfo(codeBlock, codeBlockLv, clz, codeblockCount, blkCnt);
 
-    if (codeBlockLv == 0) {
-      blkCnt = 0;
-    } else {
-      blkCnt++;
-    }
+    blkCnt += (codeBlockLv == 0) ? 0 : 1;
   }
   return s;
 };
@@ -3103,7 +3096,8 @@ txtbin.resetAreaSizeY = function() {
   txtbin.areaSize[1].dH = 0;
 };
 txtbin.setAreaSizeY = function(h1, dH) {
-  txtbin._setAreaSizeY($el('#info-area'), $el('#preview-area'), h1, dH, 56);
+  var adj = 57;
+  txtbin._setAreaSizeY($el('#info-area'), $el('#preview-area'), h1, dH, adj);
 };
 txtbin._setAreaSizeY = function(el1, el2, h1, dH, adj2) {
   var adj = 8;
@@ -3126,16 +3120,17 @@ txtbin.onAreaResizeStart = function(e, idx, dir, uiStatus, el1, el2, cursor) {
   var y = e.clientY;
   var sp1 = txtbin.getSelfSizePos(el1);
   var sp2 = txtbin.getSelfSizePos(el2);
-  txtbin.areaSize[idx].orgSP1 = sp1;
-  txtbin.areaSize[idx].orgSP2 = sp2;
+  var areaSize = txtbin.areaSize[idx];
+  areaSize.orgSP1 = sp1;
+  areaSize.orgSP2 = sp2;
   txtbin.disableTextSelect();
   document.body.style.cursor = cursor;
   if (dir == 'X') {
-    txtbin.areaSize[idx].orgX = x;
-    txtbin.areaSize[idx].orgDW = txtbin.areaSize[0].dW;
+    areaSize.orgX = x;
+    areaSize.orgDW = areaSize.dW;
   } else {
-    txtbin.areaSize[idx].orgY = y;
-    txtbin.areaSize[idx].orgDH = txtbin.areaSize[idx].dH;
+    areaSize.orgY = y;
+    areaSize.orgDH = areaSize.dH;
   }
 };
 txtbin.onAreaResizeEnd = function(e) {

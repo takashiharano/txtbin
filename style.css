@@ -195,7 +195,7 @@ select {
 }
 
 #info-area {
-  height: 180px;
+  height: 206px;
   padding: 2px 4px;
   margin-bottom: 4px;
   overflow: auto;
@@ -210,7 +210,7 @@ select {
   position: relative;
   margin-top: 6px;
   width: 100%;
-  height: calc(100% - 251px);
+  height: calc(100% - 255px);
   overflow: auto;
 }
 
