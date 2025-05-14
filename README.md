@@ -1,5 +1,5 @@
 # txtbin - Text / Binary Editor
-A simple web text editor and binary editor.
+Browser-based text and binary editor.
 
 ## Required
 - util.js, util.py https://libutil.com/
