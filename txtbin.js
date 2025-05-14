@@ -827,6 +827,10 @@ txtbin.dump = function(s) {
   }
   var ftype = txtbin.analyzeBinary(buf, txtbin.file);
   txtbin.drawBinInfo(ftype, buf, b64);
+
+  var fileName = (txtbin.file ? txtbin.file.name : '');
+  $el('#filename').value = fileName;
+
   txtbin.setSrcValue(r, true);
   txtbin.bufCache = {
     ftype: ftype,
@@ -857,12 +861,8 @@ txtbin.drawBinInfo = function(ftype, buf, b64) {
   var bSize = util.formatNumber(bLen);
   var b64Size = util.formatNumber(b64Len);
 
-  var fileName = '';
-  var lastMod = '-';
-  if (txtbin.file) {
-    fileName = txtbin.file.name;
-    lastMod = util.getDateTimeString(txtbin.file.lastModified);
-  }
+  var modTimestamp = (txtbin.file ? txtbin.file.lastModified : null);
+  var lastMod = util.getDateTimeString(modTimestamp);
 
   var sizeInfo = bSize + ' bytes';
   if (bLen > 1024) {
@@ -901,7 +901,6 @@ txtbin.drawBinInfo = function(ftype, buf, b64) {
   }
 
   txtbin.drawInfo(s);
-  $el('#filename').value = fileName;
 };
 
 txtbin.buildImageInfo = function(binDetail) {
@@ -1107,6 +1106,7 @@ txtbin.getSHA = function(a, b, f) {
 txtbin.decode = function() {
   txtbin.clearBuf();
   txtbin.bufCache = txtbin.updateInfoAndPreview();
+  $el('#filename').value = '';
   var mode = txtbin.getMode();
   if (mode == 'b64s') {
     $el('#key-update-button').disabled = false;
