@@ -1,6 +1,6 @@
 /*!
  * Text/Binary Editor
- * Copyright 2023 Takashi Harano
+ * Copyright (c) 2023 Takashi Harano
  * Released under the MIT license
  * https://github.com/takashiharano/txtbin
  */
