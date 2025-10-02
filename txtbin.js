@@ -677,6 +677,7 @@ $onReady = function() {
 
   $el('#dump-flag-show-addr').addEventListener('input', txtbin.onChangeDumpFlag);
   $el('#dump-flag-show-sp').addEventListener('input', txtbin.onChangeDumpFlag);
+  $el('#dump-flag-show-sp8').addEventListener('input', txtbin.onChangeDumpFlag);
   $el('#dump-flag-show-ascii').addEventListener('input', txtbin.onChangeDumpFlag);
   $el('#dump-flag-uc').addEventListener('input', txtbin.onChangeDumpFlag);
   $el('#dump-multibyte').addEventListener('input', txtbin.onChangeDumpFlag);
@@ -1199,6 +1200,7 @@ txtbin.checkRadix = function(v) {
 txtbin.getBinDump = function(mode, buf) {
   var showAddr = $el('#dump-flag-show-addr').checked;
   var showSp = $el('#dump-flag-show-sp').checked;
+  var showSp8 = $el('#dump-flag-show-sp8').checked;
   var showAscii = $el('#dump-flag-show-ascii').checked;
   var uc = $el('#dump-flag-uc').checked;
   var lm = 0;
@@ -1222,7 +1224,7 @@ txtbin.getBinDump = function(mode, buf) {
   var sp = (showSp ? ' ' : '');
   hd += sp0;
   hd += '+0' + sp1 + sp + '+1' + sp1 + sp + '+2' + sp1 + sp + '+3' + sp1 + sp;
-  hd += '+4' + sp1 + sp + '+5' + sp1 + sp + '+6' + sp1 + sp + '+7' + sp1 + sp + sp;
+  hd += '+4' + sp1 + sp + '+5' + sp1 + sp + '+6' + sp1 + sp + '+7' + sp1 + sp + (showSp8 ? sp : '');
   hd += '+8' + sp1 + sp + '+9' + sp1 + sp + '+A' + sp1 + sp + '+B' + sp1 + sp;
   hd += '+C' + sp1 + sp + '+D' + sp1 + sp + '+E' + sp1 + sp + '+F' + sp2;
 
@@ -1242,7 +1244,7 @@ txtbin.getBinDump = function(mode, buf) {
 
   for (var i = 0; i < len; i++) {
     if (i < buf.length || showAscii) {
-      dmp += txtbin.getDump(mode, i, buf, len, showSp, showAddr, showAscii, uc);
+      dmp += txtbin.getDump(mode, i, buf, len, showSp, showSp8, showAddr, showAscii, uc);
     }
   }
 
@@ -1267,7 +1269,7 @@ txtbin.getBinDump = function(mode, buf) {
       }
       for (i = st; i < ed; i++) {
         if (i < buf.length || showAscii) {
-          dmp += txtbin.getDump(mode, i, buf, ed, showSp, showAddr, showAscii, uc);
+          dmp += txtbin.getDump(mode, i, buf, ed, showSp, showSp8, showAddr, showAscii, uc);
         }
       }
     }
@@ -1277,7 +1279,7 @@ txtbin.getBinDump = function(mode, buf) {
   return dmp;
 };
 
-txtbin.getDump = function(mode, i, buf, len, showSp, showAddr, showAscii, uc) {
+txtbin.getDump = function(mode, i, buf, len, showSp, showSp8, showAddr, showAscii, uc) {
   var b;
   if (mode == 'bin') {
     b = txtbin.dumpBin(i, buf);
@@ -1295,7 +1297,7 @@ txtbin.getDump = function(mode, i, buf, len, showSp, showAddr, showAscii, uc) {
       if (showAddr) b += txtbin.dumpAddr(i + 1, uc);
     }
   } else if (showSp) {
-    b += (((i + 1) % 8 == 0) ? '  ' : ' ');
+    b += ((((i + 1) % 8 == 0) && (showSp8)) ? '  ' : ' ');
   }
   return b;
 },
