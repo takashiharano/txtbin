@@ -3217,13 +3217,18 @@ txtbin.TXT_EDIT_FN = [
     }
   },
   {
-    lbl: 'REPLACE', opt: [{lbl: 'FM'}, {lbl: 'TO'}, {lbl: 'RE', optvals: [{v: 'N'}, {v: 'Y'}]}, {lbl: 'FLG', v: 'gi'}],
+    lbl: 'REPLACE', opt: [{lbl: 'FM'}, {lbl: 'TO'}, {lbl: 'RE', optvals: [{v: 'Y'}, {v: 'N'}]}, {lbl: 'FLG', v: 'gi'}],
     fn: function(s, o) {
       try {
         var fm = o[0];
-        if (o[2] != 'Y') fm = fm.replace(/([()/[\].+*?^$-])/g, '\\$1');
+        var to = o[1];
+        if (o[2] == 'Y') {
+          to = DebugJS.decCtrlCh(to);
+        } else {
+          fm = fm.replace(/\\/g, '\\\\');
+        }
         fm = new RegExp(fm, o[3]);
-        s = s.replace(fm, o[1]);
+        s = s.replace(fm, to);
       } catch (e) {
         s = '[ERROR]' + e + '\n' + s;
       }
