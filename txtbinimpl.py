@@ -1,6 +1,7 @@
 #==============================================================================
 # TxtBin - Binary Decoder
 # Copyright 2023 Takashi Harano
+# Released under the MIT License
 #==============================================================================
 import sys
 import os
