@@ -24,9 +24,7 @@
 </div><div class="mode-button-block"><div id="mode-ind-dec" class="mode-ind"></div><button id="mode-button-dec" class="mode-button" onclick="txtbin.setMode('dec');">DEC</button>
 </div><div class="mode-button-block"><div id="mode-ind-hex" class="mode-ind"></div><button id="mode-button-hex" class="mode-button" onclick="txtbin.setMode('hex');">HEX</button>
 </div><div class="mode-button-block"><div id="mode-ind-b64" class="mode-ind"></div><button id="mode-button-b64" class="mode-button" onclick="txtbin.setMode('b64');">BASE64</button>
-</div><div class="mode-button-block"><div id="mode-ind-b64s" class="mode-ind"></div><button id="mode-button-b64s" class="mode-button" onclick="txtbin.setMode('b64s');">B64S</button>
-</div><span id="key-label" style="margin-left:4px;">KEY:</span><input type="text" id="key" name="key" spellcheck="false"><button id="key-hide-button" class="small-button button-inactive" style="margin-left:4px;" onclick="txtbin.switchKeyViewHide();">HIDE</button><button id="key-update-button" class="small-button" style="margin-left:4px;" onclick="txtbin.updateB64sKey();" disabled>ENCODE</button><input type="checkbox" id="b64-auto-update" checked><label for="b64-auto-update">Auto</label>
-<div class="mode-button-block"><div id="mode-ind-bsb64" class="mode-ind"></div><button id="mode-button-bsb64" class="mode-button" onclick="txtbin.setMode('bsb64');">BSB64</button>
+</div><div class="mode-button-block" style="margin-left:24px;"><div id="mode-ind-bsb64" class="mode-ind"></div><button id="mode-button-bsb64" class="mode-button" onclick="txtbin.setMode('bsb64');">BSB64</button>
 </div><span id="n-label" style="margin-left:4px;">N:</span><select id="bsb64-n">
 <option value="0">0</option>
 <option value="1" selected>1</option>
@@ -37,6 +35,8 @@
 <option value="6">6</option>
 <option value="7">7</option>
 </select>
+<div class="mode-button-block"><div id="mode-ind-xb64" class="mode-ind"></div><button id="mode-button-xb64" class="mode-button" onclick="txtbin.setMode('xb64');">XB64</button>
+</div><span id="key-label" style="margin-left:4px;">KEY:</span><input type="text" id="key" name="key" spellcheck="false"><button id="key-hide-button" class="small-button button-inactive" style="margin-left:4px;" onclick="txtbin.switchKeyViewHide();">HIDE</button><button id="key-update-button" class="small-button" style="margin-left:4px;" onclick="txtbin.updateXB64Key();" disabled>ENCODE</button><input type="checkbox" id="b64-auto-update" checked><label for="b64-auto-update">Auto</label>
 </div>
 
 <div style="position:absolute;right:8px;display:inline-block;height:100%;">
@@ -96,13 +96,13 @@
 <option value="dec">DEC</option>
 <option value="hex">HEX</option>
 <option value="b64">Base64</option>
-<option value="b64s">Base64s</option>
 <option value="bsb64">BSB64</option>
+<option value="xb64">XB64</option>
 </select></span>
 <span style="margin-left:8px;"><select id="preview-mode-encryption">
 <option value="asis">AS-IS</option>
-<option value="b64s">Base64s</option>
 <option value="bsb64">BSB64</option>
+<option value="xb64">XB64</option>
 </select></span>
 <button id="open-button" class="small-button" style="margin-left:4px;" onclick="txtbin.openPreviewWin();">POPUP</button>
 </div>

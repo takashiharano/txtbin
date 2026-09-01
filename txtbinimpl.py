@@ -155,14 +155,14 @@ def dec_b64(s):
     b = util.decode_base64(s, bin=True)
     return b
 
-def dec_b64s(s):
+def dec_xb64(s):
     key = util.get_request_param('key', '')
     s = util.remove_space_newline(s)
     if s.startswith('data:'):
         p = s.find(',')
         if p > 0:
             s = s[(p + 1):]
-    b = util.decode_base64s(s, key, bin=True)
+    b = util.decode_xb64(s, key, bin=True)
     return b
 
 def dec_bsb64(s):

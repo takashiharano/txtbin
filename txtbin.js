@@ -710,7 +710,7 @@ txtbin.getMode = function() {
 
 txtbin.isB64Mode = function() {
   var mode = txtbin.getMode();
-  if ((mode == 'b64') || (mode == 'b64s') || (mode == 'bsb64')) {
+  if ((mode == 'b64') || (mode == 'xb64') || (mode == 'bsb64')) {
     return true;
   }
   return false;
@@ -727,18 +727,18 @@ txtbin.switchRadix = function(mode, bufCache) {
     case 'bin':
       r = txtbin.getBinDump(mode, buf);
       break;
-    case 'b64s':
+    case 'xb64':
       var key = $el('#key').value;
-      b64s = util.encodeBase64s(buf, key);
-      r = txtbin.formatB64(b64s);
+      var xb64 = util.encodeXB64(buf, key);
+      r = txtbin.formatB64(xb64);
       if (txtbin.bufCache) {
         $el('#key-update-button').disabled = false;
       }
       break;
     case 'bsb64':
       var n = $el('#bsb64-n').value | 0;
-      var b64s = util.BSB64.encode(buf, n);
-      r = txtbin.formatB64(b64s);
+      var bsb64 = util.BSB64.encode(buf, n);
+      r = txtbin.formatB64(bsb64);
       break;
     case 'txt':
       r = util.decodeBase64(b64);
@@ -801,20 +801,20 @@ txtbin.dump = function(s) {
       b64 = util.encodeBase64(buf, true);
       r = txtbin.getBinDump(mode, buf);
       break;
-    case 'b64s':
+    case 'xb64':
       var key = $el('#key').value;
       buf = new Uint8Array(s);
       b64 = util.encodeBase64(buf, true);
-      b64s = util.encodeBase64s(buf, key);
-      r = txtbin.formatB64(b64s);
+      var xb64 = util.encodeXB64(buf, key);
+      r = txtbin.formatB64(xb64);
       $el('#key-update-button').disabled = false;
       break;
     case 'bsb64':
       var n = $el('#bsb64-n').value | 0;
       buf = new Uint8Array(s);
       b64 = util.encodeBase64(buf, true);
-      var b64s = util.BSB64.encode(buf, n);
-      r = txtbin.formatB64(b64s);
+      var bsb64 = util.BSB64.encode(buf, n);
+      r = txtbin.formatB64(bsb64);
       break;
     case 'txt':
       buf = new Uint8Array(s);
@@ -1109,7 +1109,7 @@ txtbin.decode = function() {
   txtbin.bufCache = txtbin.updateInfoAndPreview();
   $el('#filename').value = '';
   var mode = txtbin.getMode();
-  if (mode == 'b64s') {
+  if (mode == 'xb64') {
     $el('#key-update-button').disabled = false;
   }
 };
@@ -2481,9 +2481,9 @@ txtbin.str2buf = function(mode, s) {
     case 'bin':
       b = txtbin.bin2uint8Array(s);
       break;
-    case 'b64s':
+    case 'xb64':
       var k = $el('#key').value;
-      b = util.decodeBase64s(s, k, true);
+      b = util.decodeXB64(s, k, true);
       break;
     case 'bsb64':
       var n = $el('#bsb64-n').value | 0;
@@ -2499,17 +2499,17 @@ txtbin.str2buf = function(mode, s) {
   return b;
 };
 
-txtbin.getBufOfBase64s = function(buf) {
+txtbin.getBufOfXB64 = function(buf) {
   var key = $el('#key').value;
-  var b64s = util.encodeBase64s(buf, key);
-  var b = util.decodeBase64(b64s, true);
+  var xb64 = util.encodeXB64(buf, key);
+  var b = util.decodeBase64(xb64, true);
   return b;
 };
 
 txtbin.getBufOfBSB64 = function(buf) {
   var n = $el('#bsb64-n').value | 0;
-  var b64s = util.BSB64.encode(buf, n);
-  var b = util.decodeBase64(b64s, true);
+  var xb64 = util.BSB64.encode(buf, n);
+  var b = util.decodeBase64(xb64, true);
   return b;
 };
 
@@ -2527,8 +2527,8 @@ txtbin.showPreview = function(bufCache) {
     case 'dec':
     case 'hex':
       var buf = bufCache.buf;
-      if (peviewModeEncryption == 'b64s') {
-        buf = txtbin.getBufOfBase64s(buf);
+      if (peviewModeEncryption == 'xb64') {
+        buf = txtbin.getBufOfXB64(buf);
       } else if (peviewModeEncryption == 'bsb64') {
         buf = txtbin.getBufOfBSB64(buf);
       }
@@ -2537,8 +2537,8 @@ txtbin.showPreview = function(bufCache) {
     case 'b64':
       txtbin.showPreviewAsB64(bufCache);
       break;
-    case 'b64s':
-      txtbin.showPreviewAsB64s(bufCache);
+    case 'xb64':
+      txtbin.showPreviewAsXB64(bufCache);
       break;
     case 'bsb64':
       txtbin.showPreviewAsBSB64(bufCache);
@@ -2590,19 +2590,19 @@ txtbin.showPreviewAsB64 = function(bufCache) {
   txtbin.drawPreview(r);
 };
 
-txtbin.showPreviewAsB64s = function(bufCache) {
+txtbin.showPreviewAsXB64 = function(bufCache) {
   var buf = bufCache.buf;
   var key = $el('#key').value;
-  var b64s = util.encodeBase64s(buf, key);
-  var r = txtbin.formatB64(b64s);
+  var xb64 = util.encodeXB64(buf, key);
+  var r = txtbin.formatB64(xb64);
   txtbin.drawPreview(r);
 };
 
 txtbin.showPreviewAsBSB64 = function(bufCache) {
   var buf = bufCache.buf;
   var n = $el('#bsb64-n').value | 0;
-  var b64s = util.BSB64.encode(buf, n);
-  var r = txtbin.formatB64(b64s);
+  var bsb64 = util.BSB64.encode(buf, n);
+  var r = txtbin.formatB64(bsb64);
   txtbin.drawPreview(r);
 };
 
@@ -2809,7 +2809,7 @@ txtbin.submit = function() {
   var v = ''
   var mode = txtbin.getMode();
   switch (mode) {
-    case 'b64s':
+    case 'xb64':
       v  = $el('#key').value;
       break;
     case 'bsb64':
@@ -2927,15 +2927,15 @@ txtbin.switchKeyViewHide = function() {
   }
 };
 
-txtbin.updateB64sKey = function() {
+txtbin.updateXB64Key = function() {
   var mode = txtbin.getMode();
   var peviewMode = $el('#preview-mode').value;
   var peviewModeEncryption = $el('#preview-mode-encryption').value;
   if (txtbin.bufCache) {
-    if (mode == 'b64s') {
+    if (mode == 'xb64') {
       txtbin.switchRadix(mode, txtbin.bufCache);
     }
-    if ((peviewMode != 'view') && (peviewMode != 'txt') && (peviewModeEncryption == 'b64s')) {
+    if ((peviewMode != 'view') && (peviewMode != 'txt') && (peviewModeEncryption == 'xb64')) {
       txtbin.showPreview(txtbin.bufCache);
     }
   }
@@ -2943,7 +2943,7 @@ txtbin.updateB64sKey = function() {
 
 txtbin.onInputKey = function() {
   if ($el('#b64-auto-update').checked) {
-    txtbin.updateB64sKey();
+    txtbin.updateXB64Key();
   }
 };
 
