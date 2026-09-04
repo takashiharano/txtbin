@@ -71,7 +71,7 @@ $onLoad = function() {
 
 #------------------------------------------------------------------------------
 def send_js():
-    js = 'websys.init(\'' + ROOT_PATH + '/\');'
+    js = 'websys.init(\'txtbin\', \'' + ROOT_PATH + '/\');'
     util.send_response(js, 'text/javascript')
 
 #------------------------------------------------------------------------------
