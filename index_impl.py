@@ -12,7 +12,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ROOT_PATH + 'libs'))
 import util
 import appconfig
 
-util.append_system_path(__file__, ROOT_PATH + '/websys')
+util.append_system_path(__file__, ROOT_PATH + 'websys')
 try:
     import websys
 except:
@@ -71,7 +71,7 @@ $onLoad = function() {
 
 #------------------------------------------------------------------------------
 def send_js():
-    js = 'websys.init(\'txtbin\', \'' + ROOT_PATH + '/\');'
+    js = 'websys.init(\'txtbin\', \'' + ROOT_PATH + '\');'
     util.send_response(js, 'text/javascript')
 
 #------------------------------------------------------------------------------
