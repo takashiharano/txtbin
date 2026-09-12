@@ -729,7 +729,7 @@ txtbin.switchRadix = function(mode, bufCache) {
       break;
     case 'xb64':
       var key = $el('#key').value;
-      var xb64 = util.encodeXB64(buf, key);
+      var xb64 = util.xb64.encode(buf, key);
       r = txtbin.formatB64(xb64);
       if (txtbin.bufCache) {
         $el('#key-update-button').disabled = false;
@@ -805,7 +805,7 @@ txtbin.dump = function(s) {
       var key = $el('#key').value;
       buf = new Uint8Array(s);
       b64 = util.encodeBase64(buf, true);
-      var xb64 = util.encodeXB64(buf, key);
+      var xb64 = util.xb64.encode(buf, key);
       r = txtbin.formatB64(xb64);
       $el('#key-update-button').disabled = false;
       break;
@@ -2483,7 +2483,7 @@ txtbin.str2buf = function(mode, s) {
       break;
     case 'xb64':
       var k = $el('#key').value;
-      b = util.decodeXB64(s, k, true);
+      b = util.xb64.decode(s, k);
       break;
     case 'bsb64':
       var n = $el('#bsb64-n').value | 0;
@@ -2501,7 +2501,7 @@ txtbin.str2buf = function(mode, s) {
 
 txtbin.getBufOfXB64 = function(buf) {
   var key = $el('#key').value;
-  var xb64 = util.encodeXB64(buf, key);
+  var xb64 = util.xb64.encode(buf, key);
   var b = util.decodeBase64(xb64, true);
   return b;
 };
@@ -2593,7 +2593,7 @@ txtbin.showPreviewAsB64 = function(bufCache) {
 txtbin.showPreviewAsXB64 = function(bufCache) {
   var buf = bufCache.buf;
   var key = $el('#key').value;
-  var xb64 = util.encodeXB64(buf, key);
+  var xb64 = util.xb64.encode(buf, key);
   var r = txtbin.formatB64(xb64);
   txtbin.drawPreview(r);
 };
