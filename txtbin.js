@@ -2487,7 +2487,7 @@ txtbin.str2buf = function(mode, s) {
       break;
     case 'bsb64':
       var n = $el('#bsb64-n').value | 0;
-      b = util.bsb64.decodeToString(s, n, true);
+      b = util.bsb64.decode(s, n);
       break;
     case 'txt':
       var b64 = util.encodeBase64(s);
