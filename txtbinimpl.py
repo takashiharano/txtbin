@@ -12,6 +12,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ROOT_PATH))
 sys.path.append(os.path.join(os.path.dirname(__file__), ROOT_PATH + 'libs'))
 import util
 import bsb64
+import xb64
 import appconfig
 
 util.append_system_path(__file__, ROOT_PATH + '/websys')
@@ -162,7 +163,7 @@ def dec_xb64(s):
         p = s.find(',')
         if p > 0:
             s = s[(p + 1):]
-    b = util.decode_xb64(s, key, bin=True)
+    b = xb64.decode(s, key)
     return b
 
 def dec_bsb64(s):
