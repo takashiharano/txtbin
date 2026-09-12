@@ -2483,10 +2483,12 @@ txtbin.str2buf = function(mode, s) {
       break;
     case 'xb64':
       var k = $el('#key').value;
+      s = txtbin.extractB64fromDataUrl(s);
       b = util.xb64.decode(s, k);
       break;
     case 'bsb64':
       var n = $el('#bsb64-n').value | 0;
+      s = txtbin.extractB64fromDataUrl(s);
       b = util.bsb64.decode(s, n);
       break;
     case 'txt':
