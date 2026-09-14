@@ -5,6 +5,7 @@ Browser-based text and binary editor.
 - util.js, util.py https://libutil.com/
 - debug.js https://debugjs.net/
 - bsb64.py https://github.com/takashiharano/bsb64
+- xb64.py https://github.com/takashiharano/xb64
 
 ## Deploy
 Edit the shebang in `index.cgi` and `txtbin.cgi` to the Python path of your web server.  
@@ -29,6 +30,7 @@ Deploy the files to the server as below:
 |  +- debug.js
 |  +- util.js
 |  +- util.py
+|  +- xb64.py
 ```
 
 ## Usage
