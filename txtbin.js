@@ -2785,7 +2785,7 @@ txtbin.drawPreview = function(s) {
 txtbin.confirmClear = function() {
   var v = txtbin.getSrcValue();
   if (v && !txtbin.bufCache) {
-    util.confirm('Clear?', txtbin.clear);
+    util.confirm('Clear all?', txtbin.clear);
   } else {
     txtbin.clear();
   }
@@ -3333,8 +3333,8 @@ txtbin.flashEnd = function(el) {
   el.removeClass('flash1');
 };
 
-txtbin.UTF8 = {};
-txtbin.UTF8.toByteArray = function(s) {
+txtbin.utf8 = {};
+txtbin.utf8.toByteArray = function(s) {
   var a = [];
   if (!s) return a;
   var chs = txtbin.str2arr(s);
@@ -3353,11 +3353,14 @@ txtbin.UTF8.toByteArray = function(s) {
   }
   return a;
 };
-txtbin.UTF8.fromByteArray = function(b) {
+txtbin.utf8.fromByteArray = function(b) {
   if (!b) return null;
   var e = '';
   for (var i = 0; i < b.length; i++) {
     e += '%' + txtbin.toHex(b[i], true, '', 2);
   }
   return decodeURIComponent(e);
+};
+txtbin.openAboutDialog = function() {
+  util.alert('txtbin\n\n&copy; 2023 Takashi Harano\nMIT License\n\n<a href="https://github.com/takashiharano/txtbin" target="_blank">GitHub</a>');
 };

@@ -1,8 +1,18 @@
 body {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
-  min-width: 1460px;
-  background: #1e1e1e;
+  min-width: 1540px;
+
+  background-color: #202020;
+  background-image:
+    linear-gradient(
+      to bottom right,
+      #202020 10%,
+      #202021 42%,
+      #1c1f2c 76%,
+      #171c2d 100%
+    );
+
   color: #fff;
   font-size: 14px;
   font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
@@ -15,64 +25,125 @@ body {
 }
 
 #clock {
-  color: #ddd;
+  color: #c7dcff;
+  font-size: 18px;
 }
 
 a {
-  color: #ade;
+  color: #8f9eae;
   text-decoration: none;
 }
 
 a:hover {
+  color: #c7dcff;
   text-decoration: underline;
 }
 
-button, input[type="submit"] {
-  font-size: 14px;
-  font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
-  background: #f0f0f0;
-  border: 1px solid rgb(140, 149, 159);
-  border-radius: 3px;
-  outline: none;
+button,
+input[type="submit"] {
   height: 24px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-button:hover, input[type="submit"]:hover {
-  background: #e0e0e0 !important;
-}
-button:disabled {
-  color: #333;
-  background: #888;
-}
+  padding: 0 10px;
 
-.small-button {
-  height: 20px;
-  font-size: 13px;
-}
-
-#submit-button {
-  height: 28px;
-}
-
-input[type="text"],input[type="password"] {
-  border: none;
-  border-bottom: 1px solid #ccc;
-  background: transparent;
-  outline: none;
-  color: #fff;
   font-size: 14px;
   font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
+  color: #f2f5fa;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.16),
+      rgba(255, 255, 255, 0.10)
+    );
+
+  border: 1px solid rgba(210, 222, 238, 0.36);
+  border-radius: 4px;
+  outline: none;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.22);
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.08s ease;
 }
 
-input:-webkit-autofill {
-  -webkit-transition: all 86400s;
-  transition: all 86400s;
+button:not(:disabled):hover,
+input[type="submit"]:not(:disabled):hover {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.22),
+      rgba(255, 255, 255, 0.15)
+    );
+
+  border-color: rgba(220, 232, 248, 0.50);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 1px 3px rgba(0, 0, 0, 0.24);
 }
 
-#submit-button {
-  width: 90px;
-  font-size: 18px;
+button:not(:disabled):active,
+input[type="submit"]:not(:disabled):active {
+  background: rgba(255, 255, 255, 0.09);
+
+  transform: translateY(1px);
+
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.32);
+}
+
+button:focus-visible,
+input[type="submit"]:focus-visible {
+  border-color: rgba(105, 155, 235, 0.80);
+
+  box-shadow:
+    0 0 0 2px rgba(70, 125, 220, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+button:disabled,
+input[type="submit"]:disabled {
+  color: rgba(215, 222, 232, 0.42);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.055),
+      rgba(255, 255, 255, 0.035)
+    );
+
+  border-color: rgba(190, 205, 225, 0.11);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+  cursor: default;
+  transform: none;
+}
+
+.button-inactive {
+  color: rgba(215, 222, 232, 0.42) !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.055),
+      rgba(255, 255, 255, 0.035)
+    ) !important;
+
+  border-color: rgba(190, 205, 225, 0.11) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025) !important;
+
+  cursor: default;
 }
 
 .mode-button-block {
@@ -90,11 +161,66 @@ input:-webkit-autofill {
   position: relative;
   min-width: 100%;
   height: 24px;
-  background: #888 !important;
   top: -10px;
+
+  color: #f0f4fa;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.16),
+      rgba(255, 255, 255, 0.10)
+    ) !important;
+
+  border: 1px solid rgba(210, 222, 238, 0.36);
+  border-radius: 4px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.20);
 }
-.mode-active {
-  background: #f0f0f0 !important;
+
+.mode-button:not(.mode-active):hover {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.22),
+      rgba(255, 255, 255, 0.15)
+    ) !important;
+
+  border-color: rgba(220, 232, 248, 0.50);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 1px 3px rgba(0, 0, 0, 0.22);
+}
+
+.mode-button.mode-active {
+  color: #fff !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(246, 249, 253, 0.40),
+      rgba(225, 233, 244, 0.30)
+    ) !important;
+
+  border-color: rgba(235, 242, 252, 0.62);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 1px 2px rgba(0, 0, 0, 0.20);
+}
+
+.mode-button.mode-active:hover {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(250, 252, 255, 0.45),
+      rgba(232, 239, 248, 0.34)
+    ) !important;
+
+  border-color: rgba(242, 247, 255, 0.70);
 }
 
 .mode-ind {
@@ -102,16 +228,51 @@ input:-webkit-autofill {
   position: relative;
   width: 95%;
   height: 3px;
-  border: 1px solid #666;
-  background: #444;
   top: -8px;
-}
-.mode-ind-active {
-  background: #75bfff !important;
+
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(180, 195, 215, 0.13);
+  border-radius: 2px;
 }
 
-.button-inactive {
-  background: #888 !important;
+.mode-ind-active {
+  background: #69aaff !important;
+  border-color: rgba(125, 180, 255, 0.72);
+
+  box-shadow:
+    0 0 5px rgba(70, 135, 230, 0.25);
+}
+
+.pane {
+  background: rgba(32, 32, 32, 0.20);
+  border: 1px solid rgba(128, 128, 128, 0.6);
+  border-radius: 7px;
+}
+
+.button-large {
+  width: 90px;
+  height: 28px;
+  font-size: 18px;
+}
+
+.button-small {
+  height: 20px;
+  font-size: 13px;
+}
+
+input[type="text"],input[type="password"] {
+  border: none;
+  border-bottom: 1px solid #808080;
+  background: transparent;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
+}
+
+input:-webkit-autofill {
+  -webkit-transition: all 86400s;
+  transition: all 86400s;
 }
 
 textarea {
@@ -139,7 +300,75 @@ pre {
 }
 
 select {
+  height: 24px;
+  padding: 0 24px 0 8px;
+
+  font-size: 14px;
+  font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
+  color: #eef3f9;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.14),
+      rgba(255, 255, 255, 0.09)
+    );
+
+  border: 1px solid rgba(205, 218, 235, 0.32);
+  border-radius: 4px;
   outline: none;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.18);
+
+  cursor: pointer;
+
+  color-scheme: dark;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+select:hover {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.19),
+      rgba(255, 255, 255, 0.13)
+    );
+
+  border-color: rgba(215, 228, 245, 0.44);
+}
+
+select:focus {
+  border-color: rgba(105, 155, 235, 0.78);
+  box-shadow: 0 0 0 2px rgba(70, 125, 220, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+select:disabled {
+  color: rgba(215, 222, 232, 0.42);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.055),
+      rgba(255, 255, 255, 0.035)
+    );
+
+  border-color: rgba(190, 205, 225, 0.11);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+  cursor: default;
+}
+
+select option {
+  color: #eef3f9;
+  background: #1e222b;
 }
 
 #key {
@@ -178,11 +407,6 @@ select {
   height: 100%;
   float: left;
   overflow: auto;
-}
-
-.block {
-  border: 1px solid #888;
-  border-radius: 4px;
 }
 
 .line-break-asis {
@@ -241,25 +465,38 @@ select {
 }
 
 .pseudo-link {
-  color: #0cf;
+  color: #8f9eae;
 }
 .pseudo-link:hover {
+  color: #c7dcff;
   text-decoration: none;
 }
 
 .dialog {
-  border: 1px solid #888;
-  background: #000 !important;
-  color: #fff !important;
+  border: 1px solid #444;
+  background: #151515 !important;
+  color: #bbb !important;
   font-family: Consolas, Monaco, Menlo, monospace, sans-serif !important;
 }
 
 .dialog-button {
   min-width: 54px;
+  background: #292929;
+  color: #ccc;
+  border: 1px solid #555;
+  padding: 3px 14px;
 }
 
-.pseudo-link {
-  color: #ade;
+.dialog button:hover {
+  background: #343434 !important;
+  color: #ddd !important;
+  border-color: #666 !important;
+}
+
+.dialog button:active {
+  background: #202020 !important;
+  color: #aaa !important;
+  border-color: #555 !important;
 }
 
 #font-range {

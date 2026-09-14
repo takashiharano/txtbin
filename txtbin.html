@@ -16,7 +16,8 @@
 <body>
 <div id="main">
 <div style="position:relative;height:32px;vertical-align:bottom;">
-<button id="submit-button" onclick="txtbin.submit();">SAVE</button>
+<button class="button-large" onclick="txtbin.decode();">DECODE</button>
+<button id="submit-button" class="button-large" onclick="txtbin.submit();">SAVE</button>
 <div style="margin-left:16px;display:inline-block;">
 <div class="mode-button-block"><div id="mode-ind-auto" class="mode-ind" style="opacity:0;"></div><button id="mode-button-auto" class="mode-button" onclick="txtbin.setMode('auto');">AUTO</button></div>
 <div class="mode-button-block"><div id="mode-ind-txt" class="mode-ind"></div><button id="mode-button-txt" class="mode-button" onclick="txtbin.setMode('txt');">TEXT</button>
@@ -36,13 +37,12 @@
 <option value="7">7</option>
 </select>
 <div class="mode-button-block"><div id="mode-ind-xb64" class="mode-ind"></div><button id="mode-button-xb64" class="mode-button" onclick="txtbin.setMode('xb64');">XB64</button>
-</div><span id="key-label" style="margin-left:4px;">KEY:</span><input type="text" id="key" name="key" spellcheck="false"><button id="key-hide-button" class="small-button button-inactive" style="margin-left:4px;" onclick="txtbin.switchKeyViewHide();">HIDE</button><button id="key-update-button" class="small-button" style="margin-left:4px;" onclick="txtbin.updateXB64Key();" disabled>ENCODE</button><input type="checkbox" id="b64-auto-update" checked><label for="b64-auto-update">Auto</label>
+</div><span id="key-label" style="margin-left:4px;">KEY:</span><input type="text" id="key" name="key" spellcheck="false"><button id="key-hide-button" class="button-small button-inactive" style="margin-left:4px;" onclick="txtbin.switchKeyViewHide();">HIDE</button><button id="key-update-button" class="button-small" style="margin-left:4px;" onclick="txtbin.updateXB64Key();" disabled>ENCODE</button><input type="checkbox" id="b64-auto-update" checked><label for="b64-auto-update">Auto</label>
+<button style="position:relative;margin-left:16px;" onclick="txtbin.confirmClear();">CLEAR</button>
 </div>
 
 <div style="position:absolute;right:8px;display:inline-block;height:100%;">
-<span id="clock" style="margin-right:16px;"></span>
-<button style="position:relative;" onclick="txtbin.decode();">DECODE</button>
-<button style="position:relative;" onclick="txtbin.confirmClear();">CLEAR</button>
+<span id="clock"></span>
 </div>
 </div>
 
@@ -55,7 +55,7 @@
 <span><input type="checkbox" id="dump-flag-uc" checked><label for="dump-flag-uc">UpperCase</label></span>
 <span style="margin-left:16px;"><input type="checkbox" id="dump-multibyte"><label for="dump-multibyte">Multi Byte Char</label></span>
 <span style="margin-left:16px;">NewLine:<input type="text" id="newline" style="width:40px;" value="76"></span>
-<span style="margin-left:16px;">EDIT:<select id="txt-edit-mode"></select><span id="txt-edit-opts"></span><button id="txt-edit-exec-button" class="small-button" style="margin-left:8px;" onclick="txtbin.execTxtEdit();">EXEC</button></span>
+<span style="margin-left:16px;">EDIT:<select id="txt-edit-mode"></select><span id="txt-edit-opts"></span><button id="txt-edit-exec-button" class="button-small" style="margin-left:8px;" onclick="txtbin.execTxtEdit();">EXEC</button></span>
 </div>
 
 <div id="input-area">
@@ -63,22 +63,22 @@
 <input type="hidden" id="mode" name="mode">
 <input type="hidden" id="h-key" name="key">
 <input type="hidden" id="h-filename" name="filename">
-<textarea id="src" name="src" spellcheck="false" placeholder="SOURCE DATA"></textarea><br>
+<textarea id="src" name="src" class="pane" spellcheck="false" placeholder="SOURCE DATA"></textarea><br>
 </form>
 
 <div style="margin-top:10px;height:25px;">
   <input type="range" value="0" min="6" max="64" step="1" id="font-range" style="position:relative;top:6px;" oninput="txtbin.onFontRangeChanged(this);" onchange="txtbin.onFontRangeChanged(this);"><span id="fontsize"></span>
-  <button class="small-button" onclick="txtbin.resetFontSize();">RESET</button>
+  <button class="button-small" onclick="txtbin.resetFontSize();">RESET</button>
   <span style="margin-left:16px;">Font: </sapn><input type="text" id="font" oninput="txtbin.onFontChanged(this);" onchange="txtbin.onFontChanged(this);">
-  <span class="pseudo-link subfunc" onclick="txtbin.changeFont('monospace');">[monospace]</span>
-  <button class="small-button" onclick="txtbin.changeFont('');">RESET</button>
+  <button class="button-small" onclick="txtbin.changeFont('monospace');">monospace</button>
+  <button class="button-small" onclick="txtbin.changeFont('');">RESET</button>
 </div>
 
 </div>
 <div id="adjuster-x" class="adjuster"></div>
 
 <div id="right-area">
-<div id="info-area" class="block">
+<div id="info-area" class="pane">
 <div style="margin-bottom:8px;">Filename: <input type="text" id="filename" style="width:calc(100% - 100px);"></div>
 <pre id="info"></pre>
 </div>
@@ -86,7 +86,7 @@
 <div id="preview-area">
 <div style="margin-bottom:4px;">
 <div style="display:inline-block;position:relative;top:2px;">
-<button id="copy-button" class="small-button" style="position:relative;top:-2px;margin-rigfht:4px;" onclick="txtbin.copyPreview();" disabled>COPY</button>
+<button id="copy-button" class="button-small" style="position:relative;top:-2px;margin-rigfht:4px;" onclick="txtbin.copyPreview();" disabled>COPY</button>
 <input type="checkbox" id="show-preview" checked><label for="show-preview">Preview</label><input type="checkbox" id="show-preview-rt" style="margin-left:8px;"><label for="show-preview-rt">Realtime</label><input type="checkbox" id="show-preview-cc" style="margin-left:12px;" checked><label for="show-preview-cc">Ctrl</label><input type="checkbox" id="word-wrap" style="margin-left:8px;"><label for="word-wrap">WordWrap</label>
 </div>
 <span style="margin-left:8px;"><select id="preview-mode">
@@ -104,10 +104,10 @@
 <option value="bsb64">BSB64</option>
 <option value="xb64">XB64</option>
 </select></span>
-<button id="open-button" class="small-button" style="margin-left:4px;" onclick="txtbin.openPreviewWin();">POPUP</button>
+<button id="open-button" class="button-small" style="margin-left:4px;" onclick="txtbin.openPreviewWin();">POPUP</button>
 </div>
 
-<div id="preview-wrapper0" class="block">
+<div id="preview-wrapper0" class="pane">
 <div id="preview-wrapper">
 <pre id="preview"></pre>
 </div>
@@ -115,11 +115,14 @@
 </div>
 <div style="margin-top:-5px;height:25px;">
   <input type="range" value="0" min="6" max="64" step="1" id="font-range-preview" style="position:relative;top:6px;" oninput="txtbin.onFontRangeChanged4Preview(this);" onchange="txtbin.onFontRangeChanged4Preview(this);"><span id="fontsize-preview"></span>
-  <button class="small-button" onclick="txtbin.resetFontSize4Preview();">RESET</button>
+  <button class="button-small" onclick="txtbin.resetFontSize4Preview();">RESET</button>
   <span style="margin-left:16px;">Font: </sapn><input type="text" id="font-preview" oninput="txtbin.onFontChanged4Preview(this);" onchange="txtbin.onFontChanged4Preview(this);">
-  <span class="pseudo-link subfunc" onclick="txtbin.changeFont4Preview('monospace');">[monospace]</span>
-  <button class="small-button" onclick="txtbin.changeFont4Preview('');">RESET</button>
-  <span style="position:absolute;right:4px;margin-top:6px;"><a href="../unicode.html" target="_blank">CodeTable</a></span>
+  <button class="button-small" onclick="txtbin.changeFont4Preview('monospace');">monospace</button>
+  <button class="button-small" onclick="txtbin.changeFont4Preview('');">RESET</button>
+  <a href="../unicode.html" target="_blank" style="margin-left:8px;">CodeTable</a>
+  <span style="position:absolute;right:4px;margin-top:6px;">
+    <span class="pseudo-link subfunc" onclick="txtbin.openAboutDialog();">txtbin</span>
+  </span>
 </div>
 </div>
 </div>
