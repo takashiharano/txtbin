@@ -72,7 +72,7 @@
   <input type="range" value="0" min="6" max="64" step="1" id="font-range" style="position:relative;top:6px;" oninput="txtbin.onFontRangeChanged(this);" onchange="txtbin.onFontRangeChanged(this);"><span id="fontsize"></span>
   <button class="button-small" onclick="txtbin.resetFontSize();">RESET</button>
   <span style="margin-left:16px;">Font: </sapn><input type="text" id="font" oninput="txtbin.onFontChanged(this);" onchange="txtbin.onFontChanged(this);">
-  <button class="button-small" onclick="txtbin.changeFont('monospace');">monospace</button>
+  <button class="button-small" onclick="txtbin.changeFont('monospace');">mono</button>
   <button class="button-small" onclick="txtbin.changeFont('');">RESET</button>
 </div>
 
@@ -88,7 +88,7 @@
 <div id="preview-area">
 <div style="margin-bottom:4px;">
 <div style="display:inline-block;position:relative;top:2px;">
-<button id="copy-button" class="button-small" style="position:relative;top:-2px;margin-rigfht:4px;" onclick="txtbin.copyPreview();" disabled>COPY</button>
+<button id="copy-button" class="button-small" style="position:relative;top:-2px;margin-rigfht:4px;" onclick="txtbin.copyPreview();" disabled>&#x29C9;</button>
 <input type="checkbox" id="show-preview" checked><label for="show-preview">Preview</label><input type="checkbox" id="show-preview-rt" style="margin-left:8px;"><label for="show-preview-rt">Realtime</label><input type="checkbox" id="show-preview-cc" style="margin-left:12px;" checked><label for="show-preview-cc">Ctrl</label><input type="checkbox" id="word-wrap" style="margin-left:8px;"><label for="word-wrap">WordWrap</label>
 </div>
 <span style="margin-left:8px;"><select id="preview-mode">
@@ -106,7 +106,7 @@
 <option value="bsb64">BSB64</option>
 <option value="xb64">XB64</option>
 </select></span>
-<button id="open-button" class="button-small" style="margin-left:4px;" onclick="txtbin.openPreviewWin();">POPUP</button>
+<button id="open-button" class="button-small" style="margin-left:4px;" onclick="txtbin.openPreviewWin();">&#x2197;</button>
 </div>
 
 <div id="preview-wrapper0" class="pane">
@@ -119,7 +119,7 @@
   <input type="range" value="0" min="6" max="64" step="1" id="font-range-preview" style="position:relative;top:6px;" oninput="txtbin.onFontRangeChanged4Preview(this);" onchange="txtbin.onFontRangeChanged4Preview(this);"><span id="fontsize-preview"></span>
   <button class="button-small" onclick="txtbin.resetFontSize4Preview();">RESET</button>
   <span style="margin-left:16px;">Font: </sapn><input type="text" id="font-preview" oninput="txtbin.onFontChanged4Preview(this);" onchange="txtbin.onFontChanged4Preview(this);">
-  <button class="button-small" onclick="txtbin.changeFont4Preview('monospace');">monospace</button>
+  <button class="button-small" onclick="txtbin.changeFont4Preview('monospace');">mono</button>
   <button class="button-small" onclick="txtbin.changeFont4Preview('');">RESET</button>
   <a href="../unicode.html" target="_blank" style="margin-left:8px;">CodeTable</a>
   <span style="position:absolute;right:4px;margin-top:6px;">

@@ -1,7 +1,7 @@
 body {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
-  min-width: 1540px;
+  min-width: 1460px;
 
   background-color: #202020;
   background-image:
@@ -25,8 +25,8 @@ body {
 }
 
 #clock {
-  color: #c7dcff;
-  font-size: 18px;
+  color: #9fafbe;
+  font-size: 16px;
 }
 
 a {
@@ -372,7 +372,7 @@ select option {
 }
 
 #key {
-  width: 10em;
+  width: 8em;
 }
 .input-disabled {
   border-bottom: 1px solid #888 !important;
