@@ -2739,7 +2739,7 @@ txtbin.openPreviewWin = function() {
     },
     body: {
       style: {
-        background: '#111'
+        background: 'linear-gradient(180deg, #10171d, #0e151b)'
       }
     },
     oncreate: txtbin.onPrevWinCreate,
