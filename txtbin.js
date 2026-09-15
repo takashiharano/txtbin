@@ -13,12 +13,12 @@ txtbin.CHR_CTRL = '<span style="color:#888" class="cc" data-tooltip="CTRL">.</sp
 txtbin.CHR_CRLF = '&#x21b5;';
 txtbin.CHR_LF = '&#x2193;';
 txtbin.CHR_CR = '&#x2190;';
-txtbin.CHR_CRLF_S = '<span style="color:#0cf" class="cc">' + txtbin.CHR_CRLF + '</span>';
-txtbin.CHR_LF_S = '<span style="color:#80d860" class="cc">' + txtbin.CHR_LF + '</span>';
-txtbin.CHR_CR_S = '<span style="color:#f41" class="cc">' + txtbin.CHR_CR + '</span>';
+txtbin.CHR_CRLF_S = '<span style="color:#00a3cc" class="cc">' + txtbin.CHR_CRLF + '</span>';
+txtbin.CHR_LF_S = '<span style="color:#66ad4d" class="cc">' + txtbin.CHR_LF + '</span>';
+txtbin.CHR_CR_S = '<span style="color:#cc360e" class="cc">' + txtbin.CHR_CR + '</span>';
 txtbin.TAB = '<span style="color:#cc2" class="cc" data-tooltip="Tab">&gt;</span>';
 txtbin.CHR_ESC = '<span style="color:#c80" class="cc" data-tooltip="ESC">.</span>';
-txtbin.SP = '<span style="color:#099" class="cc" data-tooltip="Space">.</span>';
+txtbin.SP = '<span style="color:#088" class="cc" data-tooltip="Space">.</span>';
 txtbin.CHR_DEL = '<span style="color:#800" class="cc" data-tooltip="DEL">.</span>';
 txtbin.NBSP = '<span style="color:#ff5354" class="cc cc-link" data-tooltip="U+00A0: Non-breaking space" onclick="txtbin.openUnicodeTable(\'0x00A0\', true);">.</span>';
 txtbin.CDM = '<span style="color:#fe0" class="cc2 cc-link" onclick="txtbin.openUnicodeTable(\'0x0300\');">[CDM]</span>';
