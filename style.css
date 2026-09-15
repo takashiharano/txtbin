@@ -231,16 +231,8 @@ input[type="submit"]:disabled {
 
 .mode-button.mode-active {
   color: #ffffff !important;
-
-  background:
-    linear-gradient(
-      180deg,
-      #23506c,
-      #17384d
-    ) !important;
-
+  background: linear-gradient(180deg, #23506c, #17384d) !important;
   border-color: #3f91c4;
-
   box-shadow:
     inset 0 1px 0 rgba(185, 228, 250, 0.18),
     inset 0 -1px 0 rgba(5, 35, 55, 0.50),
@@ -280,11 +272,15 @@ input[type="submit"]:disabled {
 }
 
 .mode-ind-active {
-  background: #218bd0 !important;
-  border-color: #4aa6df;
-
+  color: #ffffff !important;
+  background: linear-gradient(180deg, #23506c, #17384d) !important;
+  border-color: #3f91c4;
   box-shadow:
-    0 0 6px rgba(22, 127, 200, 0.45);
+    inset 0 1px 0 rgba(185, 228, 250, 0.18),
+    inset 0 -1px 0 rgba(5, 35, 55, 0.50),
+    0 0 0 1px rgba(22, 127, 200, 0.14),
+    0 0 6px rgba(22, 127, 200, 0.24),
+    0 1px 2px rgba(0, 0, 0, 0.45);
 }
 
 .pane {

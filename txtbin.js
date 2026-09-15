@@ -2330,8 +2330,8 @@ txtbin.extractBinTextPart = function(mode, s) {
 };
 
 txtbin.onInput = function() {
-  txtbin.clearBuf();
   if (txtbin.auto) {
+    txtbin.clearBuf();
     txtbin.detectCurrentMode();
   }
   if ($el('#show-preview').checked && $el('#show-preview-rt').checked) {
@@ -2841,6 +2841,42 @@ txtbin.resetFontSize = function() {
   txtbin.setFontSize(txtbin.DEFAULT_FONT_SIZE);
 };
 
+txtbin.fontFamily = '';
+txtbin.fontFamilyBk = null;
+txtbin.onFontChanged = function(el) {
+  var v = el.value;
+  txtbin.fontFamily = v;
+  txtbin._setFont(v);
+};
+txtbin.setFont = function(n) {
+  $el('#font').value = n;
+  txtbin._setFont(n);
+};
+txtbin._setFont = function(v) {
+  $el('#src').style.fontFamily = v;
+};
+txtbin.changeFont = function(n) {
+  txtbin.setFont(n);
+  txtbin.fontFamily = n;
+};
+txtbin.toggleMonospaceFont = function() {
+  if (txtbin.fontFamilyBk === null) {
+    txtbin.setMonospaceFontMode();
+  } else {
+    txtbin.unsetMonospaceFontMode();
+  }
+};
+txtbin.setMonospaceFontMode = function() {
+  txtbin.fontFamilyBk = txtbin.fontFamily;
+  txtbin.changeFont('monospace');
+  $el('#monospace-button-textarea').addClass('mode-ind-active');
+};
+txtbin.unsetMonospaceFontMode = function() {
+  txtbin.changeFont(txtbin.fontFamilyBk);
+  txtbin.fontFamilyBk = null;
+  $el('#monospace-button-textarea').removeClass('mode-ind-active');
+};
+
 txtbin.onFontRangeChanged4Preview = function(el) {
   var v = el.value;
   txtbin.setFontSize4Preview(v);
@@ -2883,6 +2919,7 @@ txtbin.resetFontSize4Preview = function() {
   txtbin.setFontSize4Preview(txtbin.DEFAULT_FONT_SIZE);
 };
 txtbin.fontFamily4Preview = '';
+txtbin.fontFamily4PreviewBk = null;
 txtbin.onFontChanged4Preview = function(el) {
   var v = el.value;
   txtbin.fontFamily4Preview = v;
@@ -2900,23 +2937,22 @@ txtbin.changeFont4Preview = function(n) {
   txtbin.setFont4Preview(n);
   txtbin.fontFamily4Preview = n;
 };
-
-txtbin.fontFamily = '';
-txtbin.onFontChanged = function(el) {
-  var v = el.value;
-  txtbin.fontFamily = v;
-  txtbin._setFont(v);
+txtbin.toggleMonospaceFont4Preview = function() {
+  if (txtbin.fontFamily4PreviewBk === null) {
+    txtbin.setMonospaceFontMode4Preview();
+  } else {
+    txtbin.unsetMonospaceFontMode4Preview();
+  }
 };
-txtbin.setFont = function(n) {
-  $el('#font').value = n;
-  txtbin._setFont(n);
+txtbin.setMonospaceFontMode4Preview = function() {
+  txtbin.fontFamily4PreviewBk = txtbin.fontFamily4Preview;
+  txtbin.changeFont4Preview('monospace');
+  $el('#monospace-button-preview').addClass('mode-ind-active');
 };
-txtbin._setFont = function(v) {
-  $el('#src').style.fontFamily = v;
-};
-txtbin.changeFont = function(n) {
-  txtbin.setFont(n);
-  txtbin.fontFamily = n;
+txtbin.unsetMonospaceFontMode4Preview = function() {
+  txtbin.changeFont4Preview(txtbin.fontFamily4PreviewBk);
+  txtbin.fontFamily4PreviewBk = null;
+  $el('#monospace-button-preview').removeClass('mode-ind-active');
 };
 
 txtbin.switchKeyViewHide = function() {
