@@ -764,6 +764,10 @@ select option:hover {
   background: #4a5964;
 }
 
+::-webkit-scrollbar-corner {
+  background: #0b1014;
+}
+
 ::selection {
   color: #fff;
   background: #167fc8;
