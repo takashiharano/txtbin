@@ -768,3 +768,50 @@ select option:hover {
   color: #fff;
   background: #167fc8;
 }
+
+input[type="range"] {
+  appearance: none;
+  height: 14px;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  background: #18232c;
+  border: 1px solid #344650;
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -5px;
+  background: var(--accent);
+  border: 1px solid #3f91c4;
+  border-radius: 50%;
+}
+
+input[type="range"]:focus-visible {
+  outline: none;
+}
+
+input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 2px var(--focus);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: #18232c;
+  border: 1px solid #344650;
+  border-radius: 2px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border: 1px solid #3f91c4;
+  border-radius: 50%;
+}
