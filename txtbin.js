@@ -2959,9 +2959,9 @@ txtbin.switchKeyViewHide = function() {
   var type = (($el('#key').type == 'text') ? 'password' : 'text');
   $el('#key').type = type;
   if (type == 'password') {
-    $el('#key-hide-button').removeClass('button-inactive');
+    $el('#key-hide-button').innerText = 'SHOW';
   } else {
-    $el('#key-hide-button').addClass('button-inactive');
+    $el('#key-hide-button').innerText = 'HIDE';
   }
 };
 
