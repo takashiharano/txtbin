@@ -1,5 +1,5 @@
 /*!
- * Text/Binary Editor
+ * TxtBin
  * Copyright 2023 Takashi Harano
  * Released under the MIT License
  * https://github.com/takashiharano/txtbin
@@ -3398,5 +3398,5 @@ txtbin.utf8.fromByteArray = function(b) {
   return decodeURIComponent(e);
 };
 txtbin.openAboutDialog = function() {
-  util.alert('txtbin\n\n&copy; 2023 Takashi Harano\nMIT License\n\n<a href="https://github.com/takashiharano/txtbin" target="_blank">GitHub</a>');
+  util.alert('TxtBin\n\n&copy; 2023 Takashi Harano\nMIT License\n\n<a href="https://github.com/takashiharano/txtbin" target="_blank">GitHub</a>');
 };

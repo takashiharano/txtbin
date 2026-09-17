@@ -1,5 +1,5 @@
-# txtbin - Text / Binary Editor
-Browser-based text and binary editor.
+# TxtBin - Text / Binary Editor
+Browser-based text and binary editor & inspector.
 
 ## Required
 - util.js, util.py https://libutil.com/
@@ -36,7 +36,7 @@ Deploy the files to the server as below:
 ## Usage
 Open the editor: http(s)://SERVER/txtbin/  
 Input the source text into the textarea and select the decode mode, then decode or save to the file.  
-Base64, HEX, DEC, BIN, Base64S, BSB64 are supported for decoding.  
+Base64, HEX, DEC, BIN, BSB64 and XB64 are supported for decoding.  
 
 ![txtbin1](https://github.com/user-attachments/assets/8389801b-ac49-4c8f-9ea6-8998054f3e20)
 
