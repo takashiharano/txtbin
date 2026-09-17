@@ -1,5 +1,6 @@
-# TxtBin - Text / Binary Editor
-Browser-based text and binary editor & inspector.
+# TxtBin
+Browser-based text and binary editor & inspector.  
+Parse and convert data between multiple text and binary representations.
 
 ## Required
 - util.js, util.py https://libutil.com/
