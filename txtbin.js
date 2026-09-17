@@ -691,7 +691,7 @@ $onReady = function() {
   $el('#src').addEventListener('change', txtbin.onInput);
 
   $el('#show-preview').addEventListener('change', txtbin.onChangeShowPreview);
-  $el('#show-preview-rt').addEventListener('change', txtbin.onRealtimePreviewChange);
+  $el('#preview-live').addEventListener('change', txtbin.onRealtimePreviewChange);
   $el('#show-preview-cc').addEventListener('change', txtbin.onChangeShowPreviewCc);
   $el('#word-wrap').addEventListener('change', txtbin.onChangeWordWrap);
   $el('#preview-mode').addEventListener('change', txtbin.onChangeShowPreview);
@@ -1104,7 +1104,7 @@ txtbin.getSHA = function(a, b, f) {
   return s.getHash('HEX');
 };
 
-txtbin.decode = function() {
+txtbin.parse = function() {
   txtbin.clearBuf();
   txtbin.bufCache = txtbin.updateInfoAndPreview();
   $el('#filename').value = '';
@@ -2334,13 +2334,13 @@ txtbin.onInput = function() {
     txtbin.clearBuf();
     txtbin.detectCurrentMode();
   }
-  if ($el('#show-preview').checked && $el('#show-preview-rt').checked) {
+  if ($el('#show-preview').checked && $el('#preview-live').checked) {
     txtbin.updateInfoAndPreview();
   }
 };
 
 txtbin.onRealtimePreviewChange = function() {
-  if ($el('#show-preview').checked && $el('#show-preview-rt').checked) {
+  if ($el('#show-preview').checked && $el('#preview-live').checked) {
     txtbin.updateInfoAndPreview();
   }
 };
@@ -2980,7 +2980,7 @@ txtbin.updateXB64Key = function() {
 };
 
 txtbin.onInputKey = function() {
-  if ($el('#b64-auto-update').checked) {
+  if ($el('#xb64-auto-apply').checked) {
     txtbin.updateXB64Key();
   }
 };

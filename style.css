@@ -56,7 +56,9 @@ body {
 }
 
 #clock {
-  color: #90a7b5;
+  position: relative;
+  top: 4px;
+  color: #a8bac5;
   font-size: 16px;
 }
 
