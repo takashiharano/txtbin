@@ -1,2 +1,2 @@
-NEED_AUTH = 0
-PERMISSION_NAME = ''
+auth_required = False
+app_permission_name = ''

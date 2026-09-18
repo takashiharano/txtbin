@@ -19,7 +19,7 @@ except:
     pass
 
 SCREEN_HTML_FILE = './txtbin.html'
-PERMISSION_NAME = appconfig.PERMISSION_NAME
+app_permission_name = appconfig.app_permission_name
 
 #------------------------------------------------------------------------------
 def build_main_screen():
@@ -84,10 +84,10 @@ def main():
         send_js()
         return
 
-    if appconfig.NEED_AUTH:
+    if appconfig.auth_required:
         if 'websys' in sys.modules:
             if context.is_authorized():
-                if PERMISSION_NAME == '' or context.has_permission(PERMISSION_NAME):
+                if app_permission_name == '' or context.has_permission(app_permission_name):
                     html = build_main_screen()
                 else:
                     html = build_forbidden_screen()

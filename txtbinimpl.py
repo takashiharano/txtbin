@@ -23,7 +23,7 @@ except:
 
 DEFAULT_FILE_NAME = 'a'
 MAX_SIZE = 20 * 1024 * 1024
-PERMISSION_NAME = appconfig.PERMISSION_NAME
+app_permission_name = appconfig.app_permission_name
 
 FILETYPES = {
     'accdb': {'head': '00 01 00 00 53 74 61 6E 64 61 72 64 20 41 43 45 20 44 42', 'mime': 'application/msaccess', 'ext': 'accdb'},
@@ -96,7 +96,7 @@ def deccode_and_send_file(mode, s, filename):
     util.send_as_file(b, filename=filename, etag=etag)
 
 def send_error_response():
-    util.send_response('TXTBIN')
+    util.send_response('TXTBIN:ERROR')
 
 def extract_bintext_part(mode, s):
   if mode == 'bin':
@@ -253,8 +253,8 @@ def main():
     s = util.get_request_param('src', '')
     n = util.get_request_param('filename', '')
 
-    if appconfig.NEED_AUTH:
-        if context.is_authorized() and (PERMISSION_NAME == '' or context.has_permission(PERMISSION_NAME)):
+    if appconfig.auth_required:
+        if context.is_authorized() and (app_permission_name == '' or context.has_permission(app_permission_name)):
             deccode_and_send_file(m, s, n)
         else:
             send_error_response()
