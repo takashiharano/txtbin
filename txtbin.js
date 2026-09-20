@@ -613,6 +613,7 @@ txtbin.CODE_BLOCKS = [
 
 txtbin.auto = true;
 txtbin.bufCache = null;
+txtbin.srcDirty = false;
 txtbin.file = null;
 txtbin.uiStatus = txtbin.UI_ST_NONE;
 txtbin.areaSize = [
@@ -756,7 +757,7 @@ txtbin.setMode = function(mode, onlyMode) {
     $el('#mode').value = mode;
     $el('.mode-ind').removeClass('mode-ind-active');
     $el('#mode-ind-' + mode).addClass('mode-ind-active');
-    if (txtbin.bufCache) {
+    if (txtbin.bufCache && !txtbin.srcDirty) {
       if (prevMode != mode) {
         txtbin.switchRadix(mode, txtbin.bufCache);
       }
@@ -770,13 +771,9 @@ txtbin.setMode = function(mode, onlyMode) {
   $el('.mode-button').removeClass('mode-active');
   $el('#mode-button-' + mode).addClass('mode-active');
   txtbin.auto = (mode == 'auto');
-  if (mode == 'auto') {
-    txtbin.onAutoMode();
+  if ((mode == 'auto') && txtbin.srcDirty) {
+    txtbin.detectCurrentMode();
   }
-};
-
-txtbin.onAutoMode = function() {
-  txtbin.detectCurrentMode();
 };
 
 txtbin.activeMode = function(mode) {
@@ -1112,6 +1109,7 @@ txtbin.parse = function() {
   if (mode == 'xb64') {
     $el('#key-update-button').disabled = false;
   }
+  txtbin.srcDirty = false;
 };
 
 txtbin.updateInfoAndPreview = function() {
@@ -2330,6 +2328,7 @@ txtbin.extractBinTextPart = function(mode, s) {
 };
 
 txtbin.onInput = function() {
+  txtbin.srcDirty = true;
   if (txtbin.auto) {
     txtbin.clearBuf();
     txtbin.detectCurrentMode();
@@ -2408,6 +2407,7 @@ txtbin.onDnd = function(s, f) {
   if (showInfoRequired) {
     txtbin.updateInfoAndPreview();
   }
+  txtbin.srcDirty = false;
 };
 
 txtbin.onDndLoadStart = function(f) {
