@@ -26,12 +26,12 @@ Deploy the files to the server as below:
 |  +- txtbinimpl.py [644]
 |
 +- libs/
-|  |
-|  +- bsb64.py
-|  +- debug.js
-|  +- util.js
-|  +- util.py
-|  +- xb64.py
+   |
+   +- bsb64.py
+   +- debug.js
+   +- util.js
+   +- util.py
+   +- xb64.py
 ```
 
 ## Usage
