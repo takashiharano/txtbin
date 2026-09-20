@@ -36,14 +36,14 @@ Deploy the files to the server as below:
 
 ## Usage
 Open the editor: http(s)://SERVER/txtbin/  
-Input the source text into the textarea and select the decode mode, then decode or save to the file.  
+Input the source text into the textarea and select the decode mode, then decode it with the Parse button or save it to a file.  
 Base64, HEX, DEC, BIN, BSB64 and XB64 are supported for decoding.  
 
 ![txtbin1](https://github.com/user-attachments/assets/6025d3d9-cc34-45c2-91f9-c9a250ce5f6f)
 
-You can also drag and drop the file into the text area to convert to binary values.    
-So you can use it as a binary editor by editing the HEX values and saving it to a file with the save button.  
-The binary value written in the text is converted to a byte array on the server side and can be downloaded as a file.
+You can also drag and drop a file into the textarea to convert it to binary values.    
+So you can use it as a binary editor by editing the HEX values and saving them to a file with the Save button.  
+The binary data written in the text is converted to a byte array on the server side and can be downloaded as a file.
 
 ![txtbin2](https://github.com/user-attachments/assets/34bd26fa-1853-4452-b119-8f60da2cd572)
 
