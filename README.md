@@ -39,13 +39,13 @@ Open the editor: http(s)://SERVER/txtbin/
 Input the source text into the textarea and select the decode mode, then decode or save to the file.  
 Base64, HEX, DEC, BIN, BSB64 and XB64 are supported for decoding.  
 
-![txtbin1](https://github.com/user-attachments/assets/8389801b-ac49-4c8f-9ea6-8998054f3e20)
+![txtbin1](https://github.com/user-attachments/assets/6025d3d9-cc34-45c2-91f9-c9a250ce5f6f)
 
 You can also drag and drop the file into the text area to convert to binary values.    
 So you can use it as a binary editor by editing the HEX values and saving it to a file with the save button.  
 The binary value written in the text is converted to a byte array on the server side and can be downloaded as a file.
 
-![txtbin2](https://github.com/user-attachments/assets/b023dfb0-5641-41cc-a789-2660285e194a)
+![txtbin2](https://github.com/user-attachments/assets/34bd26fa-1853-4452-b119-8f60da2cd572)
 
 Except for the save function, it also works locally as a standalone application without a server.  
 In that case, just open txtbin.html.
