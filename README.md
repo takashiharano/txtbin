@@ -37,7 +37,7 @@ Deploy the files to the server as below:
 ## Usage
 Open the editor: http(s)://SERVER/txtbin/  
 Input the source text into the textarea and select the decode mode, then decode it with the Parse button or save it to a file.  
-Base64, HEX, DEC, BIN, BSB64 and XB64 are supported for decoding.  
+The decoder supports Base64, BSB64, XB64, and the numeric representations HEX, DEC, and BIN.  
 
 ![txtbin1](https://github.com/user-attachments/assets/470fb1fd-2c4b-4025-9c5b-e3a0ecdda69b)
 
