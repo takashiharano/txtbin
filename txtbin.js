@@ -37,7 +37,8 @@ txtbin.EOF = '<span style="color:#08f" class="cc">[EOF]</span>';
 
 txtbin.DEFAULT_FONT_SIZE = 14;
 txtbin.DEFAULT_MODE = 'auto';
-txtbin.DEFAULT_MODE_ACTIVE = 'hex';
+txtbin.DEFAULT_MODE_ACTIVE = 'txt';
+txtbin.DEFAULT_MODE_ON_DND = 'hex';
 
 txtbin.UI_ST_NONE = 0;
 txtbin.UI_ST_AREA_RESIZING_X = 1;
@@ -751,8 +752,11 @@ txtbin.switchRadix = function(mode, bufCache) {
 };
 
 txtbin.setMode = function(mode, onlyMode) {
-  if (mode != 'auto') {
+  if (!onlyMode) {
     txtbin.setDndHandlerMode(mode);
+  }
+
+  if (mode != 'auto') {
     var prevMode = $el('#mode').value;
     $el('#mode').value = mode;
     $el('.mode-ind').removeClass('mode-ind-active');
@@ -844,7 +848,7 @@ txtbin.decodeBase64 = function(s) {
 };
 
 txtbin.extractB64fromDataUrl = function(s) {
-  s = s.trim().replace(/\n/g, '');
+  s = s.trim().replace(/[\r\n]/g, '');
   if (s.startsWith('data:')) {
     var a = s.split(',');
     s = a[1];
@@ -1354,7 +1358,7 @@ txtbin.dumpAscii = function(pos, buf) {
       } else if ((code & 0xC0) == 0xC0) {
         c0 = txtbin.i2hex(buf[i]);
         c1 = txtbin.i2hex(buf[i + 1]);
-        if ((c1 != '') && (c2 != '')) {
+        if (c1 != '') {
           uri = '%' + c0 + '%' + c1;
         }
         skip = 1;
@@ -1524,7 +1528,7 @@ txtbin.getEncoding = function(buf) {
     } else if ((code & 0xC0) == 0xC0) {
       c0 = txtbin.i2hex(buf[i]);
       c1 = txtbin.i2hex(buf[i + 1]);
-      if ((c1 != '') && (c2 != '')) {
+      if (c1 != '') {
         uri = '%' + c0 + '%' + c1;
       }
       skip = 1;
@@ -2183,7 +2187,7 @@ txtbin.getBmpInfo = function(b) {
 
 txtbin.getIcoInfo = function(b) {
   var r = {w: 0, h: 0};
-  if (b.length < 6) {
+  if (b.length < 8) {
     return r;
   }
   var posW = 0x6;
@@ -2240,7 +2244,7 @@ txtbin.getJavaClassVersion = function(b) {
   var v = b[7];
   var j;
   if (v <= 48) {
-    j = '1.' + v - 44;
+    j = '1.' + (v - 44);
   } else {
     j = v - 44;
   }
@@ -2393,17 +2397,15 @@ txtbin.onDnd = function(s, f) {
   txtbin.clearBuf();
   txtbin.file = f;
   var showInfoRequired = true;
+  if (txtbin.auto) {
+    txtbin.setMode(txtbin.DEFAULT_MODE_ON_DND);
+  }
   if ((s instanceof ArrayBuffer) || (f && txtbin.isB64Mode())) {
     txtbin.dump(s);
     showInfoRequired = false;
   } else {
     txtbin.setSrcValue(s, true);
-    if (txtbin.auto) {
-      txtbin.detectCurrentMode();
-    }
   }
-  var mode = txtbin.getMode();
-  txtbin.setMode(mode);
   if (showInfoRequired) {
     txtbin.updateInfoAndPreview();
   }
@@ -2447,19 +2449,19 @@ txtbin.detectCurrentMode = function() {
 };
 
 txtbin.isBinString = function(s) {
-  return ((s.match(/^[01\s\n]+$/)) ? true : false);
+  return /^\s*[01][01\s]*$/.test(s);
 };
 
 txtbin.isHexString = function(s) {
-  return ((s.match(/^[0-9A-Fa-f\s\n]+$/)) ? true : false);
+  return /^\s*[0-9A-Fa-f]{2}(?:\s*[0-9A-Fa-f]{2})*\s*$/.test(s);
 };
 
 txtbin.isBase64String = function(s) {
-  return ((s.trim().match(/^(data:.+;base64,)?[A-Za-z0-9+/\s\n]+=*$/)) ? true : false);
+  return /^(data:.+;base64,)?(?=[\r\n]*[A-Za-z0-9+/])[\r\n]*(?:(?:[A-Za-z0-9+/][\r\n]*){4})*(?:(?:[A-Za-z0-9+/][\r\n]*){2}=[\r\n]*=[\r\n]*|(?:[A-Za-z0-9+/][\r\n]*){3}=[\r\n]*)?$/.test(s);
 };
 
 txtbin.isPercentEncoding = function(s) {
-  return ((s.match(/^\s*((%[0-9A-Fa-f]{2})\s*)+$/)) ? true : false);
+  return /^\s*%[0-9A-Fa-f]{2}(?:\s*%[0-9A-Fa-f]{2})*\s*$/.test(s);
 };
 
 txtbin.drawInfo = function(s) {
@@ -2520,7 +2522,7 @@ txtbin.showPreview = function(bufCache) {
     txtbin.drawPreview('');
     return;
   }
-  var ftype = (txtbin.bufCache ? txtbin.bufCache.ftype : null);
+  var ftype = (bufCache ? bufCache.ftype : null);
   var peviewMode = $el('#preview-mode').value;
   var peviewModeEncryption = $el('#preview-mode-encryption').value;
   $el('#copy-button').disabled = false;
@@ -2794,6 +2796,7 @@ txtbin.confirmClear = function() {
 txtbin.clear = function() {
   txtbin.clearBuf();
   txtbin.setSrcValue('', true);
+  txtbin.srcDirty = false;
   $el('#filename').value = '';
   txtbin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
   txtbin.drawPreview('<span style="color:#888;">PREVIEW</span>');
