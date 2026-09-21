@@ -2453,15 +2453,109 @@ txtbin.isBinString = function(s) {
 };
 
 txtbin.isHexString = function(s) {
-  return /^\s*[0-9A-Fa-f]{2}(?:\s*[0-9A-Fa-f]{2})*\s*$/.test(s);
+  var n = 0;
+  for (var i = 0; i < s.length; i++) {
+    var c = s.charCodeAt(i);
+    if ((c == 0x20) || (c == 0x0A) || (c == 0x0D) || (c == 0x09)) {
+      if ((n > 0) && (n % 2 != 0)) {
+        return false;
+      }
+      continue;
+    }
+    if (!(((c >= 0x30) && (c <= 0x39)) || ((c >= 0x41) && (c <= 0x46)) || ((c >= 0x61) && (c <= 0x66)))) {
+      return false;
+    }
+    n++;
+  }
+  return ((n > 0) && (n % 2 == 0));
 };
 
 txtbin.isBase64String = function(s) {
-  return /^(data:.+;base64,)?(?=[\r\n]*[A-Za-z0-9+/])[\r\n]*(?:(?:[A-Za-z0-9+/][\r\n]*){4})*(?:(?:[A-Za-z0-9+/][\r\n]*){2}=[\r\n]*=[\r\n]*|(?:[A-Za-z0-9+/][\r\n]*){3}=[\r\n]*)?$/.test(s);
+  var i = 0;
+
+  if (s.startsWith('data:')) {
+    var p = s.lastIndexOf(';base64,');
+    if (p <= 5) {
+      return false;
+    }
+
+    for (var j = 5; j < p; j++) {
+      var mc = s.charCodeAt(j);
+      if ((mc == 0x0A) || (mc == 0x0D)) {
+        return false;
+      }
+    }
+
+    i = p + 8;
+  }
+
+  var n = 0;
+  var pad = 0;
+  var padding = false;
+
+  for (; i < s.length; i++) {
+    var c = s.charCodeAt(i);
+
+    if ((c == 0x0A) || (c == 0x0D)) {
+      continue;
+    }
+
+    if (c == 0x3D) {
+      padding = true;
+      pad++;
+      n++;
+
+      if (pad > 2) {
+        return false;
+      }
+
+      continue;
+    }
+
+    if (padding || !(((c >= 0x41) && (c <= 0x5A)) || ((c >= 0x61) && (c <= 0x7A)) || ((c >= 0x30) && (c <= 0x39)) || (c == 0x2B) || (c == 0x2F))) {
+      return false;
+    }
+
+    n++;
+  }
+
+  return ((n > 0) && (n % 4 == 0));
 };
 
 txtbin.isPercentEncoding = function(s) {
-  return /^\s*%[0-9A-Fa-f]{2}(?:\s*%[0-9A-Fa-f]{2})*\s*$/.test(s);
+  var cnt = 0;
+  var found = false;
+
+  for (var i = 0; i < s.length; i++) {
+    var c = s.charCodeAt(i);
+
+    if ((c == 0x20) || (c == 0x0A) || (c == 0x0D) || (c == 0x09)) {
+      if (cnt != 0) {
+        return false;
+      }
+      continue;
+    }
+
+    if (cnt == 0) {
+      if (c != 0x25) {
+        return false;
+      }
+      found = true;
+      cnt = 1;
+      continue;
+    }
+
+    if (!(((c >= 0x30) && (c <= 0x39)) || ((c >= 0x41) && (c <= 0x46)) || ((c >= 0x61) && (c <= 0x66)))) {
+      return false;
+    }
+
+    cnt++;
+    if (cnt == 3) {
+      cnt = 0;
+    }
+  }
+
+  return found && (cnt == 0);
 };
 
 txtbin.drawInfo = function(s) {
