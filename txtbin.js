@@ -1132,6 +1132,7 @@ txtbin.updateInfoAndPreview = function() {
     b64: b64
   };
   txtbin.showPreview(bufCache);
+  txtbin.flash($el('#preview'));
   return bufCache;
 };
 
@@ -3456,7 +3457,7 @@ txtbin.execTxtEdit = function() {
   txtbin.drawPreview(v);
   $el('#copy-button').disabled = false;
   txtbin.bufCache = null;
-  txtbin.flash($el('#preview'))
+  txtbin.flash($el('#preview'));
 };
 txtbin.flash = function(el) {
   el.addClass('flash1');
