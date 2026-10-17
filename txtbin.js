@@ -3273,8 +3273,29 @@ txtbin.onAreaResizeEnd = function(e) {
 
 txtbin.TXT_EDIT_FN = [
   {lbl: ''},
-  {lbl: 'CLEANSE_TEXT', opt: [{lbl: 'NBSP', optvals: [{v: 'Y'}, {v: 'N'}]}, {lbl: 'ZWSP', optvals: [{v: 'Y'}, {v: 'N'}]}], fn: function(s, o) {return DebugJS.cleanseText(s, (o[0] == 'Y'), (o[1] == 'Y'));}},
-  {lbl: 'CLOCK2HOURS', fn: function(s) {return DebugJS.timecnv(s);}},
+  {lbl: 'Check Digit', opt: [{lbl: 'MOD', optvals: [{v: '10'}, {v: '11'}, {v: '43'}]}, {lbl: 'Weight', v: '3'}],
+    fn: function(s, o) {
+      var fn = DebugJS['calcMod' + o[0]];
+      var a = DebugJS.txt2arr(s);
+      var r = '';
+      for (var i = 0; i < a.length; i++) {
+        var c = a[i].split('\t');
+        if (i > 0) r += '\n';
+        for (var j = 0; j < c.length; j++) {
+          var v = c[j];
+          var is43 = (o[0] == '43');
+          var t = is43 ? v : v.trim();
+          var re = is43 ? /^[0-9A-Z.$/+% -]+$/ : /^\d+$/;
+          if (re.test(t)) v = t + fn(t, o[1] | 0);
+          if (j > 0) r += '\t';
+          r += v;
+        }
+      }
+      return r;
+    }
+  },
+  {lbl: 'Cleanse Text', opt: [{lbl: 'NBSP', optvals: [{v: 'Y'}, {v: 'N'}]}, {lbl: 'ZWSP', optvals: [{v: 'Y'}, {v: 'N'}]}], fn: function(s, o) {return DebugJS.cleanseText(s, (o[0] == 'Y'), (o[1] == 'Y'));}},
+  {lbl: 'Clock to Hours', fn: function(s) {return DebugJS.timecnv(s);}},
   {lbl: 'CSV', opt: [{lbl: 'MODE', optvals: [{v: 'TO_TSV'}, {v: 'TO_CSV'}, {v: 'EXTRACT_COL'}, {v: 'ALIGN'}]}, {lbl: 'QUOTE', optvals: [{v: 'N'}, {v: 'Y'}]}, {lbl: 'N', v: '1'}],
     fn: function(s, o) {
       var f = {'TO_TSV': 'toTsv', 'TO_CSV': 'toCsv', 'EXTRACT_COL': 'extractCsvCol', 'ALIGN': 'alignCsv'};
@@ -3283,18 +3304,12 @@ txtbin.TXT_EDIT_FN = [
       return DebugJS[f[o[0]]](s, q, n);
     }
   },
-  {lbl: 'DELIMIT', opt: [{lbl: 'POS', v: ''}, {lbl: 'ORG', optvals: [{v: '0'}, {v: '1', s: 1}]}, {lbl: 'TRIM', optvals: [{v: 'Y'}, {v: 'N'}]}],
-    fn: function(s, o) {
-      var pos = o[0].replace(/\s{2,}/g, ' ').replace(/,/g, ' ').split(' ');
-      return DebugJS.delimit(s, pos, o[1] | 0, '\t', (o[2] == 'Y'));
-    }
-  },
-  {lbl: 'FORMAT_DATETIME', opt: [{lbl: 'SEPARATOR', v: '-'}], fn: function(s, o) {return DebugJS.dateSep(s, o[0]);}},
+  {lbl: 'Format Date/Time', opt: [{lbl: 'SEPARATOR', v: '-'}], fn: function(s, o) {return DebugJS.dateSep(s, o[0]);}},
   {
-    lbl: 'HALF/FULL', opt: [{lbl: '', optvals: [{t: 'HALF', v: 'H'}, {t: 'FULL', v: 'F'}]}],
+    lbl: 'Half/Full', opt: [{lbl: '', optvals: [{t: 'HALF', v: 'H'}, {t: 'FULL', v: 'F'}]}],
     fn: function(s, o) {return (o[0] == 'H' ? DebugJS.toHalfWidth(s) : DebugJS.toFullWidth(s));}
   },
-  {lbl: 'HORIZ/VERT', opt: [{lbl: '', optvals: [{t: 'H2V', v: '0'}, {t: 'V2H', v: '1'}]}], fn: function(s, o) {return (+o[0] ? s.replace(/\n/g, '\t') : s.replace(/\t/g, '\n'));}},
+  {lbl: 'Horiz/Vert', opt: [{lbl: '', optvals: [{t: 'H2V', v: '0'}, {t: 'V2H', v: '1'}]}], fn: function(s, o) {return (+o[0] ? DebugJS.v2h(s, '\t') : DebugJS.h2v(s));}},
   {lbl: 'JSON', opt: [{lbl: 'INDENT', v: '2'}],
     fn: function(s, o) {
       try {var j = DebugJS.formatJSON(s, +o[0]);} catch (e) {j = '[ERROR]' + e + '\n' + s;}
@@ -3307,7 +3322,7 @@ txtbin.TXT_EDIT_FN = [
   },
   {lbl: 'Max/Min Len', opt: [{lbl: 'THRESHOLD'}], fn: function(s, o) {return DebugJS.minMaxLen(s, o[0]);}},
   {
-    lbl: 'NEWLINE', opt: [{lbl: '', optvals: [{t: 'INS', v: '0'}, {t: 'DEL', v: '1'}, {t: 'AGG', v: '2'}, {t: 'DBL', v: '3'}]}, {lbl: 'POS', v: '76'}],
+    lbl: 'Newline', opt: [{lbl: '', optvals: [{t: 'INS', v: '0'}, {t: 'DEL', v: '1'}, {t: 'AGG', v: '2'}, {t: 'DBL', v: '3'}]}, {lbl: 'POS', v: '76'}],
     fn: function(s, o) {
       var m = o[0] | 0;
       var fn = ['insertCh', 'deleteLF', 'lflf2lf', 'lf2lflf'];
@@ -3315,9 +3330,9 @@ txtbin.TXT_EDIT_FN = [
       return (m ? f(s) : f(s, '\n', o[1] | 0));
     }
   },
-  {lbl: 'NUMBERING', opt: [{lbl: 'ST', v: '1'}, {lbl: 'ED'}, {lbl: 'LEN'}], fn: function(s, o) {return DebugJS.numbering(s, o[0], o[1], o[2]);}},
+  {lbl: 'Numbering', opt: [{lbl: 'ST', v: '1'}, {lbl: 'ED'}, {lbl: 'LEN'}], fn: function(s, o) {return DebugJS.numbering(s, o[0], o[1], o[2]);}},
   {
-    lbl: 'PADDING', opt: [{lbl: 'TO', optvals: [{t: 'LEFT', v: 'L'}, {t: 'RIGHT', v: 'R'}]}, {lbl: 'CHAR', v: '0'}, {lbl: 'LEN'}],
+    lbl: 'Padding', opt: [{lbl: 'TO', optvals: [{t: 'LEFT', v: 'L'}, {t: 'RIGHT', v: 'R'}]}, {lbl: 'CHAR', v: '0'}, {lbl: 'LEN'}],
     fn: function(s, o) {
       var f = ((o[0] == 'L') ? DebugJS.lpad : DebugJS.rpad);
       var a = DebugJS.txt2arr(s);
@@ -3335,7 +3350,7 @@ txtbin.TXT_EDIT_FN = [
     }
   },
   {
-    lbl: 'PADDING_SEQ', opt: [{lbl: 'LEN'}, {lbl: 'H/F', optvals: [{t: 'AUTO', v: '0'}, {t: 'HALF', v: '1'}, {t: 'FULL', v: '2'}]}],
+    lbl: 'Padding Seq', opt: [{lbl: 'LEN'}, {lbl: 'H/F', optvals: [{t: 'AUTO', v: '0'}, {t: 'HALF', v: '1'}, {t: 'FULL', v: '2'}]}],
     fn: function(s, o) {
       var a = DebugJS.txt2arr(s);
       if (a.length == 0) return DebugJS.padSeq(s, o[0] | 0, o[1] | 0);
@@ -3352,7 +3367,7 @@ txtbin.TXT_EDIT_FN = [
     }
   },
   {
-    lbl: 'REPLACE', opt: [{lbl: 'FM'}, {lbl: 'TO'}, {lbl: 'RE', optvals: [{v: 'Y'}, {v: 'N'}]}, {lbl: 'FLG', v: 'gi'}],
+    lbl: 'Replace', opt: [{lbl: 'FM'}, {lbl: 'TO'}, {lbl: 'RE', optvals: [{v: 'Y'}, {v: 'N'}]}, {lbl: 'FLG', v: 'gi'}],
     fn: function(s, o) {
       try {
         var fm = o[0];
@@ -3372,14 +3387,20 @@ txtbin.TXT_EDIT_FN = [
   },
   {lbl: 'ROT', opt: [{lbl: 'X', optvals: [{v: '5'}, {v: '13'}, {v: '18', s: 1}, {v: '47'}]}, {lbl: 'SHIFT'}], fn: function(s, o) {return DebugJS.rot(o[0], s, o[1]);}},
   {
-    lbl: 'SORT', opt: [{lbl: '', optvals: [{t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COL'}, {lbl: 'ASNUM', optvals: [{v: 'Y'}, {v: 'N'}]}],
+    lbl: 'Sort', opt: [{lbl: '', optvals: [{t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COL'}, {lbl: 'ASNUM', optvals: [{v: 'Y'}, {v: 'N'}]}],
     fn: function(s, o) {return DebugJS.sort(s, (o[0] == 'D' ? 1 : 0), o[1] | 0, (o[2] == 'Y' ? 1 : 0));}
   },
-  {lbl: 'SplitCamelCase', opt: [{lbl: 'SEPARATOR', v: ' '}], fn: function(s, o) {return DebugJS.splitCamelCase(s, eval('"' + o[0] + '"'));}},
+  {lbl: 'Split at Positions', opt: [{lbl: 'POS', v: ''}, {lbl: 'ORG', optvals: [{v: '0'}, {v: '1', s: 1}]}, {lbl: 'TRIM', optvals: [{v: 'Y'}, {v: 'N'}]}],
+    fn: function(s, o) {
+      var pos = o[0].replace(/\s{2,}/g, ' ').replace(/,/g, ' ').split(' ');
+      return DebugJS.splitAtPositions(s, pos, o[1] | 0, '\t', (o[2] == 'Y'));
+    }
+  },
+  {lbl: 'Split CamelCase', opt: [{lbl: 'SEPARATOR', v: ' '}], fn: function(s, o) {return DebugJS.splitCamelCase(s, eval('"' + o[0] + '"'));}},
   {lbl: 'SUM', fn: function(s) {return DebugJS.sum(s);}},
-  {lbl: 'Unicode escape seq', opt: [{lbl: '', optvals: [{t: 'Encode', v: 'E'}, {t: 'Decode', v: 'D'}]}], fn: function(s, o) {var f = o[0] == 'E' ? 'getUnicodeEscape' : 'decodeUnicodeEscape';return DebugJS[f](s);}},
+  {lbl: 'Unicode Esc Seq', opt: [{lbl: '', optvals: [{t: 'Encode', v: 'E'}, {t: 'Decode', v: 'D'}]}], fn: function(s, o) {var f = o[0] == 'E' ? 'getUnicodeEscape' : 'decodeUnicodeEscape';return DebugJS[f](s);}},
   {
-    lbl: 'UNIQUE', opt: [{lbl: 'SORT', optvals: [{t: '', v: ''}, {t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COUNT', optvals: [{v: 'N'}, {v: 'Y'}]}, {lbl: 'BLANK', optvals: [{v: 'Y'}, {v: 'N'}]}],
+    lbl: 'Unique', opt: [{lbl: 'SORT', optvals: [{t: '', v: ''}, {t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COUNT', optvals: [{v: 'N'}, {v: 'Y'}]}, {lbl: 'BLANK', optvals: [{v: 'Y'}, {v: 'N'}]}],
     fn: function(s, o) {
       var opt = {sort: o[0], count: (o[1] == 'Y' ? 1 : 0), blank: (o[2] == 'Y' ? 1 : 0)};
       return DebugJS.toUnique(s, opt);
