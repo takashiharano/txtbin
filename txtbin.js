@@ -3390,10 +3390,22 @@ txtbin.TXT_EDIT_FN = [
     lbl: 'Sort', opt: [{lbl: '', optvals: [{t: 'ASC', v: 'A'}, {t: 'DESC', v: 'D'}]}, {lbl: 'COL'}, {lbl: 'ASNUM', optvals: [{v: 'Y'}, {v: 'N'}]}],
     fn: function(s, o) {return DebugJS.sort(s, (o[0] == 'D' ? 1 : 0), o[1] | 0, (o[2] == 'Y' ? 1 : 0));}
   },
-  {lbl: 'Split at Positions', opt: [{lbl: 'POS', v: ''}, {lbl: 'ORG', optvals: [{v: '0'}, {v: '1', s: 1}]}, {lbl: 'TRIM', optvals: [{v: 'Y'}, {v: 'N'}]}],
+  {lbl: 'Split by Len/Pos', opt: [{lbl: 'MODE', optvals: [{v: 'LEN'}, {v: 'POS'}]}, {lbl: 'LEN/POS', v: ''}, {lbl: 'TRIM', optvals: [{v: 'Y'}, {v: 'N'}]}],
     fn: function(s, o) {
-      var pos = o[0].replace(/\s{2,}/g, ' ').replace(/,/g, ' ').split(' ');
-      return DebugJS.splitAtPositions(s, pos, o[1] | 0, '\t', (o[2] == 'Y'));
+      var a = o[1].trim().split(/\s*,\s*/);
+      if (o[0] == 'POS') {
+        var w = [];
+        for (var i = 0; i < a.length; i++) {
+          var v = (i < a.length - 1) ? a[i + 1] - a[i] : -1;
+          w.push(v);
+        }
+        a = w;
+      } else {
+        for (i = 0; i < a.length; i++) {
+          a[i] = ((a[i] == '') ? -1 : +a[i]);
+        }
+      }
+      return DebugJS.splitByLengths(s, a, '\t', (o[2] == 'Y'));
     }
   },
   {lbl: 'Split CamelCase', opt: [{lbl: 'SEPARATOR', v: ' '}], fn: function(s, o) {return DebugJS.splitCamelCase(s, eval('"' + o[0] + '"'));}},
