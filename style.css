@@ -384,7 +384,7 @@ textarea:focus {
 #src {
   display: block;
   box-sizing: border-box;
-  width: calc(100% - 10px);
+  width: 100%;
   height: calc(100% - 24px);
   background: linear-gradient(180deg, #0f171d 0%, #0e161c 55%, #0c151b 100%);
 }
