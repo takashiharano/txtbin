@@ -55,7 +55,8 @@
 <span><input type="checkbox" id="dump-flag-show-sp8" checked><label for="dump-flag-show-sp8">SP8</label></span>
 <span><input type="checkbox" id="dump-flag-show-ascii" checked><label for="dump-flag-show-ascii">ASCII</label></span>
 <span><input type="checkbox" id="dump-flag-uc" checked><label for="dump-flag-uc">UpperCase</label></span>
-<span style="margin-left:16px;"><input type="checkbox" id="dump-multibyte"><label for="dump-multibyte">Multi Byte Char</label></span>
+<span><input type="checkbox" id="dump-multibyte"><label for="dump-multibyte">Multi Byte Char</label></span>
+<span style="margin-left:16px;"><input type="checkbox" id="use-textareainfo" checked><label for="use-textareainfo">Status</label></span>
 <span style="margin-left:16px;">NewLine:<input type="text" id="newline" style="width:40px;" value="76"></span>
 <span style="margin-left:16px;">EDIT:<select id="txt-edit-mode"></select><span id="txt-edit-opts"></span><button id="txt-edit-exec-button" class="button-small" style="margin-left:8px;" onclick="txtbin.execTxtEdit();">EXEC</button></span>
 </div>
@@ -65,7 +66,8 @@
 <input type="hidden" id="mode" name="mode">
 <input type="hidden" id="h-key" name="key">
 <input type="hidden" id="h-filename" name="filename">
-<textarea id="src" name="src" class="pane" spellcheck="false" placeholder="SOURCE DATA"></textarea><br>
+<textarea id="src" name="src" class="pane" spellcheck="false" placeholder="SOURCE DATA"></textarea>
+<div id="textareainfo"></div>
 </form>
 
 <div style="margin-top:10px;height:25px;">

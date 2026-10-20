@@ -683,6 +683,7 @@ $onReady = function() {
   $el('#dump-flag-show-ascii').addEventListener('input', txtbin.onChangeDumpFlag);
   $el('#dump-flag-uc').addEventListener('input', txtbin.onChangeDumpFlag);
   $el('#dump-multibyte').addEventListener('input', txtbin.onChangeDumpFlag);
+  $el('#use-textareainfo').addEventListener('input', txtbin.onChangeTextAreaInfoFlag);
 
   $el('#key').addEventListener('input', txtbin.onInputKey);
   $el('#key').addEventListener('change', txtbin.onInputKey);
@@ -702,8 +703,17 @@ $onReady = function() {
   $el('#preview-wrapper').addEventListener('wheel', txtbin.onImgWheel);
   $el('#preview-wrapper').addEventListener('dblclick', txtbin.onPreviewDblClick);
 
+  txtbin.initTextAreaInfo();
   txtbin.initTxtEditMode();
   txtbin.clear();
+};
+
+txtbin.initTextAreaInfo = function() {
+  if ($el('#use-textareainfo').checked) {
+    util.textarea.addStatusInfo('#src', '#textareainfo');
+  } else {
+    util.textarea.removeStatusInfo('#src');
+  }
 };
 
 txtbin.getMode = function() {
@@ -2362,6 +2372,10 @@ txtbin.onChangeDumpFlag = function() {
   }
 };
 
+txtbin.onChangeTextAreaInfoFlag = function() {
+  txtbin.initTextAreaInfo();
+};
+
 txtbin.onChangeShowPreview = function() {
   if (!txtbin.bufCache) {
     return;
@@ -2433,6 +2447,9 @@ txtbin.setSrcValue = function(s, resetPos) {
   if (resetPos) {
     $el('#src').scrollToTop();
     $el('#src').scrollToLeft();
+  }
+  if ($el('#use-textareainfo').checked) {
+    util.updateTextAreaInfo('#src');
   }
 };
 

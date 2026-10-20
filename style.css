@@ -339,11 +339,8 @@ input[type="text"],
 input[type="password"] {
   border: none;
   border-bottom: 1px solid #4b5963;
-
   background: transparent;
-
   outline: none;
-
   color: var(--text-0);
   font-size: 14px;
   font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
@@ -385,16 +382,28 @@ textarea:focus {
 }
 
 #src {
+  display: block;
+  box-sizing: border-box;
   width: calc(100% - 10px);
-  height: 100%;
+  height: calc(100% - 24px);
+  background: linear-gradient(180deg, #0f171d 0%, #0e161c 55%, #0c151b 100%);
+}
 
-  background:
-    linear-gradient(
-      180deg,
-      #0f171d 0%,
-      #0e161c 55%,
-      #0c151b 100%
-    );
+#textareainfo {
+  height: 24px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  color: #a8bac5;
+}
+
+#textareainfo:empty {
+  display: none;
+}
+
+#f1:has(#textareainfo:empty) #src {
+  height: 100%;
 }
 
 pre {
