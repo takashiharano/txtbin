@@ -385,12 +385,12 @@ textarea:focus {
   display: block;
   box-sizing: border-box;
   width: 100%;
-  height: calc(100% - 24px);
+  height: calc(100% - 18px);
   background: linear-gradient(180deg, #0f171d 0%, #0e161c 55%, #0c151b 100%);
 }
 
 #textareainfo {
-  height: 24px;
+  height: 18px;
   box-sizing: border-box;
   white-space: nowrap;
   overflow-x: auto;
@@ -633,7 +633,7 @@ select option:hover {
 }
 
 #f1 {
-  height: calc(100% - 40px);
+  height: calc(100% - 36px);
 }
 
 .pseudo-link {
