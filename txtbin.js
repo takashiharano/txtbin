@@ -689,6 +689,7 @@ $onReady = function() {
   $el('#key').addEventListener('change', txtbin.onInputKey);
 
   $el('#bsb64-n').addEventListener('change', txtbin.onChangeBsb64N);
+  $el('#toggle-src-conv').addEventListener('change', txtbin.updateKeyApplyButton);
 
   $el('#src').addEventListener('input', txtbin.onInput);
   $el('#src').addEventListener('change', txtbin.onInput);
@@ -732,7 +733,6 @@ txtbin.switchRadix = function(mode, bufCache) {
   var buf = bufCache.buf;
   var b64 = bufCache.b64;
   var r;
-  $el('#key-update-button').disabled = true;
   switch (mode) {
     case 'hex':
     case 'dec':
@@ -743,9 +743,6 @@ txtbin.switchRadix = function(mode, bufCache) {
       var key = $el('#key').value;
       var xb64 = util.xb64.encode(buf, key);
       r = txtbin.formatB64(xb64);
-      if (txtbin.bufCache) {
-        $el('#key-update-button').disabled = false;
-      }
       break;
     case 'bsb64':
       var n = $el('#bsb64-n').value | 0;
@@ -771,7 +768,7 @@ txtbin.setMode = function(mode, onlyMode) {
     $el('#mode').value = mode;
     $el('.mode-ind').removeClass('mode-ind-active');
     $el('#mode-ind-' + mode).addClass('mode-ind-active');
-    if (txtbin.bufCache && !txtbin.srcDirty) {
+    if (txtbin.canConvertSrc()) {
       if (prevMode != mode) {
         txtbin.switchRadix(mode, txtbin.bufCache);
       }
@@ -781,6 +778,7 @@ txtbin.setMode = function(mode, onlyMode) {
     }
   }
 
+  txtbin.updateKeyApplyButton();
   if (onlyMode) return;
   $el('.mode-button').removeClass('mode-active');
   $el('#mode-button-' + mode).addClass('mode-active');
@@ -818,7 +816,6 @@ txtbin.dump = function(s) {
       b64 = util.encodeBase64(buf, true);
       var xb64 = util.xb64.encode(buf, key);
       r = txtbin.formatB64(xb64);
-      $el('#key-update-button').disabled = false;
       break;
     case 'bsb64':
       var n = $el('#bsb64-n').value | 0;
@@ -1119,11 +1116,9 @@ txtbin.parse = function() {
   txtbin.clearBuf();
   txtbin.bufCache = txtbin.updateInfoAndPreview();
   $el('#filename').value = '';
-  var mode = txtbin.getMode();
-  if (mode == 'xb64') {
-    $el('#key-update-button').disabled = false;
-  }
   txtbin.srcDirty = false;
+  $el('#toggle-src-conv').checked = true;
+  txtbin.updateKeyApplyButton();
 };
 
 txtbin.updateInfoAndPreview = function() {
@@ -2351,24 +2346,28 @@ txtbin.onInput = function() {
   if ($el('#show-preview').checked && $el('#preview-live').checked) {
     txtbin.updateInfoAndPreview();
   }
+  txtbin.updateKeyApplyButton();
 };
 
 txtbin.onRealtimePreviewChange = function() {
+  txtbin.updateKeyApplyButton();
   if ($el('#show-preview').checked && $el('#preview-live').checked) {
     txtbin.updateInfoAndPreview();
   }
 };
 
 txtbin.onChangeDumpFlag = function() {
-  if (!txtbin.bufCache) {
-    return;
-  }
   var mode = txtbin.getMode();
-  switch (mode) {
-    case 'hex':
-    case 'dec':
-    case 'bin':
-      txtbin.switchRadix(mode, txtbin.bufCache);
+  if (txtbin.canConvertSrc() && ['hex', 'dec', 'bin'].includes(mode)) {
+    txtbin.switchRadix(mode, txtbin.bufCache);
+  }
+  var pm = $el('#preview-mode').value;
+  if ($el('#show-preview').checked && ['hex', 'dec', 'bin'].includes(pm)) {
+    if (txtbin.srcDirty && $el('#preview-live').checked) {
+      txtbin.updateInfoAndPreview();
+    } else if (txtbin.bufCache && !txtbin.srcDirty) {
+      txtbin.showPreview(txtbin.bufCache);
+    }
   }
 };
 
@@ -2377,6 +2376,11 @@ txtbin.onChangeTextAreaInfoFlag = function() {
 };
 
 txtbin.onChangeShowPreview = function() {
+  txtbin.updateKeyApplyButton();
+  if (txtbin.srcDirty && $el('#show-preview').checked && $el('#preview-live').checked) {
+    txtbin.updateInfoAndPreview();
+    return;
+  }
   if (!txtbin.bufCache) {
     return;
   }
@@ -2384,6 +2388,10 @@ txtbin.onChangeShowPreview = function() {
 };
 
 txtbin.onChangeShowPreviewCc = function() {
+  if (txtbin.srcDirty && $el('#show-preview').checked && $el('#preview-live').checked) {
+    txtbin.updateInfoAndPreview();
+    return;
+  }
   if (!txtbin.bufCache) {
     return;
   }
@@ -2422,9 +2430,11 @@ txtbin.onDnd = function(s, f) {
     txtbin.setSrcValue(s, true);
   }
   if (showInfoRequired) {
-    txtbin.updateInfoAndPreview();
+    txtbin.bufCache = txtbin.updateInfoAndPreview();
   }
   txtbin.srcDirty = false;
+  $el('#toggle-src-conv').checked = true;
+  txtbin.updateKeyApplyButton();
 };
 
 txtbin.onDndLoadStart = function(f) {
@@ -2631,6 +2641,7 @@ txtbin.getBufOfBSB64 = function(buf) {
 
 txtbin.showPreview = function(bufCache) {
   if (!$el('#show-preview').checked) {
+    $el('#copy-button').disabled = true;
     txtbin.drawPreview('');
     return;
   }
@@ -2909,6 +2920,7 @@ txtbin.clear = function() {
   txtbin.clearBuf();
   txtbin.setSrcValue('', true);
   txtbin.srcDirty = false;
+  $el('#toggle-src-conv').checked = false;
   $el('#filename').value = '';
   txtbin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
   txtbin.drawPreview('<span style="color:#888;">PREVIEW</span>');
@@ -2918,8 +2930,24 @@ txtbin.clear = function() {
 txtbin.clearBuf = function() {
   txtbin.bufCache = null;
   txtbin.file = null;
-  $el('#key-update-button').disabled = true;
+  $el('#key-apply-button').disabled = true;
   $el('#copy-button').disabled = true;
+};
+
+txtbin.canConvertSrc = function() {
+  return (txtbin.bufCache && !txtbin.srcDirty && $el('#toggle-src-conv').checked);
+};
+
+txtbin.updateKeyApplyButton = function() {
+  var mode = txtbin.getMode();
+  var pm = $el('#preview-mode').value;
+  var enc = $el('#preview-mode-encryption').value;
+
+  var src = (mode == 'xb64' && txtbin.canConvertSrc());
+  var preview = $el('#show-preview').checked && (pm == 'xb64' || (['bin', 'dec', 'hex'].includes(pm) && enc == 'xb64'));
+  var live = (txtbin.srcDirty && $el('#preview-live').checked && $el('#show-preview').checked && (mode == 'xb64' || preview));
+
+  $el('#key-apply-button').disabled = !(src || (txtbin.bufCache && !txtbin.srcDirty && preview) || live);
 };
 
 txtbin.submit = function() {
@@ -3082,13 +3110,22 @@ txtbin.switchKeyViewHide = function() {
 
 txtbin.updateXB64Key = function() {
   var mode = txtbin.getMode();
-  var peviewMode = $el('#preview-mode').value;
-  var peviewModeEncryption = $el('#preview-mode-encryption').value;
+  var pm = $el('#preview-mode').value;
+  var enc = $el('#preview-mode-encryption').value;
+  var affectsPreview = $el('#show-preview').checked &&
+      (pm == 'xb64' || (['bin', 'dec', 'hex'].includes(pm) && enc == 'xb64'));
+  if (txtbin.srcDirty) {
+    if ($el('#preview-live').checked && $el('#show-preview').checked &&
+        (mode == 'xb64' || affectsPreview)) {
+      txtbin.updateInfoAndPreview();
+    }
+    return;
+  }
   if (txtbin.bufCache) {
-    if (mode == 'xb64') {
+    if (mode == 'xb64' && txtbin.canConvertSrc()) {
       txtbin.switchRadix(mode, txtbin.bufCache);
     }
-    if ((peviewMode != 'view') && (peviewMode != 'txt') && (peviewModeEncryption == 'xb64')) {
+    if (affectsPreview) {
       txtbin.showPreview(txtbin.bufCache);
     }
   }
@@ -3102,13 +3139,21 @@ txtbin.onInputKey = function() {
 
 txtbin.onChangeBsb64N = function() {
   var mode = txtbin.getMode();
-  var peviewMode = $el('#preview-mode').value;
-  var peviewModeEncryption = $el('#preview-mode-encryption').value;
+  var pm = $el('#preview-mode').value;
+  var enc = $el('#preview-mode-encryption').value;
+  var affectsPreview = $el('#show-preview').checked && (pm == 'bsb64' || (['bin', 'dec', 'hex'].includes(pm) && enc == 'bsb64'));
+  if (txtbin.srcDirty) {
+    if ($el('#preview-live').checked && $el('#show-preview').checked &&
+        (mode == 'bsb64' || affectsPreview)) {
+      txtbin.updateInfoAndPreview();
+    }
+    return;
+  }
   if (txtbin.bufCache) {
-    if (mode == 'bsb64') {
+    if (mode == 'bsb64' && txtbin.canConvertSrc()) {
       txtbin.switchRadix(mode, txtbin.bufCache);
     }
-    if ((peviewMode != 'view') && (peviewMode != 'txt') && (peviewModeEncryption == 'bsb64')) {
+    if (affectsPreview) {
       txtbin.showPreview(txtbin.bufCache);
     }
   }
@@ -3507,6 +3552,7 @@ txtbin.execTxtEdit = function() {
   txtbin.drawPreview(v);
   $el('#copy-button').disabled = false;
   txtbin.bufCache = null;
+  txtbin.updateKeyApplyButton();
   txtbin.flash($el('#preview'));
 };
 txtbin.flash = function(el) {
