@@ -2434,6 +2434,7 @@ txtbin.onDnd = function(s, f) {
   }
   txtbin.srcDirty = false;
   $el('#toggle-src-conv').disabled = false;
+  $el('#toggle-src-conv').checked = true;
   txtbin.updateKeyApplyButton();
 };
 
