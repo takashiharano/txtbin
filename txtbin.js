@@ -1117,7 +1117,7 @@ txtbin.parse = function() {
   txtbin.bufCache = txtbin.updateInfoAndPreview();
   $el('#filename').value = '';
   txtbin.srcDirty = false;
-  $el('#toggle-src-conv').checked = true;
+  $el('#toggle-src-conv').disabled = false;
   txtbin.updateKeyApplyButton();
 };
 
@@ -2433,7 +2433,7 @@ txtbin.onDnd = function(s, f) {
     txtbin.bufCache = txtbin.updateInfoAndPreview();
   }
   txtbin.srcDirty = false;
-  $el('#toggle-src-conv').checked = true;
+  $el('#toggle-src-conv').disabled = false;
   txtbin.updateKeyApplyButton();
 };
 
@@ -2921,6 +2921,7 @@ txtbin.clear = function() {
   txtbin.setSrcValue('', true);
   txtbin.srcDirty = false;
   $el('#toggle-src-conv').checked = false;
+  $el('#toggle-src-conv').disabled = true;
   $el('#filename').value = '';
   txtbin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
   txtbin.drawPreview('<span style="color:#888;">PREVIEW</span>');
