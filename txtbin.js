@@ -3603,7 +3603,12 @@ txtbin.execTxtEdit = function() {
   var v = d.fn(s, o);
   txtbin.drawPreview(DebugJS.escHtml(v));
   txtbin.previewText = v;
-  txtbin.previewRenderedMode = 'txt';
+
+  txtbin.previewRenderedMode = 'view';
+  $el('#preview-mode').value = 'view';
+  $el('#preview-byte-transform').value = 'asis';
+  txtbin.updatePreviewByteTransformSelector();
+
   $el('#preview-to-src-button').disabled = false;
   $el('#copy-button').disabled = false;
   txtbin.bufCache = null;
