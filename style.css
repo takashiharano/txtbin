@@ -30,21 +30,11 @@ body {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
   min-width: 1460px;
-
   background-color: var(--bg-0);
-  background-image:
-    linear-gradient(
-      to bottom right,
-      #0b0f13 0%,
-      #0b1015 42%,
-      #0b1219 76%,
-      #0a121c 100%
-    );
-
+  background-image: linear-gradient(to bottom right, #0b0f13 0%, #0b1015 42%, #0b1219 76%, #0a121c 100%);
   color: var(--text-0);
   font-size: 14px;
   font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
-
   color-scheme: dark;
   accent-color: var(--accent);
 }
@@ -106,28 +96,15 @@ button,
 input[type="submit"] {
   height: 24px;
   padding: 0 10px;
-
   font-size: 14px;
   font-family: Consolas, Monaco, Menlo, monospace, sans-serif;
   color: var(--text-0);
-
-  background:
-    linear-gradient(
-      180deg,
-      #1a242d,
-      #121a21
-    );
-
+  background: linear-gradient(180deg, #1a242d, #121a21);
   border: 1px solid var(--border-1);
   border-radius: 3px;
   outline: none;
-
-  box-shadow:
-    inset 0 1px 0 rgba(140, 190, 220, 0.08),
-    0 1px 2px rgba(0, 0, 0, 0.45);
-
+  box-shadow: inset 0 1px 0 rgba(140, 190, 220, 0.08), 0 1px 2px rgba(0, 0, 0, 0.45);
   cursor: pointer;
-
   transition:
     background 0.12s ease,
     border-color 0.12s ease,
@@ -138,77 +115,102 @@ input[type="submit"] {
 
 button:not(:disabled):hover,
 input[type="submit"]:not(:disabled):hover {
-  background:
-    linear-gradient(
-      180deg,
-      #202d38,
-      #17222b
-    );
-
+  background: linear-gradient(180deg, #202d38, #17222b);
   border-color: var(--border-2);
-
-  box-shadow:
-    inset 0 1px 0 rgba(150, 205, 235, 0.10),
-    0 1px 3px rgba(0, 0, 0, 0.48);
+  box-shadow: inset 0 1px 0 rgba(150, 205, 235, 0.10), 0 1px 3px rgba(0, 0, 0, 0.48);
 }
 
 button:not(:disabled):active,
 input[type="submit"]:not(:disabled):active {
-  background:
-    linear-gradient(
-      180deg,
-      #111820,
-      #0d141a
-    );
-
+  background: linear-gradient(180deg, #111820, #0d141a);
   transform: translateY(1px);
-
-  box-shadow:
-    inset 0 1px 3px rgba(0, 0, 0, 0.55);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.55);
 }
 
 button:focus-visible,
 input[type="submit"]:focus-visible {
   border-color: var(--accent);
-
-  box-shadow:
-    0 0 0 2px var(--focus),
-    inset 0 1px 0 rgba(150, 205, 235, 0.08);
+  box-shadow: 0 0 0 2px var(--focus), inset 0 1px 0 rgba(150, 205, 235, 0.08);
 }
 
 button:disabled,
 input[type="submit"]:disabled {
   color: #56646e;
-
-  background:
-    linear-gradient(
-      180deg,
-      #11171c,
-      #0d1216
-    );
-
+  background: linear-gradient(180deg, #11171c, #0d1216);
   border-color: #202a31;
-
   box-shadow: none;
-
   cursor: default;
   transform: none;
 }
 
+button.button-blue:not(:disabled) {
+  color: #eef3f6;
+  text-shadow: none;
+  background: linear-gradient(180deg, #275b7c, #193d56);
+  border-color: #458fb9;
+  box-shadow: inset 0 1px 0 rgba(160, 210, 240, 0.12), 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+button.button-blue:not(:disabled):hover {
+  background: linear-gradient(180deg, #32719a, #205171);
+  border-color: #65add5;
+}
+
+button.button-blue:not(:disabled):active {
+  background: linear-gradient(180deg, #193e57, #122e43);
+  transform: translateY(1px);
+}
+
+button.button-green:not(:disabled) {
+  color: #dce8e2;
+  text-shadow: none;
+  background: linear-gradient(180deg, #24463b, #192f28);
+  border-color: #427563;
+  box-shadow: inset 0 1px 0 rgba(140, 195, 165, 0.07), 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+button.button-green:not(:disabled):hover {
+  color: #edf3f0;
+  background: linear-gradient(180deg, #2d594a, #1e4035);
+  border-color: #57957b;
+}
+
+button.button-green:not(:disabled):active {
+  background: linear-gradient(180deg, #19372d, #122820);
+  transform: translateY(1px);
+}
+
+button.button-red:not(:disabled) {
+  color: #e9e5e6;
+  background: linear-gradient(180deg, #382126, #24171b);
+  border-color: #75434b;
+  box-shadow: inset 0 1px 0 rgba(230, 140, 150, 0.10), 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+button.button-red:not(:disabled):hover {
+  color: #fff;
+  background: linear-gradient(180deg, #4c2930, #321b21);
+  border-color: #a35b66;
+  box-shadow: inset 0 1px 0 rgba(240, 160, 170, 0.15), 0 1px 3px rgba(0, 0, 0, 0.48);
+}
+
+button.button-red:not(:disabled):active {
+  background: linear-gradient(180deg, #27171b, #1b1114);
+  border-color: #75434b;
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+button.button-red:focus-visible {
+  border-color: #b56873;
+  box-shadow: 0 0 0 2px rgba(180, 75, 90, 0.25), inset 0 1px 0 rgba(240, 160, 170, 0.10);
+}
+
 .button-inactive {
   color: #56646e !important;
-
-  background:
-    linear-gradient(
-      180deg,
-      #11171c,
-      #0d1216
-    ) !important;
-
+  background: linear-gradient(180deg, #11171c, #0d1216) !important;
   border-color: #202a31 !important;
-
   box-shadow: none !important;
-
   cursor: default;
 }
 
@@ -228,37 +230,17 @@ input[type="submit"]:disabled {
   min-width: 100%;
   height: 24px;
   top: -10px;
-
   color: var(--text-0);
-
-  background:
-    linear-gradient(
-      180deg,
-      #1a242d,
-      #121a21
-    ) !important;
-
+  background: linear-gradient(180deg, #1a242d, #121a21) !important;
   border: 1px solid var(--border-1);
   border-radius: 3px;
-
-  box-shadow:
-    inset 0 1px 0 rgba(140, 190, 220, 0.08),
-    0 1px 2px rgba(0, 0, 0, 0.42);
+  box-shadow: inset 0 1px 0 rgba(140, 190, 220, 0.08), 0 1px 2px rgba(0, 0, 0, 0.42);
 }
 
 .mode-button:not(.mode-active):hover {
-  background:
-    linear-gradient(
-      180deg,
-      #202d38,
-      #17222b
-    ) !important;
-
+  background: linear-gradient(180deg, #202d38, #17222b) !important;
   border-color: var(--border-2);
-
-  box-shadow:
-    inset 0 1px 0 rgba(150, 205, 235, 0.10),
-    0 1px 3px rgba(0, 0, 0, 0.45);
+  box-shadow: inset 0 1px 0 rgba(150, 205, 235, 0.10), 0 1px 3px rgba(0, 0, 0, 0.45);
 }
 
 .mode-button.mode-active {
@@ -274,15 +256,8 @@ input[type="submit"]:disabled {
 }
 
 .mode-button.mode-active:hover {
-  background:
-    linear-gradient(
-      180deg,
-      #2a5d7d,
-      #1a425a
-    ) !important;
-
+  background: linear-gradient(180deg, #2a5d7d, #1a425a) !important;
   border-color: #52a2d3;
-
   box-shadow:
     inset 0 1px 0 rgba(195, 235, 252, 0.20),
     inset 0 -1px 0 rgba(5, 35, 55, 0.48),
@@ -297,7 +272,6 @@ input[type="submit"]:disabled {
   width: 95%;
   height: 3px;
   top: -8px;
-
   background: #162029;
   border: 1px solid #263744;
   border-radius: 2px;
@@ -319,9 +293,7 @@ input[type="submit"]:disabled {
   background: var(--surface-1);
   border: 1px solid #35434d;
   border-radius: 5px;
-
-  box-shadow:
-    inset 0 1px 0 rgba(120, 170, 200, 0.025);
+  box-shadow: inset 0 1px 0 rgba(120, 170, 200, 0.025);
 }
 
 .button-large {
@@ -415,24 +387,16 @@ pre {
 input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
-
   width: 13px;
   height: 13px;
   margin: 0 3px 0 0;
-
   vertical-align: -2px;
-
   background: linear-gradient(180deg, #18232c, #10181f);
-
   border: 1px solid #3a4b57;
   border-radius: 2px;
   outline: none;
-
-  box-shadow:
-    inset 0 1px 0 rgba(130, 185, 215, 0.06);
-
+  box-shadow: inset 0 1px 0 rgba(130, 185, 215, 0.06);
   cursor: pointer;
-
   transition:
     background 0.12s ease,
     border-color 0.12s ease,
@@ -543,10 +507,8 @@ select option:hover {
 #input-area {
   display: inline-block;
   position: relative;
-
   width: 824px;
   height: 100%;
-
   float: left;
   overflow: auto;
 }
@@ -554,10 +516,8 @@ select option:hover {
 #right-area {
   display: inline-block;
   position: relative;
-
   width: calc(100% - 844px);
   height: 100%;
-
   float: left;
   overflow: auto;
 }
@@ -577,13 +537,7 @@ select option:hover {
   padding: 2px 4px;
   margin-bottom: 4px;
   overflow: auto;
-
-  background:
-    linear-gradient(
-      180deg,
-      #10181e,
-      #0e161c
-    );
+  background: linear-gradient(180deg, #10181e, #0e161c);
 }
 
 #info {
@@ -597,13 +551,7 @@ select option:hover {
   width: 100%;
   height: calc(100% - 265px);
   overflow: auto;
-
-  background:
-    linear-gradient(
-      180deg,
-      #10181e,
-      #0e161c
-    );
+  background: linear-gradient(180deg, #10181e, #0e161c);
 }
 
 #preview-wrapper0 {
@@ -651,26 +599,14 @@ select option:hover {
 .dialog-button {
   min-width: 54px;
   padding: 3px 14px;
-  background:
-    linear-gradient(
-      180deg,
-      #1a252e,
-      #121a21
-    );
+  background: linear-gradient(180deg, #1a252e, #121a21);
   color: #d9e3e9;
   border: 1px solid #394b58;
 }
 
 .dialog button:hover {
-  background:
-    linear-gradient(
-      180deg,
-      #21303b,
-      #18242c
-    ) !important;
-
+  background: linear-gradient(180deg, #21303b, #18242c) !important;
   color: #eef5f8 !important;
-
   border-color: #526b7d !important;
 }
 
@@ -761,17 +697,9 @@ select option:hover {
 }
 
 @keyframes flash1 {
-  0% {
-    background: transparent;
-  }
-
-  20% {
-    background: #164b70;
-  }
-
-  100% {
-    background: transparent;
-  }
+  0% {background: transparent;}
+  20% {background: #164b70;}
+  100% {background: transparent;}
 }
 
 ::selection {

@@ -18,7 +18,7 @@
 <body>
 <div id="main">
 <div style="position:relative;height:32px;vertical-align:bottom;">
-<button class="button-large" onclick="txtbin.parse();">PARSE</button>
+<button class="button-large button-blue" onclick="txtbin.parse();">PARSE</button>
 <div style="margin-left:8px;display:inline-block;">
 <label class="switch" style="margin-left:8px;">
   <input type="checkbox" id="toggle-src-conv">
@@ -43,7 +43,7 @@
 </select>
 <div class="mode-button-block"><div id="mode-ind-xb64" class="mode-ind"></div><button id="mode-button-xb64" class="mode-button" onclick="txtbin.setMode('xb64');">XB64</button>
 </div><span id="key-label" style="margin-left:4px;">KEY:</span><input type="text" id="key" name="key" spellcheck="false"><button id="key-hide-button" class="button-small" style="margin-left:4px;" onclick="txtbin.switchKeyViewHide();">HIDE</button><button id="key-apply-button" class="button-small" style="margin-left:4px;" onclick="txtbin.updateXB64Key();" disabled>APPLY</button><input type="checkbox" id="xb64-auto-apply" checked><label for="xb64-auto-apply">Auto</label>
-<button style="position:relative;margin-left:16px;" onclick="txtbin.confirmClear();">CLEAR</button>
+<button class="button-red" style="position:relative;margin-left:16px;" onclick="txtbin.confirmClear();">CLEAR</button>
 </div>
 
 <div style="position:absolute;right:8px;display:inline-block;height:100%;">
@@ -61,7 +61,7 @@
 <span><input type="checkbox" id="dump-multibyte"><label for="dump-multibyte">Multi Byte Char</label></span>
 <span style="margin-left:16px;"><input type="checkbox" id="use-textareainfo" checked><label for="use-textareainfo">Status</label></span>
 <span style="margin-left:16px;">NewLine:<input type="text" id="newline" style="width:40px;" value="76"></span>
-<span style="margin-left:16px;">EDIT:<select id="txt-edit-mode"></select><span id="txt-edit-opts"></span><button id="txt-edit-exec-button" class="button-small" style="margin-left:8px;" onclick="txtbin.execTxtEdit();">EXEC</button></span>
+<span style="margin-left:16px;">EDIT:<select id="txt-edit-mode"></select><span id="txt-edit-opts"></span><button id="txt-edit-exec-button" class="button-small button-green" style="margin-left:8px;" onclick="txtbin.execTxtEdit();">EXEC</button></span>
 </div>
 
 <div id="input-area">
