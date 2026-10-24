@@ -699,7 +699,7 @@ $onReady = function() {
   $el('#show-preview-cc').addEventListener('change', txtbin.onChangeShowPreviewCc);
   $el('#word-wrap').addEventListener('change', txtbin.onChangeWordWrap);
   $el('#preview-mode').addEventListener('change', txtbin.onChangeShowPreview);
-  $el('#preview-mode-encryption').addEventListener('change', txtbin.onChangeShowPreview);
+  $el('#preview-byte-transform').addEventListener('change', txtbin.onChangeShowPreview);
 
   $el('#preview-wrapper').addEventListener('wheel', txtbin.onImgWheel);
   $el('#preview-wrapper').addEventListener('dblclick', txtbin.onPreviewDblClick);
@@ -707,6 +707,7 @@ $onReady = function() {
   txtbin.initTextAreaInfo();
   txtbin.initTxtEditMode();
   txtbin.clear();
+  txtbin.updatePreviewByteTransformSelector();
 };
 
 txtbin.initTextAreaInfo = function() {
@@ -2376,6 +2377,7 @@ txtbin.onChangeTextAreaInfoFlag = function() {
 };
 
 txtbin.onChangeShowPreview = function() {
+  txtbin.updatePreviewByteTransformSelector();
   txtbin.updateKeyApplyButton();
   if (txtbin.srcDirty && $el('#show-preview').checked && $el('#preview-live').checked) {
     txtbin.updateInfoAndPreview();
@@ -2648,16 +2650,16 @@ txtbin.showPreview = function(bufCache) {
   }
   var ftype = (bufCache ? bufCache.ftype : null);
   var peviewMode = $el('#preview-mode').value;
-  var peviewModeEncryption = $el('#preview-mode-encryption').value;
+  var peviewByteTransform = $el('#preview-byte-transform').value;
   $el('#copy-button').disabled = false;
   switch (peviewMode) {
     case 'bin':
     case 'dec':
     case 'hex':
       var buf = bufCache.buf;
-      if (peviewModeEncryption == 'xb64') {
+      if (peviewByteTransform == 'xb64') {
         buf = txtbin.getBufOfXB64(buf);
-      } else if (peviewModeEncryption == 'bsb64') {
+      } else if (peviewByteTransform == 'bsb64') {
         buf = txtbin.getBufOfBSB64(buf);
       }
       txtbin.showPreviewAsBin(peviewMode, buf);
@@ -2943,13 +2945,20 @@ txtbin.canConvertSrc = function() {
 txtbin.updateKeyApplyButton = function() {
   var mode = txtbin.getMode();
   var pm = $el('#preview-mode').value;
-  var enc = $el('#preview-mode-encryption').value;
+  var peviewByteTransform = $el('#preview-byte-transform').value;
 
   var src = (mode == 'xb64' && txtbin.canConvertSrc());
-  var preview = $el('#show-preview').checked && (pm == 'xb64' || (['bin', 'dec', 'hex'].includes(pm) && enc == 'xb64'));
+  var preview = $el('#show-preview').checked && (pm == 'xb64' || (['bin', 'dec', 'hex'].includes(pm) && peviewByteTransform == 'xb64'));
   var live = (txtbin.srcDirty && $el('#preview-live').checked && $el('#show-preview').checked && (mode == 'xb64' || preview));
 
   $el('#key-apply-button').disabled = !(src || (txtbin.bufCache && !txtbin.srcDirty && preview) || live);
+};
+
+txtbin.updatePreviewByteTransformSelector = function() {
+  var previewEnabled = $el('#show-preview').checked;
+  var previewMode = $el('#preview-mode').value;
+  var supported = ['bin', 'dec', 'hex'].includes(previewMode);
+  $el('#preview-byte-transform').disabled = !(previewEnabled && supported);
 };
 
 txtbin.submit = function() {
@@ -3113,9 +3122,9 @@ txtbin.switchKeyViewHide = function() {
 txtbin.updateXB64Key = function() {
   var mode = txtbin.getMode();
   var pm = $el('#preview-mode').value;
-  var enc = $el('#preview-mode-encryption').value;
+  var peviewByteTransform = $el('#preview-byte-transform').value;
   var affectsPreview = $el('#show-preview').checked &&
-      (pm == 'xb64' || (['bin', 'dec', 'hex'].includes(pm) && enc == 'xb64'));
+      (pm == 'xb64' || (['bin', 'dec', 'hex'].includes(pm) && peviewByteTransform == 'xb64'));
   if (txtbin.srcDirty) {
     if ($el('#preview-live').checked && $el('#show-preview').checked &&
         (mode == 'xb64' || affectsPreview)) {
@@ -3142,8 +3151,8 @@ txtbin.onInputKey = function() {
 txtbin.onChangeBsb64N = function() {
   var mode = txtbin.getMode();
   var pm = $el('#preview-mode').value;
-  var enc = $el('#preview-mode-encryption').value;
-  var affectsPreview = $el('#show-preview').checked && (pm == 'bsb64' || (['bin', 'dec', 'hex'].includes(pm) && enc == 'bsb64'));
+  var peviewByteTransform = $el('#preview-byte-transform').value;
+  var affectsPreview = $el('#show-preview').checked && (pm == 'bsb64' || (['bin', 'dec', 'hex'].includes(pm) && peviewByteTransform == 'bsb64'));
   if (txtbin.srcDirty) {
     if ($el('#preview-live').checked && $el('#show-preview').checked &&
         (mode == 'bsb64' || affectsPreview)) {
