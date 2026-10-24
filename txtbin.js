@@ -689,12 +689,14 @@ $onReady = function() {
 
   $el('#key').addEventListener('input', txtbin.onInputKey);
   $el('#key').addEventListener('change', txtbin.onInputKey);
+  $el('#key').addEventListener('keydown', txtbin.onParseKeyDown);
 
   $el('#bsb64-n').addEventListener('change', txtbin.onChangeBsb64N);
   $el('#toggle-src-conv').addEventListener('change', txtbin.updateKeyApplyButton);
 
   $el('#src').addEventListener('input', txtbin.onInput);
   $el('#src').addEventListener('change', txtbin.onInput);
+  $el('#src').addEventListener('keydown', txtbin.onParseKeyDown);
 
   $el('#show-preview').addEventListener('change', txtbin.onChangeShowPreview);
   $el('#preview-live').addEventListener('change', txtbin.onLivePreviewChange);
@@ -2461,6 +2463,44 @@ txtbin.onDndLoadStart = function(f) {
 txtbin.onDndLoadProgress = function(e, loaded, total, pct) {
   var s = 'Loading... ' + pct + '%';
   txtbin.setSrcValue(s, false);
+};
+
+txtbin.onParseKeyDown = function(e) {
+  if (e.key != 'Enter' || e.isComposing || e.repeat) return;
+  if (e.currentTarget.id == 'key') {
+    txtbin.handleEnterKeyOnXB64Key(e);
+  } else if (e.ctrlKey) {
+    e.preventDefault();
+    txtbin.parse();
+  }
+};
+txtbin.handleEnterKeyOnXB64Key = function(e) {
+  e.preventDefault();
+
+  var pm = $el('#preview-mode').value;
+  var transform = $el('#preview-byte-transform').value;
+  var previewXB64 = ($el('#show-preview').checked && ((pm == 'xb64') || (['bin', 'dec', 'hex'].includes(pm) && transform == 'xb64')));
+
+  if ((txtbin.getMode() != 'xb64') && previewXB64) {
+    txtbin.handleEnterKeyOnXB64Key4Preview();
+    return;
+  }
+
+  if (txtbin.getMode() != 'xb64') {
+    txtbin.srcDirty = true;
+    $el('#toggle-src-conv').checked = false;
+    $el('#toggle-src-conv').disabled = true;
+    txtbin.setMode('xb64');
+  }
+
+  txtbin.parse();
+};
+txtbin.handleEnterKeyOnXB64Key4Preview = function() {
+  if (txtbin.srcDirty || !txtbin.bufCache) {
+    txtbin.parse();
+  } else {
+    txtbin.updateXB64Key();
+  }
 };
 
 txtbin.getSrcValue = function() {
