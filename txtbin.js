@@ -614,6 +614,8 @@ txtbin.CODE_BLOCKS = [
 
 txtbin.auto = true;
 txtbin.bufCache = null;
+txtbin.previewText = null;
+txtbin.previewRenderedMode = null;
 txtbin.srcDirty = false;
 txtbin.file = null;
 txtbin.uiStatus = txtbin.UI_ST_NONE;
@@ -1148,9 +1150,9 @@ txtbin.bin2uint8Array = function(s) {
 };
 
 txtbin.dec2uint8Array = function(s) {
-  s = s.replace(/\n/g, ' ');
-  s = s.replace(/\s{2,}/g, ' ');
-  var w = s.split(' ');
+  s = s.trim();
+  if (!s) return [];
+  var w = s.split(/\s+/);
   var a = [];
   for (var i = 0; i < w.length; i++) {
     a.push(w[i] | 0);
@@ -2318,28 +2320,38 @@ txtbin.formatHex = function(hex, uc, pFix, d) {
 };
 
 txtbin.extractBinTextPart = function(mode, s) {
-  var unit = 2;
-  if (mode == 'bin') {
-    unit = 8;
-  } else if (mode == 'dec') {
-    unit = 3;
-  }
-  var vStart = 11;
-  var eEnd = unit * 16 + 16;
-  s = s.trim();
-  if (!s.toUpperCase().startsWith('ADDRESS')) return s;
   var a = util.text2list(s);
+  if (a.length < 2) return s;
+
+  var hd = a[0];
+  if (!/^\s*(?:Address\s+)?\+0\s*\+1/i.test(hd) || !hd.includes('+F') || !/^-+$/.test(a[1].trim())) return s;
+
+  var unit = (mode == 'bin') ? 8 : ((mode == 'dec') ? 3 : 2);
+  var offset = (mode == 'dec') ? 1 : 0;
+  var pos = [];
+
+  for (var i = 0; i < 16; i++) {
+    var p = hd.indexOf('+' + i.toString(16).toUpperCase());
+    if (p < 0) return s;
+    pos.push(p - offset);
+  }
+
   var b = '';
   for (var i = 2; i < a.length; i++) {
     var l = a[i];
-    var w = l.substr(vStart, eEnd);
-    b += w + '\n';
+    for (var j = 0; j < 16; j++) {
+      var v = l.substr(pos[j], unit).trim();
+      if (v) b += v + ' ';
+    }
+    b += '\n';
   }
   return b;
 };
 
 txtbin.onInput = function() {
   txtbin.srcDirty = true;
+  $el('#toggle-src-conv').checked = false;
+  $el('#toggle-src-conv').disabled = true;
   if (txtbin.auto) {
     txtbin.clearBuf();
     txtbin.detectCurrentMode();
@@ -2644,6 +2656,7 @@ txtbin.getBufOfBSB64 = function(buf) {
 
 txtbin.showPreview = function(bufCache) {
   if (!$el('#show-preview').checked) {
+    $el('#preview-to-src-button').disabled = true;
     $el('#copy-button').disabled = true;
     txtbin.drawPreview('');
     return;
@@ -2651,6 +2664,7 @@ txtbin.showPreview = function(bufCache) {
   var ftype = (bufCache ? bufCache.ftype : null);
   var peviewMode = $el('#preview-mode').value;
   var peviewByteTransform = $el('#preview-byte-transform').value;
+  $el('#preview-to-src-button').disabled = false;
   $el('#copy-button').disabled = false;
   switch (peviewMode) {
     case 'bin':
@@ -2679,9 +2693,11 @@ txtbin.showPreview = function(bufCache) {
     default:
       txtbin.showPreviewAsView(bufCache);
       if (txtbin.isMedia(ftype)) {
+        $el('#preview-to-src-button').disabled = true;
         $el('#copy-button').disabled = true;
       }
   }
+  txtbin.previewRenderedMode = peviewMode;
 };
 
 txtbin.showPreviewAsView = function(bufCache) {
@@ -2737,8 +2753,8 @@ txtbin.showPreviewAsBSB64 = function(bufCache) {
 };
 
 txtbin.showTextPreview = function(b64) {
-  var s = util.decodeBase64(b64);
-  s = util.escHtml(s);
+  var rawText = util.decodeBase64(b64);
+  var s = util.escHtml(rawText);
   if ($el('#show-preview-cc').checked) {
     s = s.replace(/ /g, txtbin.SP);
     s = s.replace(/\r\n/g, txtbin.CHR_CRLF_S + '\n');
@@ -2765,6 +2781,7 @@ txtbin.showTextPreview = function(b64) {
     s = s + txtbin.EOF + '\n';
   }
   txtbin.drawPreview(s);
+  txtbin.previewText = rawText;
 };
 
 txtbin.showImagePreview = function(b64, ftype) {
@@ -2904,6 +2921,8 @@ txtbin.showPdfPreview = function(b64) {
 };
 
 txtbin.drawPreview = function(s) {
+  txtbin.previewText = null;
+  txtbin.previewRenderedMode = null;
   txtbin.mediaPreviewRect = null;
   $el('#preview').innerHTML = s;
   $el('#preview-area').scrollToTop();
@@ -2935,6 +2954,7 @@ txtbin.clearBuf = function() {
   txtbin.bufCache = null;
   txtbin.file = null;
   $el('#key-apply-button').disabled = true;
+  $el('#preview-to-src-button').disabled = true;
   $el('#copy-button').disabled = true;
 };
 
@@ -3192,14 +3212,20 @@ txtbin.onMouseUp = function(e) {
   }
 };
 
+txtbin.copyPreviewToSrc = function() {
+  var s = txtbin.getPreviewText();
+  var mode = txtbin.previewRenderedMode;
+  if (!mode || mode == 'view') mode = 'txt';
+  txtbin.srcDirty = true;
+  $el('#toggle-src-conv').checked = false;
+  $el('#toggle-src-conv').disabled = true;
+  txtbin.setMode(mode);
+  txtbin.setSrcValue(s, true);
+  txtbin.onInput();
+};
+
 txtbin.copyPreview = function() {
-  var previewMode = $el('#preview-mode').value;
-  if (txtbin.bufCache && ((previewMode == 'view') || (previewMode == 'txt'))) {
-    var b64 = txtbin.bufCache.b64;
-    var s = util.decodeBase64(b64);
-  } else {
-    s = $el('#preview').innerText;
-  }
+  var s = txtbin.getPreviewText();
   util.copy(s);
   var o = {
     pos: 'pointer',
@@ -3208,6 +3234,10 @@ txtbin.copyPreview = function() {
     }
   };
   util.infotip.show('Copied', o);
+};
+
+txtbin.getPreviewText = function() {
+  return ((txtbin.previewText == null) ? $el('#preview').innerText : txtbin.previewText);
 };
 
 txtbin.getSelfSizePos = function(el) {
@@ -3559,8 +3589,10 @@ txtbin.execTxtEdit = function() {
     if (oEls.sel.active) o[i] = oEls.sel.value;
   }
   var v = d.fn(s, o);
-  v = DebugJS.escHtml(v);
-  txtbin.drawPreview(v);
+  txtbin.drawPreview(DebugJS.escHtml(v));
+  txtbin.previewText = v;
+  txtbin.previewRenderedMode = 'txt';
+  $el('#preview-to-src-button').disabled = false;
   $el('#copy-button').disabled = false;
   txtbin.bufCache = null;
   txtbin.updateKeyApplyButton();

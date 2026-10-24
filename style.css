@@ -526,7 +526,7 @@ select option:hover {
 #input-area {
   display: inline-block;
   position: relative;
-  width: 824px;
+  width: 800px;
   height: 100%;
   float: left;
   overflow: auto;
@@ -535,7 +535,7 @@ select option:hover {
 #right-area {
   display: inline-block;
   position: relative;
-  width: calc(100% - 844px);
+  width: calc(100% - 800px - 20px);
   height: 100%;
   float: left;
   overflow: auto;
@@ -784,6 +784,10 @@ input[type="range"]::-moz-range-thumb {
   opacity: 0;
   width: 0;
   height: 0;
+}
+
+.switch input[type="checkbox"]:disabled {
+  opacity: 0;
 }
 
 .slider {
