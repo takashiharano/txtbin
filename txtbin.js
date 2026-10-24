@@ -697,7 +697,7 @@ $onReady = function() {
   $el('#src').addEventListener('change', txtbin.onInput);
 
   $el('#show-preview').addEventListener('change', txtbin.onChangeShowPreview);
-  $el('#preview-live').addEventListener('change', txtbin.onRealtimePreviewChange);
+  $el('#preview-live').addEventListener('change', txtbin.onLivePreviewChange);
   $el('#show-preview-cc').addEventListener('change', txtbin.onChangeShowPreviewCc);
   $el('#word-wrap').addEventListener('change', txtbin.onChangeWordWrap);
   $el('#preview-mode').addEventListener('change', txtbin.onChangeShowPreview);
@@ -1117,14 +1117,14 @@ txtbin.getSHA = function(a, b, f) {
 
 txtbin.parse = function() {
   txtbin.clearBuf();
-  txtbin.bufCache = txtbin.updateInfoAndPreview();
+  txtbin.bufCache = txtbin.updateInfoAndPreview(true);
   $el('#filename').value = '';
   txtbin.srcDirty = false;
   $el('#toggle-src-conv').disabled = false;
   txtbin.updateKeyApplyButton();
 };
 
-txtbin.updateInfoAndPreview = function() {
+txtbin.updateInfoAndPreview = function(flash) {
   var mode = txtbin.getMode();
   var s = txtbin.getSrcValue();
   if ((mode == 'hex') && (txtbin.isPercentEncoding(s))) {
@@ -1140,7 +1140,7 @@ txtbin.updateInfoAndPreview = function() {
     b64: b64
   };
   txtbin.showPreview(bufCache);
-  txtbin.flash($el('#preview'));
+  if (flash) txtbin.flash($el('#preview'));
   return bufCache;
 };
 
@@ -2362,7 +2362,7 @@ txtbin.onInput = function() {
   txtbin.updateKeyApplyButton();
 };
 
-txtbin.onRealtimePreviewChange = function() {
+txtbin.onLivePreviewChange = function() {
   txtbin.updateKeyApplyButton();
   if ($el('#show-preview').checked && $el('#preview-live').checked) {
     txtbin.updateInfoAndPreview();
@@ -2444,7 +2444,7 @@ txtbin.onDnd = function(s, f) {
     txtbin.setSrcValue(s, true);
   }
   if (showInfoRequired) {
-    txtbin.bufCache = txtbin.updateInfoAndPreview();
+    txtbin.bufCache = txtbin.updateInfoAndPreview(true);
   }
   txtbin.srcDirty = false;
   $el('#toggle-src-conv').disabled = false;
