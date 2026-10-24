@@ -21,9 +21,9 @@
 <button class="button-large button-blue" onclick="txtbin.parse();">PARSE</button>
 <div style="margin-left:8px;display:inline-block;">
 <label class="switch" style="margin-left:8px;">
-  <input type="checkbox" id="toggle-src-conv">
+  <input type="checkbox" id="toggle-src-conv" disabled>
   <span class="slider round"></span>
-</label><span style="margin-left:6px;">SRC Conv</span>
+</label><span style="margin-left:6px;">Conv</span>
 <div class="mode-button-block"><div id="mode-ind-auto" class="mode-ind" style="opacity:0;"></div><button id="mode-button-auto" class="mode-button" onclick="txtbin.setMode('auto');">AUTO</button></div>
 <div class="mode-button-block"><div id="mode-ind-txt" class="mode-ind"></div><button id="mode-button-txt" class="mode-button" onclick="txtbin.setMode('txt');">TEXT</button>
 </div><div class="mode-button-block"><div id="mode-ind-bin" class="mode-ind"></div><button id="mode-button-bin" class="mode-button" onclick="txtbin.setMode('bin');">BIN</button>
@@ -61,7 +61,7 @@
 <span><input type="checkbox" id="dump-multibyte"><label for="dump-multibyte">Multi Byte Char</label></span>
 <span style="margin-left:16px;"><input type="checkbox" id="use-textareainfo" checked><label for="use-textareainfo">Status</label></span>
 <span style="margin-left:16px;">NewLine:<input type="text" id="newline" style="width:40px;" value="76"></span>
-<span style="margin-left:16px;">EDIT:<select id="txt-edit-mode"></select><span id="txt-edit-opts"></span><button id="txt-edit-exec-button" class="button-small button-green" style="margin-left:8px;" onclick="txtbin.execTxtEdit();">EXEC</button></span>
+<span style="margin-left:16px;">EDIT:<select id="txt-edit-mode"></select><span id="txt-edit-opts"></span><button id="txt-edit-exec-button" class="button-small button-green" style="margin-left:8px;" onclick="txtbin.execTxtEdit();" disabled>EXEC</button></span>
 </div>
 
 <div id="input-area">
@@ -85,7 +85,7 @@
 
 <div id="right-area">
 <div id="info-area" class="pane">
-<div style="margin-bottom:8px;">Filename: <input type="text" id="filename" style="width:calc(100% - 135px);" spellcheck="false"><button id="submit-button" class="button-small button-bluegray" style="margin-left:2px;" onclick="txtbin.submit();">SAVE</button></div>
+<div style="margin-bottom:8px;">Filename: <input type="text" id="filename" style="width:calc(100% - 135px);" spellcheck="false"><button id="submit-button" class="button-small button-blue" style="margin-left:2px;" onclick="txtbin.submit();">SAVE</button></div>
 <pre id="info"></pre>
 </div>
 <div id="adjuster-y" class="adjuster"></div>

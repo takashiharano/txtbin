@@ -3560,6 +3560,7 @@ txtbin.initTxtEditMode = function() {
 txtbin.onTxtEdtMdChg = function() {
   var v = $el('#txt-edit-mode').value | 0;
   var d = txtbin.TXT_EDIT_FN[v];
+  $el('#txt-edit-exec-button').disabled = ((v == 0) ? true : false);
   for (var i = 0; i < 4; i++) {
     var optEl = txtbin.txtEdtOptEl;
     DebugJS.hideEl(optEl[i].lbl);
