@@ -2930,24 +2930,36 @@ txtbin.drawPreview = function(s) {
 };
 
 txtbin.confirmClear = function() {
-  var v = txtbin.getSrcValue();
-  if (v && !txtbin.bufCache) {
-    util.confirm('Clear all?', txtbin.clear);
-  } else {
-    txtbin.clear();
-  }
+  var clear = function() {txtbin.clear(true);};
+  util.confirm('Clear data?', clear);
 };
 
-txtbin.clear = function() {
+txtbin.clear = function(resetMode) {
   txtbin.clearBuf();
   txtbin.setSrcValue('', true);
   txtbin.srcDirty = false;
   $el('#toggle-src-conv').checked = false;
   $el('#toggle-src-conv').disabled = true;
   $el('#filename').value = '';
+
+  if (resetMode) {
+    txtbin.resetMode();
+  }
+
   txtbin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
   txtbin.drawPreview('<span style="color:#888;">PREVIEW</span>');
   $el('#src').focus();
+};
+
+txtbin.resetMode = function() {
+  txtbin.setMode(txtbin.DEFAULT_MODE);
+  if (txtbin.DEFAULT_MODE == 'auto') {
+    txtbin.activeMode(txtbin.DEFAULT_MODE_ACTIVE);
+  }
+  $el('#preview-mode').value = 'view';
+  $el('#preview-byte-transform').value = 'asis';
+  txtbin.updatePreviewByteTransformSelector();
+  txtbin.updateKeyApplyButton();
 };
 
 txtbin.clearBuf = function() {
