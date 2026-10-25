@@ -859,27 +859,8 @@ txtbin.decodeBase64 = function(s) {
   return util.decodeBase64(s, true);
 };
 
-txtbin.extractB64fromDataUrl = function(s) {
-  s = s.trim().replace(/[\r\n]/g, '');
-  if (s.startsWith('data:')) {
-    var a = s.split(',');
-    s = a[1];
-  }
-  return s;
-};
-
-txtbin.parseTransformNotation = function(s) {
-  var m = /^\s*(xb64|bsb64):/.exec(s);
-  if (!m) return null;
-
-  var body = s.slice(m[0].length);
-  var pos = body.indexOf('#');
-  var hasParam = (pos >= 0);
-  var payload = hasParam ? body.slice(0, pos) : body;
-  var param = hasParam ? body.slice(pos + 1) : null;
-
-  return {mode: m[1], payload: payload, param: param, hasParam: hasParam};
-};
+txtbin.extractB64fromDataUrl = DebugJS.extractB64fromDataUrl;
+txtbin.parseTransformNotation = DebugJS.parseTransformNotation;
 
 txtbin.hasInlineTransformParam = function(mode) {
   var notation = txtbin.parseTransformNotation(txtbin.getSrcValue());
@@ -887,29 +868,8 @@ txtbin.hasInlineTransformParam = function(mode) {
 };
 
 txtbin.resolveTransformSource = function(mode, s) {
-  var notation = txtbin.parseTransformNotation(s);
-  var matches = ((notation && notation.mode) == mode);
-  var payload = (matches ? notation.payload : s);
-  var hasInlineParam = (matches && notation.hasParam);
-  var param;
-  var error = null;
-
-  if (mode == 'xb64') {
-    param = (hasInlineParam ? notation.param.replace(/[\r\n]+$/, '') : $el('#key').value);
-  } else if (mode == 'bsb64') {
-    if (hasInlineParam) {
-      var n = notation.param.trim();
-      if (/^[0-9]+$/.test(n)) {
-        param = Number(n.slice(-3));
-      } else {
-        error = 'Invalid BSB64 N: ' + (notation.param ? notation.param : 'Empty');
-      }
-    } else {
-      param = $el('#bsb64-n').value | 0;
-    }
-  }
-
-  return {payload: payload, param: param, hasInlineParam: hasInlineParam, error: error};
+  var param = (mode == 'xb64' ? $el('#key').value : $el('#bsb64-n').value);
+  return DebugJS.resolveTransformSource(mode, s, param);
 };
 
 txtbin.drawBinInfo = function(ftype, buf, b64) {
@@ -2732,18 +2692,17 @@ txtbin.str2buf = function(mode, s) {
       break;
     case 'xb64':
       parts = txtbin.resolveTransformSource(mode, s);
-      var k = parts.param;
-      s = txtbin.extractB64fromDataUrl(parts.payload);
-      b = util.xb64.decode(s, k);
+      if (parts.error) {
+        return {error: parts.error};
+      }
+      b = util.xb64.decode(parts.payload, parts.param);
       break;
     case 'bsb64':
       parts = txtbin.resolveTransformSource(mode, s);
       if (parts.error) {
         return {error: parts.error};
       }
-      s = txtbin.extractB64fromDataUrl(parts.payload);
-      var n = parts.param;
-      b = util.bsb64.decode(s, n);
+      b = util.bsb64.decode(parts.payload, parts.param);
       break;
     case 'txt':
       var b64 = util.encodeBase64(s);
@@ -3505,7 +3464,19 @@ txtbin.onAreaResizeEnd = function(e) {
 txtbin.TXT_EDIT_FN = [
   {lbl: ''},
   {lbl: 'Base64', opt: [{lbl: '', optvals: [{t: 'Encode', v: 'E'}, {t: 'Decode', v: 'D'}]}], fn: function(s, o) {var f = o[0] == 'E' ? 'encodeB64' : 'decodeB64';return DebugJS[f](s);}},
-  {lbl: 'BSB64', opt: [{lbl: '', optvals: [{t: 'Encode', v: 'E'}, {t: 'Decode', v: 'D'}]}, {lbl: 'N', optvals: [{v: '0'}, {v: '1', s: 1}, {v: '2'}, {v: '3'}, {v: '4'}, {v: '5'}, {v: '6'}, {v: '7'}]}], fn: function(s, o) {var f = o[0] == 'E' ? 'encode' : 'decodeToString';return DebugJS.bsb64[f](s, o[1] | 0);}},
+  {
+    lbl: 'BSB64',
+    opt: [{lbl: '', optvals: [{t: 'Encode', v: 'E'}, {t: 'Decode', v: 'D'}]}, {lbl: 'N', optvals: [{v: '0'}, {v: '1', s: 1}, {v: '2'}, {v: '3'}, {v: '4'}, {v: '5'}, {v: '6'}, {v: '7'}]}],
+    fn: function(s, o) {
+      if (o[0] == 'E') return DebugJS.bsb64.encode(s, o[1] | 0);
+      var src = DebugJS.resolveTransformSource('bsb64', s, o[1]);
+      if (src.error) {
+        DebugJS._log.e(DebugJS.escHtml(src.error));
+        return null;
+      }
+      return DebugJS.bsb64.decodeToString(src.payload, src.param);
+    }
+  },
   {lbl: 'Check Digit', opt: [{lbl: 'MOD', optvals: [{v: '10'}, {v: '11'}, {v: '43'}]}, {lbl: 'Weight', v: '3'}],
     fn: function(s, o) {
       var fn = DebugJS['calcMod' + o[0]];
@@ -3651,7 +3622,19 @@ txtbin.TXT_EDIT_FN = [
       return DebugJS.toUnique(s, opt);
     }
   },
-  {lbl: 'XB64', opt: [{lbl: '', optvals: [{t: 'Encode', v: 'E'}, {t: 'Decode', v: 'D'}]}, {lbl: 'KEY'}], fn: function(s, o) {var f = o[0] == 'E' ? 'encode' : 'decodeToString';return DebugJS.xb64[f](s, o[1]);}},
+  {
+    lbl: 'XB64',
+    opt: [{lbl: '', optvals: [{t: 'Encode', v: 'E'}, {t: 'Decode', v: 'D'}]}, {lbl: 'KEY'}],
+    fn: function(s, o) {
+      if (o[0] == 'E') return DebugJS.xb64.encode(s, o[1]);
+      var src = DebugJS.resolveTransformSource('xb64', s, o[1]);
+      if (src.error) {
+        DebugJS._log.e(DebugJS.escHtml(src.error));
+        return null;
+      }
+      return DebugJS.xb64.decodeToString(src.payload, src.param);
+    }
+  },
   {lbl: 'XML', opt: [{lbl: 'INDENT', v: '2'}, {lbl: 'COMMENT', optvals: [{v: 'Y'}, {v: 'N'}]}], fn: function(s, o) {return DebugJS.formatXml(s, o[0], (o[1] == 'Y' ? 0 : 1));}},
   {lbl: '%XX', opt: [{lbl: '', optvals: [{t: 'Encode', v: 'E'}, {t: 'Decode', v: 'D'}]}], fn: function(s, o) {var f = o[0] == 'E' ? 'encodeUri' : 'decodeUri';return DebugJS[f](s);}},
   {lbl: '&#n;', opt: [{lbl: '', optvals: [{t: 'Encode', v: 'E'}, {t: 'Decode', v: 'D'}]}], fn: function(s, o) {var f = o[0] == 'E' ? 'encodeChrEntRefs' : 'decodeChrEntRefs';return DebugJS[f](s);}}
@@ -3720,17 +3703,28 @@ txtbin.execTxtEdit = function() {
     o[i] = oEls.txt.value;
     if (oEls.sel.active) o[i] = oEls.sel.value;
   }
-  var v = d.fn(s, o);
-  txtbin.drawPreview(DebugJS.escHtml(v));
-  txtbin.previewText = v;
+  var v;
+  var error = null;
+  try {
+    v = d.fn(s, o);
+  } catch (e) {
+    error = e.message || String(e);
+  }
+  if ((v == null) && !error) error = 'Conversion failed';
+  if (error) {
+    txtbin.drawPreview('<span class="error-text">ERROR: ' + util.escHtml(error) + '</span>');
+  } else {
+    txtbin.drawPreview(DebugJS.escHtml(v));
+    txtbin.previewText = v;
+  }
 
   txtbin.previewRenderedMode = 'view';
   $el('#preview-mode').value = 'view';
   $el('#preview-byte-transform').value = 'asis';
   txtbin.updatePreviewByteTransformSelector();
 
-  $el('#preview-to-src-button').disabled = false;
-  $el('#copy-button').disabled = false;
+  $el('#preview-to-src-button').disabled = !!error;
+  $el('#copy-button').disabled = !!error;
   txtbin.bufCache = null;
   txtbin.updateKeyApplyButton();
   txtbin.flash($el('#preview'));
