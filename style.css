@@ -696,6 +696,10 @@ select option:hover {
   color: #d58ca6;
 }
 
+.error-text {
+  color: #c66;
+}
+
 .cc {
   cursor: default;
 }

@@ -868,6 +868,50 @@ txtbin.extractB64fromDataUrl = function(s) {
   return s;
 };
 
+txtbin.parseTransformNotation = function(s) {
+  var m = /^\s*(xb64|bsb64):/.exec(s);
+  if (!m) return null;
+
+  var body = s.slice(m[0].length);
+  var pos = body.indexOf('#');
+  var hasParam = (pos >= 0);
+  var payload = hasParam ? body.slice(0, pos) : body;
+  var param = hasParam ? body.slice(pos + 1) : null;
+
+  return {mode: m[1], payload: payload, param: param, hasParam: hasParam};
+};
+
+txtbin.hasInlineTransformParam = function(mode) {
+  var notation = txtbin.parseTransformNotation(txtbin.getSrcValue());
+  return (notation && (notation.mode == mode) && notation.hasParam);
+};
+
+txtbin.resolveTransformSource = function(mode, s) {
+  var notation = txtbin.parseTransformNotation(s);
+  var matches = ((notation && notation.mode) == mode);
+  var payload = (matches ? notation.payload : s);
+  var hasInlineParam = (matches && notation.hasParam);
+  var param;
+  var error = null;
+
+  if (mode == 'xb64') {
+    param = (hasInlineParam ? notation.param.replace(/[\r\n]+$/, '') : $el('#key').value);
+  } else if (mode == 'bsb64') {
+    if (hasInlineParam) {
+      var n = notation.param.trim();
+      if (/^[0-9]+$/.test(n)) {
+        param = Number(n.slice(-3));
+      } else {
+        error = 'Invalid BSB64 N: ' + (notation.param ? notation.param : 'Empty');
+      }
+    } else {
+      param = $el('#bsb64-n').value | 0;
+    }
+  }
+
+  return {payload: payload, param: param, hasInlineParam: hasInlineParam, error: error};
+};
+
 txtbin.drawBinInfo = function(ftype, buf, b64) {
   var bLen = buf.length;
   var b64Len = b64.length;
@@ -1119,7 +1163,15 @@ txtbin.getSHA = function(a, b, f) {
 
 txtbin.parse = function() {
   txtbin.clearBuf();
-  txtbin.bufCache = txtbin.updateInfoAndPreview(true);
+  var bufCache = txtbin.updateInfoAndPreview(true);
+  if (!bufCache) {
+    txtbin.srcDirty = true;
+    $el('#toggle-src-conv').checked = false;
+    $el('#toggle-src-conv').disabled = true;
+    txtbin.updateKeyApplyButton();
+    return;
+  }
+  txtbin.bufCache = bufCache;
   $el('#filename').value = '';
   txtbin.srcDirty = false;
   $el('#toggle-src-conv').disabled = false;
@@ -1133,6 +1185,13 @@ txtbin.updateInfoAndPreview = function(flash) {
     s = s.replace(/%/g, '');
   }
   var b = txtbin.str2buf(mode, s);
+  if (b && b.error) {
+    txtbin.clearBuf();
+    txtbin.drawInfo('<span style="color:#888;">CONTENT INFO</span>');
+    txtbin.drawPreview('<span class="error-text">ERROR: ' + util.escHtml(b.error) + '</span>');
+    if (flash) txtbin.flash($el('#preview'));
+    return null;
+  }
   var b64 = util.encodeBase64(b, true);
   var ftype = txtbin.analyzeBinary(b, txtbin.file);
   txtbin.drawBinInfo(ftype, b, b64);
@@ -2448,6 +2507,13 @@ txtbin.onDnd = function(s, f) {
   if (showInfoRequired) {
     txtbin.bufCache = txtbin.updateInfoAndPreview(true);
   }
+  if (!txtbin.bufCache) {
+    txtbin.srcDirty = true;
+    $el('#toggle-src-conv').checked = false;
+    $el('#toggle-src-conv').disabled = true;
+    txtbin.updateKeyApplyButton();
+    return;
+  }
   txtbin.srcDirty = false;
   $el('#toggle-src-conv').disabled = false;
   $el('#toggle-src-conv').checked = true;
@@ -2521,7 +2587,10 @@ txtbin.setSrcValue = function(s, resetPos) {
 txtbin.detectCurrentMode = function() {
   var m = 'txt';
   var v = txtbin.getSrcValue();
-  if (txtbin.isBinString(v)) {
+  var notation = txtbin.parseTransformNotation(v);
+  if (notation) {
+    m = notation.mode;
+  } else if (txtbin.isBinString(v)) {
     m = 'bin';
   } else if (txtbin.isHexString(v) || txtbin.isPercentEncoding(v)) {
     m = 'hex';
@@ -2650,6 +2719,7 @@ txtbin.str2buf = function(mode, s) {
     s = txtbin.extractBinTextPart(mode, s);
   }
   var b;
+  var parts;
   switch (mode) {
     case 'hex':
       b = txtbin.hex2uint8Array(s);
@@ -2661,13 +2731,18 @@ txtbin.str2buf = function(mode, s) {
       b = txtbin.bin2uint8Array(s);
       break;
     case 'xb64':
-      var k = $el('#key').value;
-      s = txtbin.extractB64fromDataUrl(s);
+      parts = txtbin.resolveTransformSource(mode, s);
+      var k = parts.param;
+      s = txtbin.extractB64fromDataUrl(parts.payload);
       b = util.xb64.decode(s, k);
       break;
     case 'bsb64':
-      var n = $el('#bsb64-n').value | 0;
-      s = txtbin.extractB64fromDataUrl(s);
+      parts = txtbin.resolveTransformSource(mode, s);
+      if (parts.error) {
+        return {error: parts.error};
+      }
+      s = txtbin.extractB64fromDataUrl(parts.payload);
+      var n = parts.param;
       b = util.bsb64.decode(s, n);
       break;
     case 'txt':
@@ -3019,9 +3094,10 @@ txtbin.updateKeyApplyButton = function() {
   var pm = $el('#preview-mode').value;
   var peviewByteTransform = $el('#preview-byte-transform').value;
 
-  var src = (mode == 'xb64' && txtbin.canConvertSrc());
+  var affectsSource = (mode == 'xb64' && !txtbin.hasInlineTransformParam('xb64'));
+  var src = affectsSource && txtbin.canConvertSrc();
   var preview = $el('#show-preview').checked && (pm == 'xb64' || (['bin', 'dec', 'hex'].includes(pm) && peviewByteTransform == 'xb64'));
-  var live = (txtbin.srcDirty && $el('#preview-live').checked && $el('#show-preview').checked && (mode == 'xb64' || preview));
+  var live = (txtbin.srcDirty && $el('#preview-live').checked && $el('#show-preview').checked && (affectsSource || preview));
 
   $el('#key-apply-button').disabled = !(src || (txtbin.bufCache && !txtbin.srcDirty && preview) || live);
 };
@@ -3195,17 +3271,17 @@ txtbin.updateXB64Key = function() {
   var mode = txtbin.getMode();
   var pm = $el('#preview-mode').value;
   var peviewByteTransform = $el('#preview-byte-transform').value;
+  var affectsSource = ((mode == 'xb64') && !txtbin.hasInlineTransformParam('xb64'));
   var affectsPreview = $el('#show-preview').checked &&
       (pm == 'xb64' || (['bin', 'dec', 'hex'].includes(pm) && peviewByteTransform == 'xb64'));
   if (txtbin.srcDirty) {
-    if ($el('#preview-live').checked && $el('#show-preview').checked &&
-        (mode == 'xb64' || affectsPreview)) {
+    if ($el('#preview-live').checked && $el('#show-preview').checked && (affectsSource || affectsPreview)) {
       txtbin.updateInfoAndPreview();
     }
     return;
   }
   if (txtbin.bufCache) {
-    if (mode == 'xb64' && txtbin.canConvertSrc()) {
+    if (affectsSource && txtbin.canConvertSrc()) {
       txtbin.switchRadix(mode, txtbin.bufCache);
     }
     if (affectsPreview) {
@@ -3224,16 +3300,16 @@ txtbin.onChangeBsb64N = function() {
   var mode = txtbin.getMode();
   var pm = $el('#preview-mode').value;
   var peviewByteTransform = $el('#preview-byte-transform').value;
+  var affectsSource = (mode == 'bsb64' && !txtbin.hasInlineTransformParam('bsb64'));
   var affectsPreview = $el('#show-preview').checked && (pm == 'bsb64' || (['bin', 'dec', 'hex'].includes(pm) && peviewByteTransform == 'bsb64'));
   if (txtbin.srcDirty) {
-    if ($el('#preview-live').checked && $el('#show-preview').checked &&
-        (mode == 'bsb64' || affectsPreview)) {
+    if ($el('#preview-live').checked && $el('#show-preview').checked && (affectsSource || affectsPreview)) {
       txtbin.updateInfoAndPreview();
     }
     return;
   }
   if (txtbin.bufCache) {
-    if (mode == 'bsb64' && txtbin.canConvertSrc()) {
+    if (affectsSource && txtbin.canConvertSrc()) {
       txtbin.switchRadix(mode, txtbin.bufCache);
     }
     if (affectsPreview) {

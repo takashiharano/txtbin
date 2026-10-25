@@ -121,6 +121,9 @@ def extract_bintext_part(mode, s):
   b = b.strip()
   return b
 
+def dec_txt(s):
+    return s.encode()
+
 def dec_bin(s):
     s = extract_bintext_part('bin', s)
     s = util.remove_space_newline(s)
@@ -156,18 +159,15 @@ def dec_b64(s):
     b = util.decode_base64(s, bin=True)
     return b
 
-def dec_xb64(s):
-    key = util.get_request_param('key', '')
-    s = util.remove_space_newline(s)
-    if s.startswith('data:'):
-        p = s.find(',')
-        if p > 0:
-            s = s[(p + 1):]
-    b = xb64.decode(s, key)
-    return b
-
 def dec_bsb64(s):
-    n = util.get_request_param_as_int('key', 1)
+    s, notation_n = parse_transform_notation('bsb64', s)
+    if notation_n is None:
+        n = util.get_request_param_as_int('key', 1)
+    else:
+        v = notation_n.strip()
+        if not v or not all('0' <= c <= '9' for c in v):
+            raise ValueError('Invalid BSB64 N: ' + notation_n)
+        n = int(v[-3:])
     s = util.remove_space_newline(s)
     if s.startswith('data:'):
         p = s.find(',')
@@ -176,8 +176,26 @@ def dec_bsb64(s):
     b = bsb64.decode(s, n)
     return b
 
-def dec_txt(s):
-    return s.encode()
+def dec_xb64(s):
+    s, notation_key = parse_transform_notation('xb64', s)
+    key = notation_key if notation_key is not None else util.get_request_param('key', '')
+    s = util.remove_space_newline(s)
+    if s.startswith('data:'):
+        p = s.find(',')
+        if p > 0:
+            s = s[(p + 1):]
+    b = xb64.decode(s, key)
+    return b
+
+def parse_transform_notation(mode, s):
+    w = s.lstrip()
+    prefix = mode + ':'
+    if not w.startswith(prefix):
+        return s, None
+
+    body = w[len(prefix):]
+    payload, sep, param = body.partition('#')
+    return payload, param.rstrip('\r\n') if sep else None
 
 def get_file_type(b):
     tp = {
