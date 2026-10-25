@@ -33,7 +33,7 @@ txtbin.RLO = '<span style="color:#f80" class="cc2 cc-link" data-tooltip="U+202E:
 txtbin.FULL_SP = '<span style="color:#05d" class="cc" data-tooltip="IDEOGRAPHIC SPACE">・</span>';
 txtbin.VS = '<span style="color:#fe0" class="cc2 cc-link" data-tooltip="U+FE00-U+FE0F: Variation Selectors" onclick="txtbin.openUnicodeTable(\'0xFE00\');">[VS]</span>';
 txtbin.BOM = '<span style="color:#fb6" class="cc2 cc-link" data-tooltip="U+FEFF: BOM" onclick="txtbin.openUnicodeTable(\'0xFEFF\', true);">.</span>';
-txtbin.EOF = '<span style="color:#3885b8" class="cc">[EOF]</span>';
+txtbin.EOF = '<span style="color:#587589" class="cc">[EOF]</span>';
 
 txtbin.DEFAULT_FONT_SIZE = 14;
 txtbin.DEFAULT_MODE = 'auto';
