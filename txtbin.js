@@ -860,16 +860,16 @@ txtbin.decodeBase64 = function(s) {
 };
 
 txtbin.extractB64fromDataUrl = DebugJS.extractB64fromDataUrl;
-txtbin.parseTransformNotation = DebugJS.parseTransformNotation;
+txtbin.parseB64Notation = DebugJS.parseB64Notation;
 
 txtbin.hasInlineTransformParam = function(mode) {
-  var notation = txtbin.parseTransformNotation(txtbin.getSrcValue());
+  var notation = txtbin.parseB64Notation(txtbin.getSrcValue());
   return (notation && (notation.mode == mode) && notation.hasParam);
 };
 
-txtbin.resolveTransformSource = function(mode, s) {
+txtbin.resolveB64Source = function(mode, s) {
   var param = (mode == 'xb64' ? $el('#key').value : $el('#bsb64-n').value);
-  return DebugJS.resolveTransformSource(mode, s, param);
+  return DebugJS.resolveB64Source(mode, s, param);
 };
 
 txtbin.drawBinInfo = function(ftype, buf, b64) {
@@ -2547,7 +2547,7 @@ txtbin.setSrcValue = function(s, resetPos) {
 txtbin.detectCurrentMode = function() {
   var m = 'txt';
   var v = txtbin.getSrcValue();
-  var notation = txtbin.parseTransformNotation(v);
+  var notation = txtbin.parseB64Notation(v);
   if (notation) {
     m = notation.mode;
   } else if (txtbin.isBinString(v)) {
@@ -2691,14 +2691,14 @@ txtbin.str2buf = function(mode, s) {
       b = txtbin.bin2uint8Array(s);
       break;
     case 'xb64':
-      parts = txtbin.resolveTransformSource(mode, s);
+      parts = txtbin.resolveB64Source(mode, s);
       if (parts.error) {
         return {error: parts.error};
       }
       b = util.xb64.decode(parts.payload, parts.param);
       break;
     case 'bsb64':
-      parts = txtbin.resolveTransformSource(mode, s);
+      parts = txtbin.resolveB64Source(mode, s);
       if (parts.error) {
         return {error: parts.error};
       }
