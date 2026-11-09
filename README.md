@@ -7,6 +7,7 @@ Parse and convert data between multiple text and binary representations.
 - debug.js https://debugjs.net/
 - bsb64.py https://github.com/takashiharano/bsb64
 - xb64.py https://github.com/takashiharano/xb64
+- sha.js https://github.com/Caligatio/jsSHA
 
 ## Deploy
 Edit the shebang in `index.cgi` and `txtbin.cgi` to the Python path of your web server.  
@@ -29,6 +30,7 @@ Deploy the files to the server as below:
    |
    +- bsb64.py
    +- debug.js
+   +- sha.js
    +- util.js
    +- util.py
    +- xb64.py
@@ -36,8 +38,10 @@ Deploy the files to the server as below:
 
 ## Usage
 Open the editor: http(s)://SERVER/txtbin/  
-Input the source text into the textarea and select the decode mode, then decode it with the Parse button or save it to a file.  
+Input the source data into the textarea and select the decode mode.  
+Click the Parse button to analyze the data and display its information and preview, or click the Save button to decode and download it as a file.  
 The decoder supports Base64, BSB64, XB64, and the numeric representations HEX, DEC, and BIN.  
+For example, the character `A` can be represented as `41` (HEX), `65` (DEC), `01000001` (BIN), or `QQ==` (Base64).
 
 ![txtbin1](https://github.com/user-attachments/assets/2f6b7fd4-64f4-4a80-afb1-96bea05b929b)
 
