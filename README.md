@@ -3,7 +3,8 @@ Browser-based text and binary editor & inspector.
 Analyze and convert data between multiple text and binary representations.
 
 ## Required
-- util.js, util.py https://libutil.com/
+- util.js https://libutil.com/
+- util.py https://libutil.com/
 - debug.js https://debugjs.net/
 - bsb64.py https://github.com/takashiharano/bsb64
 - xb64.py https://github.com/takashiharano/xb64
