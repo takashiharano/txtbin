@@ -95,8 +95,11 @@ def deccode_and_send_file(mode, s, filename):
 
     util.send_as_file(b, filename=filename, etag=etag)
 
-def send_error_response():
-    util.send_response('TXTBIN:ERROR')
+def send_error_response(info=None):
+    text = 'ERROR'
+    if info is not None:
+        text += ':' + info
+    util.send_response(text)
 
 def extract_bintext_part(mode, s):
   if mode == 'bin':
@@ -272,9 +275,9 @@ def main():
     n = util.get_request_param('filename', '')
 
     if appconfig.auth_required:
-        if context.is_authorized() and (app_permission_name == '' or context.has_permission(app_permission_name)):
+        if context.is_authenticated() and (app_permission_name == '' or context.has_permission(app_permission_name)):
             deccode_and_send_file(m, s, n)
         else:
-            send_error_response()
+            send_error_response('FORBIDDEN')
     else:
         deccode_and_send_file(m, s, n)
