@@ -689,14 +689,14 @@ $onReady = function() {
 
   $el('#key').addEventListener('input', txtbin.onInputKey);
   $el('#key').addEventListener('change', txtbin.onInputKey);
-  $el('#key').addEventListener('keydown', txtbin.onParseKeyDown);
+  $el('#key').addEventListener('keydown', txtbin.onAnalyzeKeyDown);
 
   $el('#bsb64-n').addEventListener('change', txtbin.onChangeBsb64N);
   $el('#toggle-src-conv').addEventListener('change', txtbin.updateKeyApplyButton);
 
   $el('#src').addEventListener('input', txtbin.onInput);
   $el('#src').addEventListener('change', txtbin.onInput);
-  $el('#src').addEventListener('keydown', txtbin.onParseKeyDown);
+  $el('#src').addEventListener('keydown', txtbin.onAnalyzeKeyDown);
 
   $el('#show-preview').addEventListener('change', txtbin.onChangeShowPreview);
   $el('#preview-live').addEventListener('change', txtbin.onLivePreviewChange);
@@ -1121,7 +1121,7 @@ txtbin.getSHA = function(a, b, f) {
   return s.getHash('HEX');
 };
 
-txtbin.parse = function() {
+txtbin.analyze = function() {
   txtbin.clearBuf();
   var bufCache = txtbin.updateInfoAndPreview(true);
   if (!bufCache) {
@@ -2491,13 +2491,13 @@ txtbin.onDndLoadProgress = function(e, loaded, total, pct) {
   txtbin.setSrcValue(s, false);
 };
 
-txtbin.onParseKeyDown = function(e) {
+txtbin.onAnalyzeKeyDown = function(e) {
   if (e.key != 'Enter' || e.isComposing || e.repeat) return;
   if (e.currentTarget.id == 'key') {
     txtbin.handleEnterKeyOnXB64Key(e);
   } else if (e.ctrlKey) {
     e.preventDefault();
-    txtbin.parse();
+    txtbin.analyze();
   }
 };
 txtbin.handleEnterKeyOnXB64Key = function(e) {
@@ -2519,11 +2519,11 @@ txtbin.handleEnterKeyOnXB64Key = function(e) {
     txtbin.setMode('xb64');
   }
 
-  txtbin.parse();
+  txtbin.analyze();
 };
 txtbin.handleEnterKeyOnXB64Key4Preview = function() {
   if (txtbin.srcDirty || !txtbin.bufCache) {
-    txtbin.parse();
+    txtbin.analyze();
   } else {
     txtbin.updateXB64Key();
   }
