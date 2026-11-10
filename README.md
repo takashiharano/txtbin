@@ -1,6 +1,6 @@
 # TxtBin
 Browser-based text and binary editor & inspector.  
-Parse and convert data between multiple text and binary representations.
+Analyze and convert data between multiple text and binary representations.
 
 ## Required
 - util.js, util.py https://libutil.com/
@@ -38,18 +38,18 @@ Deploy the files to the server as below:
 
 ## Usage
 Open the editor: http(s)://SERVER/txtbin/  
-Input the source data into the textarea and select the decode mode.  
-Click the Parse button to analyze the data and display its information and preview, or click the Save button to decode and download it as a file.  
+Enter the source data into the textarea and select the input mode.  
+Click `ANALYZE` to inspect the data and display its information and preview, or click `SAVE` to decode and download it as a file.  
 The decoder supports Base64, BSB64, XB64, and the numeric representations HEX, DEC, and BIN.  
 For example, the character `A` can be represented as `41` (HEX), `65` (DEC), `01000001` (BIN), or `QQ==` (Base64).
 
-![txtbin1](https://github.com/user-attachments/assets/2f6b7fd4-64f4-4a80-afb1-96bea05b929b)
+![txtbin1](https://github.com/user-attachments/assets/3efd74fc-4b80-4c0e-97b1-e41fb81839f2)
 
 You can also drag and drop a file into the textarea to convert it to binary values.    
-So you can use it as a binary editor by editing the HEX values and saving them to a file with the Save button.  
-The binary data written in the text is converted to a byte array on the server side and can be downloaded as a file.
+This allows you to edit the HEX values and save them to a file using `SAVE`.  
+The binary data represented as text is converted to a byte array on the server and can be downloaded as a file.
 
-![txtbin2](https://github.com/user-attachments/assets/b18b022a-85e3-457c-b731-c55167d0b15f)
+![txtbin2](https://github.com/user-attachments/assets/ed2ce947-c33a-4be3-95bc-131243af991c)
 
 Except for the save function, it also works locally as a standalone application without a server.  
 In that case, just open txtbin.html.
