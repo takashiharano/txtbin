@@ -67,7 +67,7 @@ def main():
                 else:
                     html = build_forbidden_screen()
             else:
-                websys.redirect_auth_screen('../')
+                websys.redirect_auth_screen(ROOT_PATH)
                 return
         else:
             html = 'websys module is required';
