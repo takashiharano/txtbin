@@ -3588,5 +3588,11 @@ txtbin.utf8.fromByteArray = function(b) {
   return decodeURIComponent(e);
 };
 txtbin.openAboutDialog = function() {
-  util.alert('TxtBin\n\n&copy; 2023 Takashi Harano\nMIT License\n\n<a href="https://github.com/takashiharano/txtbin" target="_blank">GitHub</a>');
+  var msg = 'TxtBin\n\n&copy; 2023 Takashi Harano\nMIT License\n\n<a href="https://github.com/takashiharano/txtbin" target="_blank">GitHub</a>';
+  var opt = {
+    style: {
+      'min-width': '260px'
+    }
+  };
+  util.alert(msg, opt);
 };
