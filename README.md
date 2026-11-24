@@ -1,8 +1,10 @@
 # TxtBin
+
 Browser-based text and binary editor & inspector.  
 Analyze and convert data between multiple text and binary representations.
 
 ## Required
+
 - util.js https://libutil.com/
 - util.py https://libutil.com/
 - debug.js https://debugjs.net/
@@ -11,6 +13,7 @@ Analyze and convert data between multiple text and binary representations.
 - sha.js https://github.com/Caligatio/jsSHA
 
 ## Deploy
+
 Edit the shebang in `index.cgi` and `txtbin.cgi` to the Python path of your web server.  
 Deploy the files to the server as below:
 ```
@@ -38,6 +41,7 @@ Deploy the files to the server as below:
 ```
 
 ## Usage
+
 Open the editor: http(s)://SERVER/txtbin/  
 Enter the source data into the textarea and select the input mode.  
 Click `ANALYZE` to inspect the data and display its information and preview, or click `SAVE` to decode and download it as a file.  
@@ -54,3 +58,7 @@ The binary data represented as text is converted to a byte array on the server a
 
 Except for the save function, it also works locally as a standalone application without a server.  
 In that case, just open txtbin.html.
+
+## License
+
+[MIT License](LICENSE)
